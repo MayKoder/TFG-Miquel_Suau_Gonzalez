@@ -481,9 +481,6 @@
     <ClInclude Include="Source Code\WI_Assets.h">
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\WI_About.h">
-      <Filter>Sources\Editor\Windows\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\CO_Camera.h">
       <Filter>Sources\Components\Derived</Filter>
     </ClInclude>
@@ -799,9 +796,6 @@
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\WI_Assets.cpp">
-      <Filter>Sources\Editor\Windows\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\WI_About.cpp">
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\CO_Camera.cpp">

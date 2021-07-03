@@ -22,7 +22,6 @@
 //Window types
 #include "WI_Configuration.h"
 #include "WI_Console.h"
-#include "WI_About.h"
 #include "WI_Inspector.h"
 #include "WI_Hierarchy.h"
 #include "WI_Scene.h"
@@ -45,14 +44,13 @@ viewportCorSize(0.f), dockspace_id(0)
 	windows[static_cast<unsigned int>(EditorWindow::CONSOLE)] = new W_Console();
 	windows[static_cast<unsigned int>(EditorWindow::HIERARCHY)] = new W_Hierarchy(App->moduleScene);
 	windows[static_cast<unsigned int>(EditorWindow::INSPECTOR)] = new W_Inspector();
-	windows[static_cast<unsigned int>(EditorWindow::SCENE)] = new W_Scene(App);
-	windows[static_cast<unsigned int>(EditorWindow::GAME)] = new W_Game();
+	//windows[static_cast<unsigned int>(EditorWindow::SCENE)] = new W_Scene(App);
+	//windows[static_cast<unsigned int>(EditorWindow::GAME)] = new W_Game();
 	windows[static_cast<unsigned int>(EditorWindow::TEXTEDITOR)] = new W_TextEditor();
 
 	//TODO: This 2 windows are last on the enum to keep them from drawing on the window
 	//tab on the main menu bar, and are drawed by hand on other tabs, there
 	//must be a better way to do that
-	windows[static_cast<unsigned int>(EditorWindow::ABOUT)] = new W_About();
 	windows[static_cast<unsigned int>(EditorWindow::CONFIGURATION)] = new W_Configuration();
 
 	//Sould load the last used style on start?
@@ -123,8 +121,8 @@ bool M_Editor::Start()
 
 void M_Editor::Draw()
 {
-	glClearColor(0.08f, 0.08f, 0.08f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.08f, 0.08f, 0.08f, 1.f);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -139,7 +137,7 @@ void M_Editor::Draw()
 	DrawTopBar();
 	ImGui::PopStyleVar();
 
-	CreateDockSpace();
+	//CreateDockSpace();
 
 
 	for (unsigned int i = 0; i < windows.size(); i++)
@@ -297,7 +295,6 @@ void M_Editor::DrawMenuBar()
 			{
 				ShellExecute(0, 0, "https://github.com/MayKoder", 0, 0, SW_SHOW);
 			}
-			ImGui::MenuItem(windows[static_cast<int>(EditorWindow::ABOUT)]->name.c_str(), nullptr, &windows[static_cast<int>(EditorWindow::ABOUT)]->active);
 
 			ImGui::PopStyleColor(1);
 			ImGui::EndMenu();
@@ -376,48 +373,6 @@ void M_Editor::DrawTopBar()
 		ImGui::PopItemWidth();
 
 		ImGui::SameLine((ImGui::GetContentRegionMax().x / 2.f) - 100);
-		if (ImGui::BeginChild("##playBTS", ImVec2(130, ImGui::GetWindowContentRegionMax().y - style.FramePadding.y), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration)) 
-		{
-			
-			//Play game maybe if its clicked while game is playing, stop game?
-			if (ImGui::ImageButton((ImTextureID)editorIcons.GetIconTextureID("PLAY"), ImVec2(17, 17), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), (DETime::state == GameState::PLAY) ? playingTint : ImVec4(0, 0, 0, 1)))
-			{
-				if (DETime::state == GameState::STOP) 
-				{
-					App->moduleScene->SaveScene("Library/Scenes/tmp.des");
-					DETime::Play();
-				}
-				else
-				{
-					DETime::Stop();
-					App->moduleScene->LoadScene("Library/Scenes/tmp.des");
-					App->moduleFileSystem->DeleteAssetFile("Library/Scenes/tmp.des"); //TODO: Duplicated code, mmove to method
-				}
-			}
-			ImGui::SameLine();
-
-			//Stop game if playing
-			if (ImGui::ImageButton((ImTextureID)editorIcons.GetIconTextureID("STOP"), ImVec2(17, 17), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0, 0, 0, 1)))
-			{
-				if (DETime::state == GameState::PLAY || DETime::state == GameState::PAUSE)
-				{
-					DETime::Stop();
-					App->moduleScene->LoadScene("Library/Scenes/tmp.des");
-					App->moduleFileSystem->DeleteAssetFile("Library/Scenes/tmp.des");
-				}
-			}
-			ImGui::SameLine();
-
-			//Step one frame forward
-			if (ImGui::ImageButton((ImTextureID)editorIcons.GetIconTextureID("PAUSE"), ImVec2(17, 17), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0, 0, 0, 1)))
-				DETime::Pause();
-
-			ImGui::SameLine();
-			//Step one frame forward
-			if (ImGui::ImageButton((ImTextureID)editorIcons.GetIconTextureID("STEP"), ImVec2(17, 17), ImVec2(0, 0), ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0), ImVec4(0, 0, 0, 1)))
-				DETime::Step();
-		}
-		ImGui::EndChild();
 
 
 		ImGui::SameLine(ImGui::GetContentRegionMax().x - (ImGui::GetButtonSize("Take Screenshoot").x + style.FramePadding.x));

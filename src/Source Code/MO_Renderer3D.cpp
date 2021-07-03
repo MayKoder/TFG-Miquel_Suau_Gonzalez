@@ -37,7 +37,7 @@
 
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), str_CAPS(""),
-vsync(false), wireframe(false), gameCamera(nullptr), directLight(nullptr)
+vsync(true), wireframe(false), gameCamera(nullptr), directLight(nullptr)
 {
 	GetCAPS(str_CAPS);
 	/*depth =*/ cull = lightng = color_material = texture_2d = true;
@@ -300,30 +300,30 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	App->moduleCamera->editorCamera.EndDraw();
 #endif // !STANDALONE
 
-	//Draw game camera
-	if (gameCamera != nullptr) 
-	{
-		gameCamera->StartDraw();
+	////Draw game camera
+	//if (gameCamera != nullptr) 
+	//{
+	//	gameCamera->StartDraw();
 
-		lights[0].SetPos(5, 5, 5);
+	//	lights[0].SetPos(5, 5, 5);
 
-		for (uint i = 0; i < MAX_LIGHTS; ++i)
-			lights[i].Render();
+	//	for (uint i = 0; i < MAX_LIGHTS; ++i)
+	//		lights[i].Render();
 
-		if (!renderQueue.empty())
-		{
-			for (size_t i = 0; i < renderQueue.size(); i++)
-			{
-				float distance = gameCamera->camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
-				renderQueueMap.emplace(distance, renderQueue[i]);
-			}
+	//	if (!renderQueue.empty())
+	//	{
+	//		for (size_t i = 0; i < renderQueue.size(); i++)
+	//		{
+	//			float distance = gameCamera->camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
+	//			renderQueueMap.emplace(distance, renderQueue[i]);
+	//		}
 
-			RenderWithOrdering(true);
-		}
+	//		RenderWithOrdering(true);
+	//	}
 
-		skybox.DrawAsSkybox(gameCamera);
-		gameCamera->EndDraw();
-	}
+	//	skybox.DrawAsSkybox(gameCamera);
+	//	gameCamera->EndDraw();
+	//}
 
 
 #ifndef STANDALONE
@@ -600,9 +600,9 @@ void ModuleRenderer3D::SetGameRenderTarget(C_Camera* cam)
 	gameCamera = cam;
 
 #ifndef STANDALONE
-	W_Game* gWindow = dynamic_cast<W_Game*>(App->moduleEditor->GetEditorWindow(EditorWindow::GAME));
-	if (gWindow != nullptr && gameCamera != nullptr)
-		gWindow->SetTargetCamera(gameCamera);
+	//W_Game* gWindow = dynamic_cast<W_Game*>(App->moduleEditor->GetEditorWindow(EditorWindow::GAME));
+	//if (gWindow != nullptr && gameCamera != nullptr)
+	//	gWindow->SetTargetCamera(gameCamera);
 #endif // !STANDALONE
 
 	if (gameCamera != nullptr)

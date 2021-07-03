@@ -22,12 +22,9 @@ enum class EditorWindow {
 	CONSOLE,
 	HIERARCHY,
 	INSPECTOR,
-	SCENE,
-	GAME,
+	//SCENE,
+	//GAME,
 	TEXTEDITOR,
-
-	//Help tab
-	ABOUT,
 
 	//Edit tab
 	CONFIGURATION,

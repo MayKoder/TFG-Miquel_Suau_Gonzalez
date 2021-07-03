@@ -195,7 +195,7 @@ void M_Scene::SetGameCamera(C_Camera* cam)
 	App->moduleRenderer3D->SetGameRenderTarget(cam);
 
 #ifndef STANDALONE
-	dynamic_cast<W_Game*>(App->moduleEditor->GetEditorWindow(EditorWindow::GAME))->SetTargetCamera(cam);
+	//dynamic_cast<W_Game*>(App->moduleEditor->GetEditorWindow(EditorWindow::GAME))->SetTargetCamera(cam);
 #endif // !STANDALONE
 }
 

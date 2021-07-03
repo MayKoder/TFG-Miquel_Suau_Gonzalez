@@ -318,7 +318,6 @@
     <ClInclude Include="Source Code\RE_Texture.h" />
     <ClInclude Include="Source Code\Timer.h" />
     <ClInclude Include="Source Code\Window.h" />
-    <ClInclude Include="Source Code\WI_About.h" />
     <ClInclude Include="Source Code\WI_Assets.h" />
     <ClInclude Include="Source Code\WI_Configuration.h" />
     <ClInclude Include="Source Code\WI_Console.h" />
@@ -426,7 +425,6 @@
     <ClCompile Include="Source Code\Primitive.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
     <ClCompile Include="Source Code\Window.cpp" />
-    <ClCompile Include="Source Code\WI_About.cpp" />
     <ClCompile Include="Source Code\WI_Configuration.cpp" />
     <ClCompile Include="Source Code\WI_Console.cpp" />
     <ClCompile Include="Source Code\WI_Inspector.cpp" />
