@@ -175,7 +175,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\AssetDir.h" />
     <ClInclude Include="Source Code\Color.h" />
@@ -291,15 +290,14 @@
     <ClInclude Include="Source Code\IM_ShaderImporter.h" />
     <ClInclude Include="Source Code\IM_TextureImporter.h" />
     <ClInclude Include="Source Code\INC_AllComponents.h" />
-    <ClInclude Include="Source Code\Light.h" />
     <ClInclude Include="Source Code\MaykMath.h" />
     <ClInclude Include="Source Code\DEModelNode.h" />
     <ClInclude Include="Source Code\MA_IconSystem.h" />
     <ClInclude Include="Source Code\MM_ProceduralMeshGenerator.h" />
+    <ClInclude Include="Source Code\MO_GUI.h" />
     <ClInclude Include="Source Code\MO_MonoManager.h" />
     <ClInclude Include="Source Code\RE_Material.h" />
     <ClInclude Include="Source Code\RE_Mesh.h" />
-    <ClInclude Include="Source Code\MeshArrays.h" />
     <ClInclude Include="Source Code\IM_MeshLoader.h" />
     <ClInclude Include="Source Code\MMGui.h" />
     <ClInclude Include="Source Code\Module.h" />
@@ -400,6 +398,7 @@
     <ClCompile Include="Source Code\MA_IconSystem.cpp" />
     <ClCompile Include="Source Code\MMGui.cpp" />
     <ClCompile Include="Source Code\MM_ProceduralMeshGenerator.cpp" />
+    <ClCompile Include="Source Code\MO_GUI.cpp" />
     <ClCompile Include="Source Code\MO_MonoManager.cpp" />
     <ClCompile Include="Source Code\RE_Material.cpp" />
     <ClCompile Include="Source Code\RE_Mesh.cpp" />
@@ -411,7 +410,6 @@
     <ClCompile Include="Source Code\RE_Texture.cpp" />
     <ClCompile Include="Source Code\WI_Assets.cpp" />
     <ClCompile Include="Source Code\WI_Hierarchy.cpp" />
-    <ClCompile Include="Source Code\Light.cpp" />
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\MaykMath.cpp" />
@@ -437,12 +435,6 @@
     <None Include="Source Code\External Libraries\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
     <None Include="Source Code\External Libraries\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
     <None Include="Source Code\External Libraries\MathGeoLib\include\Math\Matrix.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Diamond Engine.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="DiamondIcon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

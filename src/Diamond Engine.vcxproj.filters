@@ -156,9 +156,6 @@
     <ClInclude Include="Source Code\Window.h">
       <Filter>Sources\Editor\Windows\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\Light.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\External Libraries\MathGeoLib\include\MathBuildConfig.h">
       <Filter>Externals\MathGeoLib</Filter>
     </ClInclude>
@@ -354,9 +351,6 @@
     <ClInclude Include="Source Code\MMGui.h">
       <Filter>Sources\Tools\MMath</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\MeshArrays.h">
-      <Filter>Sources\Tools\MMath</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\External Libraries\DevIL\include\il.h">
       <Filter>Externals\DevIL</Filter>
     </ClInclude>
@@ -387,7 +381,6 @@
     <ClInclude Include="Source Code\Component.h">
       <Filter>Sources\Components\Base</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Source Code\DEJsonSupport.h">
       <Filter>Sources\Tools\MMath\MMJsonSupport</Filter>
     </ClInclude>
@@ -547,6 +540,9 @@
     <ClInclude Include="Source Code\MM_ProceduralMeshGenerator.h">
       <Filter>Sources\Tools\MMath\MMM_Procedural</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\MO_GUI.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -596,9 +592,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\Window.cpp">
       <Filter>Sources\Editor\Windows\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\Light.cpp">
-      <Filter>Sources\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\External Libraries\MathGeoLib\include\Time\Clock.cpp">
       <Filter>Externals\MathGeoLib\Time</Filter>
@@ -852,6 +845,9 @@
     <ClCompile Include="Source Code\MM_ProceduralMeshGenerator.cpp">
       <Filter>Sources\Tools\MMath\MMM_Procedural</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\MO_GUI.cpp">
+      <Filter>Sources\Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\External Libraries\MathGeoLib\include\Math\Matrix.inl">
@@ -875,11 +871,5 @@
     <None Include="Source Code\External Libraries\DevIL\include\config.h.win">
       <Filter>Externals\DevIL</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Diamond Engine.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="DiamondIcon.ico" />
   </ItemGroup>
 </Project>

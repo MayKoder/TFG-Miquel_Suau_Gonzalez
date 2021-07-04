@@ -74,8 +74,9 @@ void FileSystem::FSInit()
 
 	FileSystem::AddPath("."); //Adding ProjectFolder (working directory)
 	FileSystem::AddPath("Assets");
+	FileSystem::AddPath("Library");
 	//FileSystem::AddPath("Assets/Primitives");
-	//FileSystem::CreateLibraryFolders();
+	FileSystem::CreateLibraryFolders();
 }
 
 void FileSystem::FSDeInit()
@@ -129,7 +130,7 @@ void FileSystem::CreateLibraryFolders()
 	CreateDir(MODELS_PATH);
 	CreateDir(TEXTURES_PATH);
 	CreateDir(SCENES_PATH);
-	CreateDir(SCRIPTS_PATH);
+	//CreateDir(SCRIPTS_PATH);
 	CreateDir(SHADERS_PATH);
 	CreateDir(MATERIALS_PATH);
 }

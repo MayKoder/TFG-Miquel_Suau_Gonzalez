@@ -7,10 +7,12 @@
 #include "MO_Editor.h"
 #include "MO_Scene.h"
 #include "MO_Input.h"
+#include "MO_GUI.h"
 
 #include "RE_Mesh.h"
 #include "RE_Texture.h"
 #include "mmgr/mmgr.h"
+#include "DE_FrameBuffer.h"
 
 #include"GameObject.h"
 
@@ -35,7 +37,7 @@
 
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), str_CAPS(""),
-vsync(true), wireframe(false), gameCamera(nullptr), directLight(nullptr)
+vsync(true), wireframe(false), directLight(nullptr), activeRenderCamera(nullptr)
 {
 	GetCAPS(str_CAPS);
 	/*depth =*/ cull = lightng = color_material = texture_2d = true;
@@ -136,11 +138,12 @@ bool ModuleRenderer3D::Init()
 		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 0.0f};
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 
-		lights[0].ref = GL_LIGHT0;
-		lights[0].ambient.Set(0.75f, 0.75f, 0.75f, 1.0f);
-		lights[0].diffuse.Set(0.05f, 0.05f, 0.05f, 1.0f);
-		lights[0].SetPos(0.0f, 2.0f, 2.5f);
-		lights[0].Init();
+		glEnable(GL_LIGHT0);
+		glLightf(GL_LIGHT0, GL_AMBIENT, 0.75f);
+		glLightf(GL_LIGHT0, GL_DIFFUSE, 0.05f);
+
+		float pos[] = { 0, 0, 0, 1.0f };
+		glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -151,7 +154,6 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		lights[0].Active(true);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
@@ -211,6 +213,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+
 	//Render light depth pass
 	if (directLight)
 	{
@@ -262,8 +265,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		}
 		copy.clear();
 	}
-
-#ifndef STANDALONE
 	
 	//
 	App->moduleCamera->editorCamera.StartDraw();
@@ -290,13 +291,19 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 
 
-	skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
+	//skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
+
 
 	DebugLine(pickingDebug);
 	DrawDebugLines();
 
+
+	App->moduleGUI->RenderUIElements();
+
+
 	App->moduleCamera->editorCamera.EndDraw();
-#endif // !STANDALONE
+
+
 
 	////Draw game camera
 	//if (gameCamera != nullptr) 
@@ -357,13 +364,11 @@ void ModuleRenderer3D::OnResize(int width, int height)
 	App->moduleWindow->s_width = width;
 	App->moduleWindow->s_height = height;
 
-#ifndef STANDALONE
 	App->moduleCamera->editorCamera.ReGenerateBuffer(width, height);
-#endif // !STANDALONE
 
 
-	if (gameCamera != nullptr) 
-		gameCamera->ReGenerateBuffer(width, height);
+	//if (gameCamera != nullptr) 
+	//	gameCamera->ReGenerateBuffer(width, height);
 
 }
 
@@ -430,10 +435,10 @@ void ModuleRenderer3D::OnGUI()
 
 		ImGui::Separator();
 
-		if (ImGui::DragFloat4("Ambient: ", &lights[0].ambient, 0.01f, 0.f, 1.f))
-			lights[0].Init();
-		if(ImGui::DragFloat4("Diffuse: ", &lights[0].diffuse, 0.01f, 0.f, 1.f)) 
-			lights[0].Init();
+		//if (ImGui::DragFloat4("Ambient: ", &lights[0].ambient, 0.01f, 0.f, 1.f))
+		//	lights[0].Init();
+		//if(ImGui::DragFloat4("Diffuse: ", &lights[0].diffuse, 0.01f, 0.f, 1.f)) 
+		//	lights[0].Init();
 
 	}
 }
@@ -590,12 +595,13 @@ void ModuleRenderer3D::GetCAPS(std::string& caps)
 
 C_Camera* ModuleRenderer3D::GetGameRenderTarget() const
 {
-	return gameCamera;
+	//return gameCamera;
+	return nullptr;
 }
 
 void ModuleRenderer3D::SetGameRenderTarget(C_Camera* cam)
 {
-	gameCamera = cam;
+	//gameCamera = cam;
 
 #ifndef STANDALONE
 	//W_Game* gWindow = dynamic_cast<W_Game*>(App->moduleEditor->GetEditorWindow(EditorWindow::GAME));
@@ -603,8 +609,8 @@ void ModuleRenderer3D::SetGameRenderTarget(C_Camera* cam)
 	//	gWindow->SetTargetCamera(gameCamera);
 #endif // !STANDALONE
 
-	if (gameCamera != nullptr)
-		gameCamera->ReGenerateBuffer(App->moduleWindow->s_width, App->moduleWindow->s_height);
+	//if (gameCamera != nullptr)
+	//	gameCamera->ReGenerateBuffer(App->moduleWindow->s_width, App->moduleWindow->s_height);
 }
 
 void ModuleRenderer3D::ClearAllRenderData()

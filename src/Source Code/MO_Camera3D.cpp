@@ -6,6 +6,7 @@
 #include "MO_Window.h"
 #include "MO_Editor.h"
 #include "GameObject.h"
+#include "MO_Renderer3D.h"
 
 #include"CO_Transform.h"
 #include"MathGeoLib/include/Math/float4.h"
@@ -14,6 +15,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 {
 	editorCamera.camFrustrum.farPlaneDistance = 5000;
 	editorCamera.camFrustrum.pos = float3(8.0f, 3.0f, 8.0f);
+	App->moduleRenderer3D->activeRenderCamera = &editorCamera;
 	//Reference = float3(0.0f, 0.0f, 0.0f);
 }
 

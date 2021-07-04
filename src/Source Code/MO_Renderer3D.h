@@ -1,7 +1,6 @@
 #pragma once
 #include "Application.h"
 #include "Module.h"
-#include "Light.h"
 
 #include <queue>
 
@@ -78,7 +77,6 @@ public:
 	std::vector<C_MeshRenderer*> renderQueue;
 	std::multimap<float, C_MeshRenderer*> renderQueueMap;
 
-	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
 
 	C_Camera* activeRenderCamera = nullptr; //TODO: This is temporal
@@ -88,7 +86,6 @@ public:
 
 private:
 	std::vector<LineRender> lines;
-	C_Camera* gameCamera;
 	LineSegment pickingDebug;
 	Grid p;
 	MMP_Plane plane;

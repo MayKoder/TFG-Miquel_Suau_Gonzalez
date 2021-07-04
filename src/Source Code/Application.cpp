@@ -8,6 +8,7 @@
 #include "MO_Renderer3D.h"
 #include "MO_Camera3D.h"
 #include "MO_Scene.h"
+#include "MO_GUI.h"
 
 #ifndef STANDALONE
 #include "MO_Editor.h"
@@ -34,12 +35,11 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 	moduleCamera = new ModuleCamera3D(this);
 
 	moduleMono = new M_MonoManager(this);
+	moduleGUI = new M_GUI(this);
 
 	moduleResources = new M_ResourceManager(this);
 
-#ifndef STANDALONE
 	moduleEditor = new M_Editor(this);
-#endif
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -52,6 +52,7 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 
 	//Should scene be here?
 	AddModule(moduleScene);
+	AddModule(moduleGUI);
 
 	// Renderer last!
 	AddModule(moduleCamera);
@@ -60,9 +61,7 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 
 	AddModule(moduleResources);
 
-#ifndef STANDALONE
 	AddModule(moduleEditor);
-#endif
 
 	AddModule(moduleRenderer3D);
 }

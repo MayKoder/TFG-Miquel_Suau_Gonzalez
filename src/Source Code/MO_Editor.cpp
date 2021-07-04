@@ -113,7 +113,7 @@ bool M_Editor::Start()
 {
 	//W_TextEditor* txtEditor = dynamic_cast<W_TextEditor*>(GetEditorWindow(EditorWindow::TEXTEDITOR));
 	//if(txtEditor != nullptr)
-	//	txtEditor->SetTextFromFile("Assets/Scripts/Core.cs");
+	//	txtEditor->SetTextFromFile("Library/Shaders/28971592.shdr");
 
 	return true;
 }
@@ -132,9 +132,9 @@ void M_Editor::Draw()
 
 	DrawMenuBar();
 
-	ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowBorderSize, 0);
-	DrawTopBar();
-	ImGui::PopStyleVar();
+	//ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowBorderSize, 0);
+	//DrawTopBar();
+	//ImGui::PopStyleVar();
 
 	//CreateDockSpace();
 

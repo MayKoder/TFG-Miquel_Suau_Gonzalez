@@ -1,6 +1,5 @@
 #include "RE_Mesh.h"
 #include "OpenGL.h"
-#include "MeshArrays.h"
 #include "IM_FileSystem.h"
 #include"Globals.h"
 #include"RE_Shader.h"
