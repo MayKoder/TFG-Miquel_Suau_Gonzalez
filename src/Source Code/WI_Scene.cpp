@@ -123,17 +123,6 @@ void W_Scene::Draw()
 				trans->SetTransformWithGlobal(mat);
 				trans->updateTransform = true;
 			}
-
-
-			//ImGui::PopClipRect();
-
-			//if (ImGuizmo::IsUsing())
-			//{
-			//	float4x4 newMatrix;
-			//	newMatrix.Set(modelPtr);
-			//	modelProjection = newMatrix.Transposed();
-			//	gameObject->GetComponent<C_Transform>()->SetGlobalTransform(modelProjection);
-			//}
 		}
 
 		if (ImGui::IsMouseClicked(0) && !ImGuizmo::IsUsing() && !App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN)
@@ -146,8 +135,6 @@ void W_Scene::Draw()
 			if (ImGui::IsWindowHovered())
 			{
 				LineSegment picking = App->moduleCamera->editorCamera.camFrustrum.UnProjectLineSegment(normal.x, normal.y);
-				//ImGui::SetCursorPos(ImVec2(100, 30));
-				//ImGui::Text("%f, %f", normal.x, normal.y);
 				App->moduleRenderer3D->RayToMeshQueueIntersection(picking);
 				App->moduleEditor->SetSelectedAsset(nullptr);
 			}

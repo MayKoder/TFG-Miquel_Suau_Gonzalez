@@ -75,7 +75,7 @@ void FileSystem::FSInit()
 	FileSystem::AddPath("."); //Adding ProjectFolder (working directory)
 	FileSystem::AddPath("Assets");
 	//FileSystem::AddPath("Assets/Primitives");
-	FileSystem::CreateLibraryFolders();
+	//FileSystem::CreateLibraryFolders();
 }
 
 void FileSystem::FSDeInit()

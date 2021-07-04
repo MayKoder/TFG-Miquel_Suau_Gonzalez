@@ -11,7 +11,6 @@
 #include"MO_MonoManager.h"
 
 #include "WI_Hierarchy.h"
-#include"WI_Game.h"
 #include"MaykMath.h"
 
 #include "IM_FileSystem.h"
@@ -43,9 +42,6 @@ bool M_Scene::Init()
 
 bool M_Scene::Start()
 {
-	CreateGameCamera("Main Camera");
-
-	//LoadScene("Library/Scenes/884741631.des");
 
 #ifndef STANDALONE
 	//TODO IMPORTANT: This is why we should save icons .meta, or we could generate them every time
@@ -74,7 +70,6 @@ update_status M_Scene::PreUpdate(float dt)
 #include<chrono>
 update_status M_Scene::Update(float dt)
 {
-#ifndef STANDALONE
 
 	//TODO: Only do c/v when the hier or scene widows are focused?
 	if (App->moduleInput->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT && App->moduleInput->GetKey(SDL_SCANCODE_C) == KEY_DOWN && App->moduleEditor->GetSelectedGO() != nullptr)
@@ -147,7 +142,8 @@ update_status M_Scene::Update(float dt)
 
 	if (App->moduleInput->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN && App->moduleEditor->GetSelectedGO() != nullptr && App->moduleEditor->GetSelectedAsset() == nullptr)
 		App->moduleEditor->GetSelectedGO()->Destroy();
-#endif // !STANDALONE
+
+
 
 	//auto t1 = SDL_GetTicks();
 	UpdateGameObjects();

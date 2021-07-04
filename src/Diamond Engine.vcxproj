@@ -321,7 +321,6 @@
     <ClInclude Include="Source Code\WI_Assets.h" />
     <ClInclude Include="Source Code\WI_Configuration.h" />
     <ClInclude Include="Source Code\WI_Console.h" />
-    <ClInclude Include="Source Code\WI_Game.h" />
     <ClInclude Include="Source Code\WI_Hierarchy.h" />
     <ClInclude Include="Source Code\WI_Inspector.h" />
     <ClInclude Include="Source Code\WI_Scene.h" />
@@ -411,7 +410,6 @@
     <ClCompile Include="Source Code\RE_Shader.cpp" />
     <ClCompile Include="Source Code\RE_Texture.cpp" />
     <ClCompile Include="Source Code\WI_Assets.cpp" />
-    <ClCompile Include="Source Code\WI_Game.cpp" />
     <ClCompile Include="Source Code\WI_Hierarchy.cpp" />
     <ClCompile Include="Source Code\Light.cpp" />
     <ClCompile Include="Source Code\log.cpp" />

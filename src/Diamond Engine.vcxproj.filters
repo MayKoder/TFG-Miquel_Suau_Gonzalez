@@ -469,9 +469,6 @@
     <ClInclude Include="Source Code\WI_Hierarchy.h">
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\WI_Game.h">
-      <Filter>Sources\Editor\Windows\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\WI_Console.h">
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClInclude>
@@ -784,9 +781,6 @@
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\WI_Hierarchy.cpp">
-      <Filter>Sources\Editor\Windows\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\WI_Game.cpp">
       <Filter>Sources\Editor\Windows\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\WI_Console.cpp">

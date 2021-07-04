@@ -90,6 +90,6 @@ private:
 	std::vector<LineRender> lines;
 	C_Camera* gameCamera;
 	LineSegment pickingDebug;
-	//Grid p;
+	Grid p;
 	MMP_Plane plane;
 };

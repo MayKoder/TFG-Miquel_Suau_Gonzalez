@@ -98,11 +98,11 @@ void W_Assets::Draw()
 
 		if (ImGui::BeginPopupContextWindow())
 		{
-			if (ImGui::BeginMenu("Create C# Script")) 
-			{
-				DrawCreationPopup("Script path: ", ".cs", std::bind(&M_MonoManager::CreateAssetsScript, EngineExternal->moduleMono, std::placeholders::_1));
-				ImGui::EndMenu();
-			}
+			//if (ImGui::BeginMenu("Create C# Script")) 
+			//{
+			//	DrawCreationPopup("Script path: ", ".cs", std::bind(&M_MonoManager::CreateAssetsScript, EngineExternal->moduleMono, std::placeholders::_1));
+			//	ImGui::EndMenu();
+			//}
 
 			if (ImGui::BeginMenu("Create GLSL Shader"))
 			{

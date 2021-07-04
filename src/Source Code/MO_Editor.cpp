@@ -26,7 +26,6 @@
 #include "WI_Hierarchy.h"
 #include "WI_Scene.h"
 #include "WI_Assets.h"
-#include "WI_Game.h"
 #include "WI_TextEditor.h"
 
 #include"GameObject.h"

@@ -56,6 +56,8 @@ void ModuleCamera3D::OnGUI()
 update_status ModuleCamera3D::Update(float dt)
 {
 
+	ProcessSceneKeyboard();
+
 	//ASK: This should be here to move camera with code but idk its expensive
 	editorCamera.Move(cameraMovement);
 	cameraMovement = float3::zero;

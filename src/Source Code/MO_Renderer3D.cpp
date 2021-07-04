@@ -12,8 +12,6 @@
 #include "RE_Texture.h"
 #include "mmgr/mmgr.h"
 
-#include"WI_Game.h"
-
 #include"GameObject.h"
 
 #include"CO_MeshRenderer.h"
@@ -197,8 +195,8 @@ bool ModuleRenderer3D::Init()
 	skybox.CreateGLData();
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-	//p = Grid(0, 0, 0, 0);
-	//p.axis = true;
+	p = Grid(0, 0, 0, 0);
+	p.axis = true;
 	plane.GenerateData();
 
 	return ret;
@@ -271,7 +269,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	App->moduleCamera->editorCamera.StartDraw();
 	//
 	
-	//p.Render();
+	p.Render();
 
 	//C_Transform trans;
 	//plane._mesh->RenderMesh(0, float3::one, false, EngineExternal->moduleScene->defaultMaterial, &trans);
