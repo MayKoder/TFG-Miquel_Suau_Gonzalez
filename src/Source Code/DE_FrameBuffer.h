@@ -18,6 +18,10 @@ public:
 	inline unsigned int GetTextureBuffer() { return texColorBuffer; }
 	inline unsigned int GetRBO() { return rbo; }
 
+	void BindFrameBuffer();
+	void UnbindFrameBuffer();
+	void ResolveToScreen();
+
 	float2 texBufferSize;
 
 private:

@@ -1,4 +1,6 @@
 #include "DE_FrameBuffer.h"
+#include "Application.h"
+#include "MO_Window.h"
 
 DE_FrameBuffer::DE_FrameBuffer() : framebuffer(0), texColorBuffer(0), rbo(0), texBufferSize(float2::zero)
 {
@@ -58,4 +60,34 @@ void DE_FrameBuffer::ReGenerateBuffer(int w, int h, bool MSAA, int msaaSamples)
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		LOG(LogType::L_ERROR, "ERROR::FRAMEBUFFER:: Framebuffer is not complete!");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void DE_FrameBuffer::BindFrameBuffer()
+{
+	//glBindTexture(GL_TEXTURE_2D, 0); //TODO needed? (here just to make sure the texture isn't bound)
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+	glViewport(0, 0, texBufferSize.x, texBufferSize.y);
+}
+
+//Sets current draw frame buffer to default
+void DE_FrameBuffer::UnbindFrameBuffer()
+{
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glViewport(0, 0, EngineExternal->moduleWindow->s_width, EngineExternal->moduleWindow->s_height);
+}
+
+void DE_FrameBuffer::ResolveToScreen()
+{
+	//if (!alreadyInitialized)
+	//	InitializeFrameBuffer(myDepthType);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, GetFrameBuffer());
+	glBlitFramebuffer(0, 0, texBufferSize.x, texBufferSize.y, 0, 0, texBufferSize.x, texBufferSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST);
+
+	UnbindFrameBuffer();
 }

@@ -63,6 +63,8 @@ public:
 	void ClearAllRenderData();
 private:
 
+	void DirectionalShadowPass();
+
 	void RenderWithOrdering(bool rTex = false);
 	void DebugLine(LineSegment& line);
 	void GetCAPS(std::string& caps);

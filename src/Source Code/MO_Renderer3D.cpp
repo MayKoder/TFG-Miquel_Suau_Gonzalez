@@ -214,44 +214,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 
-	//Render light depth pass
-	if (directLight)
-	{
-		directLight->StartPass();
-		if (!renderQueue.empty())
-		{
-			for (size_t i = 0; i < renderQueue.size(); i++)
-			{
-				float distance = directLight->orthoFrustum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
-				renderQueueMap.emplace(distance, renderQueue[i]);
-			}
-
-
-			if (!renderQueueMap.empty())
-			{
-				for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
-				{
-					// Get the range of the current key
-					auto range = renderQueueMap.equal_range(i->first);
-
-					// Now render out that whole range
-					for (auto d = range.first; d != range.second; ++d) 
-					{
-						GLint modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "model");
-						glUniformMatrix4fv(modelLoc, 1, GL_FALSE, d->second->GetGO()->transform->GetGlobalTransposed());
-
-						modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "lightSpaceMatrix");
-						glUniformMatrix4fv(modelLoc, 1, GL_FALSE, directLight->spaceMatrixOpenGL.ptr());
-
-						d->second->GetRenderMesh()->OGL_GPU_Render();
-					}
-				}
-
-				renderQueueMap.clear();
-			}
-		}
-		directLight->EndPass();
-	}
+	//DirectionalShadowPass();
 
 	//-------- CAMERA CULLING PROCESS -----------//
 	if (GetGameRenderTarget() != nullptr && GetGameRenderTarget()->cullingState == true)
@@ -290,18 +253,20 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+	skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
+	//DebugLine(pickingDebug);
+	//DrawDebugLines();
 
-	//skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
-
-
-	DebugLine(pickingDebug);
-	DrawDebugLines();
-
-
+	//App->moduleCamera->editorCamera.msaaFBO.BindFrameBuffer();
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//glEnable(GL_DEPTH_TEST);
 	App->moduleGUI->RenderUIElements();
-
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//App->moduleCamera->editorCamera.msaaFBO.UnbindFrameBuffer();
+	//App->moduleCamera->editorCamera.msaaFBO.ResolveToScreen();
 
 	App->moduleCamera->editorCamera.EndDraw();
+
 
 
 
@@ -545,6 +510,48 @@ void ModuleRenderer3D::RayToMeshQueueIntersection(LineSegment& ray)
 		App->moduleEditor->SetSelectedGO(nullptr);
 #endif // !STANDALONE
 	distMap.clear();
+}
+
+void ModuleRenderer3D::DirectionalShadowPass()
+{
+	//Render light depth pass
+	if (directLight)
+	{
+		directLight->StartPass();
+		if (!renderQueue.empty())
+		{
+			for (size_t i = 0; i < renderQueue.size(); i++)
+			{
+				float distance = directLight->orthoFrustum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
+				renderQueueMap.emplace(distance, renderQueue[i]);
+			}
+
+
+			if (!renderQueueMap.empty())
+			{
+				for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
+				{
+					// Get the range of the current key
+					auto range = renderQueueMap.equal_range(i->first);
+
+					// Now render out that whole range
+					for (auto d = range.first; d != range.second; ++d)
+					{
+						GLint modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "model");
+						glUniformMatrix4fv(modelLoc, 1, GL_FALSE, d->second->GetGO()->transform->GetGlobalTransposed());
+
+						modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "lightSpaceMatrix");
+						glUniformMatrix4fv(modelLoc, 1, GL_FALSE, directLight->spaceMatrixOpenGL.ptr());
+
+						d->second->GetRenderMesh()->OGL_GPU_Render();
+					}
+				}
+
+				renderQueueMap.clear();
+			}
+		}
+		directLight->EndPass();
+	}
 }
 
 void ModuleRenderer3D::RenderWithOrdering(bool rTex)

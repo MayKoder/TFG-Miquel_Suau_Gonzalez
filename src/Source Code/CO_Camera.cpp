@@ -217,12 +217,12 @@ void C_Camera::EndDraw()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
 //#else
-//	glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFBO.GetFrameBuffer());
-//	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolvedFBO.GetFrameBuffer());
-//	glBlitFramebuffer(0, 0, msaaFBO.texBufferSize.x, msaaFBO.texBufferSize.y, 0, 0, resolvedFBO.texBufferSize.x, resolvedFBO.texBufferSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-//
-//	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-//	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, msaaFBO.GetFrameBuffer());
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, resolvedFBO.GetFrameBuffer());
+	//glBlitFramebuffer(0, 0, msaaFBO.texBufferSize.x, msaaFBO.texBufferSize.y, 0, 0, resolvedFBO.texBufferSize.x, resolvedFBO.texBufferSize.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+	//glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 //#endif // !STANDALONE
 
 
