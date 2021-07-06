@@ -82,6 +82,7 @@ M_GUI::UIElement::UIElement(float2 pos, float2 rot, float2 scale)
 
 M_GUI::UIElement::~UIElement()
 {
+	children.clear();
 }
 
 void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)

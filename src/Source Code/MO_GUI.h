@@ -15,12 +15,14 @@ class M_GUI : public Module
 
 	struct UIElement 
 	{
-		float4x4 transformGL;
 
 		UIElement(float2 pos, float2 rot, float2 scale);
 		~UIElement();
 
 		/*virtual*/ void RenderElement(unsigned int VAO, ResourceShader* shader);
+		
+		std::vector<UIElement> children;
+		float4x4 transformGL;
 	};
 
 	//struct Panel : public UIElement 
