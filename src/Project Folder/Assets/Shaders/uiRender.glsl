@@ -3,10 +3,14 @@
 layout (location = 0) in vec3 aPos;
 
 uniform mat4 model;
+uniform vec4 inputColor;
+
 out vec2 texCoord;
+out vec4 inpColor;
 
 void main()
 {
+inpColor = inputColor;
     texCoord = vec2((aPos.x + 1.0) / 2.0, 1 - (aPos.y + 1.0) / 2.0);
     gl_Position = model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
 }  
@@ -17,6 +21,7 @@ void main()
 
 //out vec4 FragColor;
 in vec2 texCoord;
+in vec4 inpColor;
 
 void main()
 {   
@@ -33,6 +38,6 @@ void main()
    //  gl_FragColor = vec4(0.0f, 0.0f, 0.0f, 0.5f);
    //}
 
-    gl_FragColor = vec4(0.5, 0.5f, 0.5f, 0.5f);
+    gl_FragColor = vec4(inpColor);
 }
 #endif

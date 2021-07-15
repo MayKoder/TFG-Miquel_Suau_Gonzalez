@@ -1,8 +1,9 @@
 #include "MO_GUI.h"
 #include "MO_Window.h"
 #include "MO_ResourceManager.h"
-
 #include "MO_Renderer3D.h"
+#include "MO_Input.h"
+
 #include "CO_Camera.h"
 
 #include "MathGeoLib/include/Math/Quat.h"
@@ -33,11 +34,12 @@ bool M_GUI::Start()
 
 	//float scaleX = sizeX / 100.f;
 	//float scaleY = sizeY / 100.f;
-	this->elements.push_back(UIElement(float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.2f)));
-	this->elements.push_back(UIElement(float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f)));
-	this->elements.push_back(UIElement(float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f)));
+	UIElement* test = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.2f));
+	AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
+	AddUIElement(nullptr, float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
+	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.15f, 0.15f));
 
-	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(App->GetRandomInt(), "Library\/Shaders\/1557502301.shdr"));
+	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(App->GetRandomInt(), "Library\/Shaders\/1569048839.shdr"));
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -56,9 +58,35 @@ bool M_GUI::Start()
 	return true;
 }
 
+update_status M_GUI::Update(float dt)
+{
+	if (App->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN) 
+	{
+		UIElement* currentNode = elements[0];
+
+		//Maybe it's time to move to a single root node instead of a vector, iteration would be easier
+		for (size_t i = 0; i < elements.size(); i++)
+		{
+			if (elements[i]->IsInside(float2(App->moduleInput->GetMouseX(), App->moduleInput->GetMouseY()))) 
+			{
+				//Use
+			}
+		}
+		//Iterate tree checking if pointer is inside
+		//Use button elements, use the first one
+		//exit loop
+	}
+	return update_status::UPDATE_CONTINUE;
+}
+
 bool M_GUI::CleanUp()
 {
 	App->moduleResources->UnloadResource(uiShader->GetUID());
+	for (size_t i = 0; i < elements.size(); i++)
+	{
+		delete elements[i];
+		elements[i] = nullptr;
+	}
 	elements.clear();
 	return true;
 }
@@ -69,19 +97,43 @@ void M_GUI::RenderUIElements()
 
 	for (size_t i = 0; i < elements.size(); i++)
 	{
-		elements[i].RenderElement(VAO, uiShader);
+		elements[i]->RenderElement(VAO, uiShader);
 	}
 
 	uiShader->Unbind();
 }
 
-M_GUI::UIElement::UIElement(float2 pos, float2 rot, float2 scale)
+M_GUI::UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot, float2 scale)
 {
-	this->transformGL = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
+	UIElement* ret = new UIElement(parent, pos, rot, scale);
+	if (parent != nullptr) {
+		parent->children.push_back(ret);
+	}
+	else {
+		elements.push_back(ret);
+	}
+
+	return ret;
+}
+
+M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale) : parent(_parent), colorRGBA(float4::one)
+{
+	if (parent != nullptr) {
+		this->transformGL = parent->transformGL * float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
+	}
+	else
+	{
+		this->transformGL = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
+	}
 }
 
 M_GUI::UIElement::~UIElement()
 {
+	for (size_t i = 0; i < children.size(); i++)
+	{
+		delete children[i];
+		children[i] = nullptr;
+	}
 	children.clear();
 }
 
@@ -90,6 +142,9 @@ void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)
 	GLint modelLoc = glGetUniformLocation(shader->shaderProgramID, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, this->transformGL.ptr());
 
+	modelLoc = glGetUniformLocation(shader->shaderProgramID, "inputColor");
+	glUniform4fv(modelLoc, 1, &this->colorRGBA.x);
+
 	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
 
@@ -97,4 +152,33 @@ void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)
 
 	glDisableVertexAttribArray(0);
 	glBindVertexArray(0);
+
+	for (size_t i = 0; i < children.size(); i++)
+	{
+		children[i]->RenderElement(VAO, shader);
+	}
+}
+
+bool M_GUI::UIElement::IsInside(float2 point)
+{
+	float3 pos;
+	Quat rot;
+	float3 size;
+
+	//Normalize point
+	point.x /= EngineExternal->moduleWindow->s_width;
+	point.y /= EngineExternal->moduleWindow->s_height;
+
+	point.x = point.x - (1 - point.x);
+	point.y = -(point.y - (1 - point.y));
+
+	this->transformGL.Transposed().Decompose(pos, rot, size);
+
+	if ((point.x <= pos.x + size.x && point.x >= pos.x - size.x) && 
+		point.y <= pos.y + size.y && point.y >= pos.y - size.y) 
+	{
+		return true;
+	}
+
+	return false;
 }
