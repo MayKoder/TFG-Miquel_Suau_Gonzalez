@@ -14,10 +14,12 @@
 
 M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr)
 {
+	root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
 }
 
 M_GUI::~M_GUI()
 {
+	assert(root == nullptr, "UI Not cleaned up");
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	VAO = 0; VBO = 0;
@@ -62,19 +64,7 @@ update_status M_GUI::Update(float dt)
 {
 	if (App->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN) 
 	{
-		UIElement* currentNode = elements[0];
-
-		//Maybe it's time to move to a single root node instead of a vector, iteration would be easier
-		for (size_t i = 0; i < elements.size(); i++)
-		{
-			if (elements[i]->IsInside(float2(App->moduleInput->GetMouseX(), App->moduleInput->GetMouseY()))) 
-			{
-				//Use
-			}
-		}
-		//Iterate tree checking if pointer is inside
-		//Use button elements, use the first one
-		//exit loop
+		RecursiveUpdateElements(root);
 	}
 	return update_status::UPDATE_CONTINUE;
 }
@@ -82,12 +72,10 @@ update_status M_GUI::Update(float dt)
 bool M_GUI::CleanUp()
 {
 	App->moduleResources->UnloadResource(uiShader->GetUID());
-	for (size_t i = 0; i < elements.size(); i++)
-	{
-		delete elements[i];
-		elements[i] = nullptr;
-	}
-	elements.clear();
+	
+	delete root;
+	root = nullptr;
+
 	return true;
 }
 
@@ -95,34 +83,57 @@ void M_GUI::RenderUIElements()
 {
 	uiShader->Bind();
 
-	for (size_t i = 0; i < elements.size(); i++)
-	{
-		elements[i]->RenderElement(VAO, uiShader);
-	}
+	root->RenderElement(VAO, uiShader);
 
 	uiShader->Unbind();
 }
 
+void M_GUI::RecursiveUpdateElements(UIElement* element)
+{
+	//Doing a bottom-up iteration to respect ordering?
+	for (size_t i = 0; i < element->children.size(); i++)
+	{
+		RecursiveUpdateElements(element->children[i]);
+	}
+
+	//TODO: Maybe iteration would be better than recursivity?
+	if (element != root && element->IsInside(float2(App->moduleInput->GetMouseX(), App->moduleInput->GetMouseY()))) 
+	{
+		//Use
+		element->OnClick();
+	}
+
+	//Iterate tree checking if pointer is inside
+	//Use button elements, use the first one
+	//exit loop
+}
+
 M_GUI::UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot, float2 scale)
 {
+	if (parent == nullptr) {
+		parent = root;
+	}
+
 	UIElement* ret = new UIElement(parent, pos, rot, scale);
-	if (parent != nullptr) {
-		parent->children.push_back(ret);
-	}
-	else {
-		elements.push_back(ret);
-	}
+	parent->children.push_back(ret);
 
 	return ret;
 }
 
+//M_GUI::UIElement::UIElement() : parent(nullptr), colorRGBA(float4::one)
+//{
+//	this->transformGL = float4x4::FromTRS(float3(0, 0, 0), Quat::FromEulerXYZ(0.f, 0.f, 0.0f), float3(1.f, 1.f, 1.f)).Transposed();
+//}
+
 M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale) : parent(_parent), colorRGBA(float4::one)
 {
-	if (parent != nullptr) {
+	if (parent != nullptr) 
+	{
 		this->transformGL = parent->transformGL * float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
 	}
 	else
 	{
+		colorRGBA = float4::zero;
 		this->transformGL = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
 	}
 }
@@ -135,6 +146,11 @@ M_GUI::UIElement::~UIElement()
 		children[i] = nullptr;
 	}
 	children.clear();
+}
+
+void M_GUI::UIElement::OnClick()
+{
+	colorRGBA = float4::one / 2.f;
 }
 
 void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)

@@ -17,9 +17,11 @@ class M_GUI : public Module
 	struct UIElement 
 	{
 
+		//UIElement();
 		UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale);
 		~UIElement();
 
+		virtual void OnClick();
 		/*virtual*/ void RenderElement(unsigned int VAO, ResourceShader* shader);
 		bool IsInside(float2 point);
 		
@@ -45,13 +47,13 @@ public:
 	bool CleanUp() override;
 
 	void RenderUIElements();
+	void RecursiveUpdateElements(UIElement* element);
 	UIElement* AddUIElement(UIElement* parent, float2, float2, float2);
 
 	unsigned int VAO = 0;
 	unsigned int VBO = 0;
 
-	std::vector<UIElement*> elements;
+	UIElement* root;
 
 	ResourceShader* uiShader;
-
 };
