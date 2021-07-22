@@ -100,7 +100,7 @@ void MMP_Plane::GenerateData()
 
 			//vERTICES
 			_mesh->vertices[i * EBO_ATTR] = x;
-			_mesh->vertices[(i * EBO_ATTR) + 1] = randomizer.Float();
+			_mesh->vertices[(i * EBO_ATTR) + 1] = 0.0f/*randomizer.Float()*/;
 			_mesh->vertices[(i * EBO_ATTR) + 2] = z;
 
 			//TexCoords

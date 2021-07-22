@@ -24,6 +24,7 @@ class M_GUI : public Module
 		virtual void OnClick();
 		/*virtual*/ void RenderElement(unsigned int VAO, ResourceShader* shader);
 		bool IsInside(float2 point);
+		void UpdateTransform();
 		
 		UIElement* parent; //Just a pointer, non dynamic, does not need to be deleted
 		std::vector<UIElement*> children;

@@ -260,7 +260,10 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//App->moduleCamera->editorCamera.msaaFBO.BindFrameBuffer();
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//glEnable(GL_DEPTH_TEST);
+
+	glDisable(GL_DEPTH_TEST);  //Rendering by call order now
 	App->moduleGUI->RenderUIElements();
+	glEnable(GL_DEPTH_TEST);  
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//App->moduleCamera->editorCamera.msaaFBO.UnbindFrameBuffer();
 	//App->moduleCamera->editorCamera.msaaFBO.ResolveToScreen();

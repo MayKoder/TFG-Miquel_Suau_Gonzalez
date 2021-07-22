@@ -39,7 +39,7 @@ bool M_GUI::Start()
 	UIElement* test = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.2f));
 	AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
 	AddUIElement(nullptr, float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
-	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.15f, 0.15f));
+	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95f, 0.9f));
 
 	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(App->GetRandomInt(), "Library\/Shaders\/1569048839.shdr"));
 
@@ -129,12 +129,18 @@ M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 s
 {
 	if (parent != nullptr) 
 	{
-		this->transformGL = parent->transformGL * float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
+		LCG rng;
+		colorRGBA = colorRGBA.RandomDir(rng, 1.0);
+		colorRGBA = colorRGBA.Abs();
+		colorRGBA.w = 1.0;
+
+		this->transformGL = parent->transformGL/*.Transposed()*/ * float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1));
+		//this->transformGL.Transpose();
 	}
 	else
 	{
 		colorRGBA = float4::zero;
-		this->transformGL = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1)).Transposed();
+		this->transformGL = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1))/*.Transposed()*/;
 	}
 }
 
@@ -151,12 +157,24 @@ M_GUI::UIElement::~UIElement()
 void M_GUI::UIElement::OnClick()
 {
 	colorRGBA = float4::one / 2.f;
+
+	//float3 test = transformGL.Row3(3);
+	//test.y += 0.02;
+	//transformGL.SetRow3(3, test);
+
+	float3 test = transformGL.Col3(3);
+	test.y += 0.02;
+	transformGL.SetCol3(3, test);
+
+	this->UpdateTransform();
 }
 
 void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)
 {
+
+	float4x4 transMat = this->transformGL.Transposed();
 	GLint modelLoc = glGetUniformLocation(shader->shaderProgramID, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, this->transformGL.ptr());
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, transMat.ptr());
 
 	modelLoc = glGetUniformLocation(shader->shaderProgramID, "inputColor");
 	glUniform4fv(modelLoc, 1, &this->colorRGBA.x);
@@ -188,7 +206,7 @@ bool M_GUI::UIElement::IsInside(float2 point)
 	point.x = point.x - (1 - point.x);
 	point.y = -(point.y - (1 - point.y));
 
-	this->transformGL.Transposed().Decompose(pos, rot, size);
+	this->transformGL./*Transposed().*/Decompose(pos, rot, size);
 
 	if ((point.x <= pos.x + size.x && point.x >= pos.x - size.x) && 
 		point.y <= pos.y + size.y && point.y >= pos.y - size.y) 
@@ -197,4 +215,18 @@ bool M_GUI::UIElement::IsInside(float2 point)
 	}
 
 	return false;
+}
+
+void M_GUI::UIElement::UpdateTransform()
+{
+	if (parent != nullptr)
+	{
+		this->transformGL = parent->transformGL/*.Transposed()*/ * this->transformGL/*.Transposed()*/;
+		//this->transformGL.Transpose();
+	}
+
+	for (size_t i = 0; i < children.size(); i++)
+	{
+		children[i]->UpdateTransform();
+	}
 }
