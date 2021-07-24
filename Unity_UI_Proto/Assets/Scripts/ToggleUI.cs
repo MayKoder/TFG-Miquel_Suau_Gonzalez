@@ -17,6 +17,8 @@ public class ToggleUI : MonoBehaviour
     private float closedX;
     private bool state = true; //False = closed, True = open
 
+    public Vector3 movementVector = Vector3.right;
+
     public PanelSide side = PanelSide.NONE;
 
     private RectTransform trans;
@@ -26,8 +28,8 @@ public class ToggleUI : MonoBehaviour
     {
         trans = transform.GetComponent<RectTransform>();
         //Debug.Log(this.GetComponent<RectTransform>().rect.x = );
-        openX = trans.localPosition.x;
-        closedX = trans.localPosition.x - (side == PanelSide.LEFT ? trans.rect.width : -trans.rect.width);
+        openX = (side == PanelSide.DOWN || side == PanelSide.TOP ? trans.localPosition.y : trans.localPosition.x);
+        closedX = openX - GetSideSize();
         Debug.Log(openX + " / " + closedX);
     }
 
@@ -41,8 +43,35 @@ public class ToggleUI : MonoBehaviour
     public void ToggleMovement()
     {
         state = !state;
-        trans.localPosition = new Vector3(state ? openX : closedX, trans.localPosition.y, trans.localPosition.z);
+        trans.localPosition = movementVector * (state ? openX : closedX);
         //Vector3(-535.710266,-0.0996910036,0)
         //Vector3(-388.050232,-0.0996910036,0)
+    }
+
+    float GetSideSize()
+    {
+        float ret = 0.0f;
+        switch (side)
+        {
+            case PanelSide.NONE:
+                break;
+
+            case PanelSide.RIGHT:
+                ret = -trans.rect.width;
+                break;
+            case PanelSide.LEFT:
+                ret = trans.rect.width;
+                break;
+            case PanelSide.TOP:
+                ret = -trans.rect.height;
+                break;
+            case PanelSide.DOWN:
+                ret = trans.rect.height;
+                break;
+
+            default:
+                break;
+        }
+        return ret;
     }
 }

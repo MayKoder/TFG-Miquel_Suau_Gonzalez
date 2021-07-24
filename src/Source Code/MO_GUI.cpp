@@ -36,10 +36,10 @@ bool M_GUI::Start()
 
 	//float scaleX = sizeX / 100.f;
 	//float scaleY = sizeY / 100.f;
-	UIElement* test = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.2f));
+	UIElement* test = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.5f));
 	AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
 	AddUIElement(nullptr, float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
-	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95f, 0.9f));
+	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95, 0.95));
 
 	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(App->GetRandomInt(), "Library\/Shaders\/1569048839.shdr"));
 
@@ -127,6 +127,8 @@ M_GUI::UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot,
 
 M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale) : parent(_parent), colorRGBA(float4::one)
 {
+
+	localTransform = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1));
 	if (parent != nullptr) 
 	{
 		LCG rng;
@@ -134,13 +136,13 @@ M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 s
 		colorRGBA = colorRGBA.Abs();
 		colorRGBA.w = 1.0;
 
-		this->transformGL = parent->transformGL/*.Transposed()*/ * float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1));
+		this->globalTransform = parent->globalTransform/*.Transposed()*/ * localTransform;
 		//this->transformGL.Transpose();
 	}
 	else
 	{
 		colorRGBA = float4::zero;
-		this->transformGL = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1))/*.Transposed()*/;
+		this->globalTransform = localTransform/*.Transposed()*/;
 	}
 }
 
@@ -162,9 +164,9 @@ void M_GUI::UIElement::OnClick()
 	//test.y += 0.02;
 	//transformGL.SetRow3(3, test);
 
-	float3 test = transformGL.Col3(3);
+	float3 test = localTransform.Col3(3);
 	test.y += 0.02;
-	transformGL.SetCol3(3, test);
+	localTransform.SetCol3(3, test);
 
 	this->UpdateTransform();
 }
@@ -172,7 +174,7 @@ void M_GUI::UIElement::OnClick()
 void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)
 {
 
-	float4x4 transMat = this->transformGL.Transposed();
+	float4x4 transMat = this->globalTransform.Transposed();
 	GLint modelLoc = glGetUniformLocation(shader->shaderProgramID, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, transMat.ptr());
 
@@ -206,7 +208,7 @@ bool M_GUI::UIElement::IsInside(float2 point)
 	point.x = point.x - (1 - point.x);
 	point.y = -(point.y - (1 - point.y));
 
-	this->transformGL./*Transposed().*/Decompose(pos, rot, size);
+	this->globalTransform./*Transposed().*/Decompose(pos, rot, size);
 
 	if ((point.x <= pos.x + size.x && point.x >= pos.x - size.x) && 
 		point.y <= pos.y + size.y && point.y >= pos.y - size.y) 
@@ -221,7 +223,7 @@ void M_GUI::UIElement::UpdateTransform()
 {
 	if (parent != nullptr)
 	{
-		this->transformGL = parent->transformGL/*.Transposed()*/ * this->transformGL/*.Transposed()*/;
+		this->globalTransform = parent->globalTransform/*.Transposed()*/ * this->localTransform/*.Transposed()*/;
 		//this->transformGL.Transpose();
 	}
 

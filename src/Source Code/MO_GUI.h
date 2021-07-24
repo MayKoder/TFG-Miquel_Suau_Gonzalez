@@ -28,7 +28,9 @@ class M_GUI : public Module
 		
 		UIElement* parent; //Just a pointer, non dynamic, does not need to be deleted
 		std::vector<UIElement*> children;
-		float4x4 transformGL;
+
+		float4x4 localTransform;
+		float4x4 globalTransform;
 
 		float4 colorRGBA;
 	};
