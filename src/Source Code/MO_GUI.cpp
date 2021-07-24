@@ -88,12 +88,14 @@ void M_GUI::RenderUIElements()
 	uiShader->Unbind();
 }
 
-void M_GUI::RecursiveUpdateElements(UIElement* element)
+bool M_GUI::RecursiveUpdateElements(UIElement* element)
 {
 	//Doing a bottom-up iteration to respect ordering?
 	for (size_t i = 0; i < element->children.size(); i++)
 	{
-		RecursiveUpdateElements(element->children[i]);
+		if (RecursiveUpdateElements(element->children[i])) {
+			return false;
+		}
 	}
 
 	//TODO: Maybe iteration would be better than recursivity?
@@ -101,8 +103,10 @@ void M_GUI::RecursiveUpdateElements(UIElement* element)
 	{
 		//Use
 		element->OnClick();
+		return true;
 	}
 
+	return false;
 	//Iterate tree checking if pointer is inside
 	//Use button elements, use the first one
 	//exit loop
@@ -120,14 +124,26 @@ M_GUI::UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot,
 	return ret;
 }
 
-//M_GUI::UIElement::UIElement() : parent(nullptr), colorRGBA(float4::one)
-//{
-//	this->transformGL = float4x4::FromTRS(float3(0, 0, 0), Quat::FromEulerXYZ(0.f, 0.f, 0.0f), float3(1.f, 1.f, 1.f)).Transposed();
-//}
-
 M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale) : parent(_parent), colorRGBA(float4::one)
 {
+	//this->callback = [this]() 
+	//{
+	//	LOG(LogType::L_NORMAL, "%f", colorRGBA.x);
+	//	colorRGBA = float4::one / 2.f;
 
+	//	//float3 test = transformGL.Row3(3);
+	//	//test.y += 0.02;
+	//	//transformGL.SetRow3(3, test);
+
+	//	float3 test = localTransform.Col3(3);
+	//	float3 size = localTransform.GetScale();
+
+	//	test.x -= size.x * 2;
+
+	//	localTransform.SetCol3(3, test);
+
+	//	this->UpdateTransform();
+	//};
 	localTransform = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1));
 	if (parent != nullptr) 
 	{
@@ -158,17 +174,7 @@ M_GUI::UIElement::~UIElement()
 
 void M_GUI::UIElement::OnClick()
 {
-	colorRGBA = float4::one / 2.f;
-
-	//float3 test = transformGL.Row3(3);
-	//test.y += 0.02;
-	//transformGL.SetRow3(3, test);
-
-	float3 test = localTransform.Col3(3);
-	test.y += 0.02;
-	localTransform.SetCol3(3, test);
-
-	this->UpdateTransform();
+	//this->callback();
 }
 
 void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)

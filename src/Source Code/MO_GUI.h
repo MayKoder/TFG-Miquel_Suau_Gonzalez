@@ -3,6 +3,13 @@
 #include "MathGeoLib/include/Math/float4x4.h"
 #include "MathGeoLib/include/Math/float4.h"
 #include<vector>
+#include<functional>
+
+template<class>
+class function;
+
+template<class R, class... Args>
+class function<R(Args...)>;
 
 class ResourceShader;
 
@@ -11,15 +18,21 @@ static float uiPlaneData[] =
 -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0
 };
 
+//template<typename... Args>
 class M_GUI : public Module
 {
 
+public:
 	struct UIElement 
 	{
 
 		//UIElement();
 		UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale);
 		~UIElement();
+
+		//float2 GetPosition() {
+		//	return globalTransform.Col3(3).xy(); 
+		//}
 
 		virtual void OnClick();
 		/*virtual*/ void RenderElement(unsigned int VAO, ResourceShader* shader);
@@ -35,10 +48,10 @@ class M_GUI : public Module
 		float4 colorRGBA;
 	};
 
-	//struct Button : public UIElement 
-	//{
-
-	//};
+	struct Button : public UIElement 
+	{
+		std::function<void()> callback;
+	};
 
 
 public:
@@ -50,7 +63,7 @@ public:
 	bool CleanUp() override;
 
 	void RenderUIElements();
-	void RecursiveUpdateElements(UIElement* element);
+	bool RecursiveUpdateElements(UIElement* element);
 	UIElement* AddUIElement(UIElement* parent, float2, float2, float2);
 
 	unsigned int VAO = 0;
