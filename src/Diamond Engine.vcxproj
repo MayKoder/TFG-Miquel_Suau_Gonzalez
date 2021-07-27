@@ -315,6 +315,7 @@
     <ClInclude Include="Source Code\RE_Shader.h" />
     <ClInclude Include="Source Code\RE_Texture.h" />
     <ClInclude Include="Source Code\Timer.h" />
+    <ClInclude Include="Source Code\UIElement.h" />
     <ClInclude Include="Source Code\Window.h" />
     <ClInclude Include="Source Code\WI_Assets.h" />
     <ClInclude Include="Source Code\WI_Configuration.h" />
@@ -408,6 +409,7 @@
     <ClCompile Include="Source Code\MO_Scene.cpp" />
     <ClCompile Include="Source Code\RE_Shader.cpp" />
     <ClCompile Include="Source Code\RE_Texture.cpp" />
+    <ClCompile Include="Source Code\UIElement.cpp" />
     <ClCompile Include="Source Code\WI_Assets.cpp" />
     <ClCompile Include="Source Code\WI_Hierarchy.cpp" />
     <ClCompile Include="Source Code\log.cpp" />

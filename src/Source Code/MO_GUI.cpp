@@ -6,7 +6,6 @@
 
 #include "CO_Camera.h"
 
-#include "MathGeoLib/include/Math/Quat.h"
 #include "Application.h"
 #include "OpenGL.h"
 
@@ -19,7 +18,7 @@ M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled),
 
 M_GUI::~M_GUI()
 {
-	assert(root == nullptr, "UI Not cleaned up");
+	//assert(root == nullptr, "UI Not cleaned up");
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	VAO = 0; VBO = 0;
@@ -37,7 +36,29 @@ bool M_GUI::Start()
 	//float scaleX = sizeX / 100.f;
 	//float scaleY = sizeY / 100.f;
 	UIElement* test = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.5f));
-	AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
+
+	UIElement* left = AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
+
+	std::function<void(UIElement*, bool&)> testu = [](UIElement* element, bool& state)
+	{
+		element->parent->colorRGBA = float4::one / 2.f;
+
+		//float3 test = transformGL.Row3(3);
+		//test.y += 0.02;
+		//transformGL.SetRow3(3, test);
+
+		float3 test = element->parent->localTransform.Col3(3);
+		float3 size = element->parent->localTransform.GetScale();
+
+		(state == true) ? test.x -= size.x * 2 : test.x += size.x * 2;
+		state = !state;
+
+		element->parent->localTransform.SetCol3(3, test);
+
+		element->parent->UpdateTransform();
+	};
+	AddUIButton(left, float2(1.0 + 0.1, 0.f), float2(0.f, 0.f), float2(0.1f, 0.15f), testu);
+
 	AddUIElement(nullptr, float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
 	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95, 0.95));
 
@@ -112,7 +133,7 @@ bool M_GUI::RecursiveUpdateElements(UIElement* element)
 	//exit loop
 }
 
-M_GUI::UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot, float2 scale)
+UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot, float2 scale)
 {
 	if (parent == nullptr) {
 		parent = root;
@@ -122,119 +143,4 @@ M_GUI::UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot,
 	parent->children.push_back(ret);
 
 	return ret;
-}
-
-M_GUI::UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale) : parent(_parent), colorRGBA(float4::one)
-{
-	//this->callback = [this]() 
-	//{
-	//	LOG(LogType::L_NORMAL, "%f", colorRGBA.x);
-	//	colorRGBA = float4::one / 2.f;
-
-	//	//float3 test = transformGL.Row3(3);
-	//	//test.y += 0.02;
-	//	//transformGL.SetRow3(3, test);
-
-	//	float3 test = localTransform.Col3(3);
-	//	float3 size = localTransform.GetScale();
-
-	//	test.x -= size.x * 2;
-
-	//	localTransform.SetCol3(3, test);
-
-	//	this->UpdateTransform();
-	//};
-	localTransform = float4x4::FromTRS(float3(pos.x, pos.y, 0), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1));
-	if (parent != nullptr) 
-	{
-		LCG rng;
-		colorRGBA = colorRGBA.RandomDir(rng, 1.0);
-		colorRGBA = colorRGBA.Abs();
-		colorRGBA.w = 1.0;
-
-		this->globalTransform = parent->globalTransform/*.Transposed()*/ * localTransform;
-		//this->transformGL.Transpose();
-	}
-	else
-	{
-		colorRGBA = float4::zero;
-		this->globalTransform = localTransform/*.Transposed()*/;
-	}
-}
-
-M_GUI::UIElement::~UIElement()
-{
-	for (size_t i = 0; i < children.size(); i++)
-	{
-		delete children[i];
-		children[i] = nullptr;
-	}
-	children.clear();
-}
-
-void M_GUI::UIElement::OnClick()
-{
-	//this->callback();
-}
-
-void M_GUI::UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)
-{
-
-	float4x4 transMat = this->globalTransform.Transposed();
-	GLint modelLoc = glGetUniformLocation(shader->shaderProgramID, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, transMat.ptr());
-
-	modelLoc = glGetUniformLocation(shader->shaderProgramID, "inputColor");
-	glUniform4fv(modelLoc, 1, &this->colorRGBA.x);
-
-	glBindVertexArray(VAO);
-	glEnableVertexAttribArray(0);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
-
-	for (size_t i = 0; i < children.size(); i++)
-	{
-		children[i]->RenderElement(VAO, shader);
-	}
-}
-
-bool M_GUI::UIElement::IsInside(float2 point)
-{
-	float3 pos;
-	Quat rot;
-	float3 size;
-
-	//Normalize point
-	point.x /= EngineExternal->moduleWindow->s_width;
-	point.y /= EngineExternal->moduleWindow->s_height;
-
-	point.x = point.x - (1 - point.x);
-	point.y = -(point.y - (1 - point.y));
-
-	this->globalTransform./*Transposed().*/Decompose(pos, rot, size);
-
-	if ((point.x <= pos.x + size.x && point.x >= pos.x - size.x) && 
-		point.y <= pos.y + size.y && point.y >= pos.y - size.y) 
-	{
-		return true;
-	}
-
-	return false;
-}
-
-void M_GUI::UIElement::UpdateTransform()
-{
-	if (parent != nullptr)
-	{
-		this->globalTransform = parent->globalTransform/*.Transposed()*/ * this->localTransform/*.Transposed()*/;
-		//this->transformGL.Transpose();
-	}
-
-	for (size_t i = 0; i < children.size(); i++)
-	{
-		children[i]->UpdateTransform();
-	}
 }

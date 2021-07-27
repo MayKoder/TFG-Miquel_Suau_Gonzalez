@@ -1,58 +1,17 @@
 #pragma once
 #include "Module.h"
-#include "MathGeoLib/include/Math/float4x4.h"
-#include "MathGeoLib/include/Math/float4.h"
-#include<vector>
-#include<functional>
-
-template<class>
-class function;
-
-template<class R, class... Args>
-class function<R(Args...)>;
-
-class ResourceShader;
+#include "UIElement.h"
 
 static float uiPlaneData[] = 
 {
 -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0
 };
 
+void ButtonTest(UIElement* element);
+
 //template<typename... Args>
 class M_GUI : public Module
 {
-
-public:
-	struct UIElement 
-	{
-
-		//UIElement();
-		UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale);
-		~UIElement();
-
-		//float2 GetPosition() {
-		//	return globalTransform.Col3(3).xy(); 
-		//}
-
-		virtual void OnClick();
-		/*virtual*/ void RenderElement(unsigned int VAO, ResourceShader* shader);
-		bool IsInside(float2 point);
-		void UpdateTransform();
-		
-		UIElement* parent; //Just a pointer, non dynamic, does not need to be deleted
-		std::vector<UIElement*> children;
-
-		float4x4 localTransform;
-		float4x4 globalTransform;
-
-		float4 colorRGBA;
-	};
-
-	struct Button : public UIElement 
-	{
-		std::function<void()> callback;
-	};
-
 
 public:
 	M_GUI(Application* app, bool start_enabled = true);
@@ -64,7 +23,21 @@ public:
 
 	void RenderUIElements();
 	bool RecursiveUpdateElements(UIElement* element);
+
 	UIElement* AddUIElement(UIElement* parent, float2, float2, float2);
+
+	template <typename... Args>
+	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale, std::function<void(Args...)> _callback)
+	{
+		if (parent == nullptr) {
+			parent = root;
+		}
+
+		UIButton<Args...>* ret = new UIButton<Args...>(parent, pos, rot, scale, _callback);
+		parent->children.push_back(ret);
+
+		return ret;
+	}
 
 	unsigned int VAO = 0;
 	unsigned int VBO = 0;
