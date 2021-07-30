@@ -31,7 +31,7 @@ bool M_GUI::Start()
 	float positionX = 0.0f / 100.f;
 	float positionY = 50.0f / 100.f;
 
-	float sizeX = 500.0f / App->moduleWindow->s_width;
+	float sizeX = 200.0f / App->moduleWindow->s_width;
 	float sizeY = 200.0f / App->moduleWindow->s_height;
 
 	root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
@@ -77,15 +77,17 @@ bool M_GUI::Start()
 	b1 = dynamic_cast<UIButton*>(AddUIButton(floatingParent, float2(-1.0 - 0.1, 0.f), float2(0.f, 0.f), float2(0.1f, 0.15f)));
 	b1->SetupCallback(testu, b1, true, 1);
 
-	//AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95, 0.95));
-	/*UIElement* test =*/floatingParent = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(sizeX, sizeY));
-	AddUIElement(floatingParent, float2(0.0, 0.0f), float2(0, 0), float2(sizeX * 3.f, sizeY * 3.f))/*->SetOffset(10, 10, 10, 10)*/;
+
+	/*UIElement* test =*/floatingParent = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.2f));
+
+	float aspect = (float)EngineExternal->moduleWindow->s_width / (float)EngineExternal->moduleWindow->s_height;
+	//AddUIElement(floatingParent, float2(0.0, 0.0f), float2(0, 0), float2(.975f, .9f))/*->SetOffset(10, 10, 10, 10)*/;
 
 
 	b1 = dynamic_cast<UIButton*>(AddUIButton(floatingParent, float2(0.0, 1.0 + 0.1), float2(0.f, 0.f), float2(0.15f, 0.1f)));
 	b1->SetupCallback(testu, b1, true, 2);
 
-	//AddUIElementRow(floatingParent, 6);
+	AddUIElementRow(floatingParent, 6);
 
 	/*AddUIElement(AddUIElement(root, float2::zero, float2::zero, float2(0.9, 0.5)), float2::zero, float2::zero, float2(0.9, 0.9));*/
 
@@ -185,9 +187,9 @@ void M_GUI::AddUIElementRow(UIElement* parent, int numberOfElements)
 	float spanOffset = spanSize / (numberOfElements - 1);
 
 	float currentOffset = position.x - size.x;
-	for (size_t i = 0; i < numberOfElements; i++)
+	for (size_t i = 0; i < numberOfElements - 1; i++)
 	{
-		AddUIElement(parent, float2(currentOffset, 0.0f), float2::zero, float2(0.2, 0.2));
+		AddUIElement(parent, float2(currentOffset, 0.0f), float2::zero, float2(spanOffset, 0.4));
 		currentOffset += spanOffset;
 	}
 

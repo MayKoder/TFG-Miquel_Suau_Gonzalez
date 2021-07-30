@@ -6,6 +6,7 @@
 #include"OpenGL.h"
 #include"RE_Shader.h"
 #include"MO_Window.h"
+#include"MO_Camera3D.h"
 #include"Application.h"
 #include"glmath.h"
 
@@ -16,8 +17,8 @@ rectOffset(float4::zero)
 	//float aspect = (float)EngineExternal->moduleWindow->s_width / (float)EngineExternal->moduleWindow->s_height;
 	//float onePixLength = onePix.y; // note: onePix.x * u_aspect equals to onePix.y
 
-
-	localTransform = float4x4::FromTRS(float3(pos.x, pos.y, 0.f), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x/* * onePixLength*/, scale.y/* * (onePixLength * aspect)*/, 0.f));
+	//this->scale = scale;
+	localTransform = float4x4::FromTRS(float3(pos.x, pos.y, 0.f), Quat::FromEulerXYZ(rot.x, rot.y, 0.0f), float3(scale.x, scale.y, 1.f));
 	this->globalTransform = (parent == nullptr ? float4x4::identity : parent->globalTransform) * this->localTransform;
 	
 	if (parent != nullptr)
@@ -25,11 +26,11 @@ rectOffset(float4::zero)
 		LCG rng;
 		colorRGBA = colorRGBA.RandomDir(rng, 1.0);
 		colorRGBA = colorRGBA.Abs();
-		colorRGBA.w = 1.0;
+		colorRGBA.w = 0.5;
 	}
 	else
 	{
-		//colorRGBA = float4::zero;
+		colorRGBA = float4::zero;
 	}
 }
 
@@ -44,6 +45,24 @@ UIElement::~UIElement()
 	children.clear();
 }
 
+float4x4 UIElement::GetGlobalMatrixGL()
+{
+	//float4x4 retMat = globalTransform;
+	//float aspect = (float)EngineExternal->moduleWindow->s_width / (float)EngineExternal->moduleWindow->s_height;
+
+
+	//float3 scale = retMat.GetScale();
+	//scale.x -= (this->rectOffset.x + this->rectOffset.y);
+	//scale.y -= (this->rectOffset.z + this->rectOffset.w);
+
+	////scale.x -= scale.x * (2 - aspect);
+
+	//retMat = float4x4::FromTRS(retMat.TranslatePart(), retMat.RotatePart(), scale);
+
+
+	return globalTransform.Transposed();
+}
+
 void UIElement::OnClick()
 {
 }
@@ -51,13 +70,13 @@ void UIElement::OnClick()
 void UIElement::RenderElement(unsigned int VAO, ResourceShader* shader)
 {
 
-	float4x4 transMat = this->globalTransform.Transposed();
+	float4x4 transMat = GetGlobalMatrixGL();
 	GLint modelLoc = glGetUniformLocation(shader->shaderProgramID, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, transMat.ptr());
 
-	//mat4x4 mat = ortho(0.0f, EngineExternal->moduleWindow->s_width, EngineExternal->moduleWindow->s_height, 0.0f, -1.0f, 1.0f);
+	//float4x4 mat = EngineExternal->moduleCamera->editorCamera.ProjectionMatrixOpenGL();
 	//modelLoc = glGetUniformLocation(shader->shaderProgramID, "projection");
-	//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, mat.M);
+	//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, mat.ptr());
 
 	modelLoc = glGetUniformLocation(shader->shaderProgramID, "inputColor");
 	glUniform4fv(modelLoc, 1, &this->colorRGBA.x);
@@ -112,26 +131,29 @@ void UIElement::UpdateTransform()
 	}
 }
 
-void UIElement::SetOffset(float right, float left, float top, float bottom)
+void UIElement::SetOffset(float right, float left, float top, float bottom, bool test)
 {
 
-	vec2 onePix = vec2(2.0) / vec2((float)EngineExternal->moduleWindow->s_width, (float)EngineExternal->moduleWindow->s_height);
+	//vec2 onePix = vec2(2.0) / vec2((float)EngineExternal->moduleWindow->s_width, (float)EngineExternal->moduleWindow->s_height);
 	float aspect = (float)EngineExternal->moduleWindow->s_width / (float)EngineExternal->moduleWindow->s_height;
-	float onePixLength = onePix.y; // note: onePix.x * u_aspect equals to onePix.y
+	//float onePixLength = onePix.y; // note: onePix.x * u_aspect equals to onePix.y
 
-	right *= onePixLength;
-	left *= onePixLength;
+	//right *= onePixLength;
+	//left *= onePixLength;
 
-	top *= onePix.y;
-	bottom *= onePix.y;
+	//top *= onePix.y;
+	//bottom *= onePix.y;
 
 	rectOffset.Set(right, left, top, bottom);
 
-	float3 scale = this->localTransform.GetScale();
+	//float3 scale = this->localTransform.GetScale();
 
-	scale.x -= (right + left);
-	scale.y -= (top + bottom);
+	//scale.x -= (right + left);
+	////if(test)
+	////	scale.x -= scale.x * aspect;
 
-	this->localTransform = float4x4::FromTRS(localTransform.TranslatePart(), localTransform.RotatePart(), scale);
-	this->UpdateTransform();
+	//scale.y -= (top + bottom);
+
+	//this->localTransform = float4x4::FromTRS(localTransform.TranslatePart(), localTransform.RotatePart(), scale);
+	//this->UpdateTransform();
 }

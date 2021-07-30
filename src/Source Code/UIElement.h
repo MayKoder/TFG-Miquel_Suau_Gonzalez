@@ -28,12 +28,14 @@ public:
 	//	return globalTransform.Col3(3).xy(); 
 	//}
 
+	float4x4 GetGlobalMatrixGL();
+
 	virtual void OnClick();
 	/*virtual*/ void RenderElement(unsigned int VAO, ResourceShader* shader);
 	bool IsInside(float2 point);
 	void UpdateTransform();
 
-	void SetOffset(float right, float left, float top, float bottom);
+	void SetOffset(float right, float left, float top, float bottom, bool test = false);
 
 public:
 	UIElement* parent; //Just a pointer, non dynamic, does not need to be deleted
@@ -45,6 +47,7 @@ private:
 	float4 rectOffset;
 	float4 colorRGBA;
 	float4x4 globalTransform;
+	//float2 scale;
 };
 
 
