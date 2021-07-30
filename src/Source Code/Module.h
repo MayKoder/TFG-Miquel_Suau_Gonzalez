@@ -54,6 +54,10 @@ public:
 		return true; 
 	}
 
+	virtual void OnResize(int width, int height) {
+
+	}
+
 #ifndef STANDALONE
 	virtual void OnGUI() 
 	{

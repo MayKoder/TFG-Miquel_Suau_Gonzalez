@@ -5,9 +5,8 @@
 static float uiPlaneData[] = 
 {
 -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0
+	/*0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0,*/
 };
-
-void ButtonTest(UIElement* element);
 
 //template<typename... Args>
 class M_GUI : public Module
@@ -25,17 +24,19 @@ public:
 	bool RecursiveUpdateElements(UIElement* element);
 
 	UIElement* AddUIElement(UIElement* parent, float2, float2, float2);
+	void AddUIElementRow(UIElement* parent, int numberOfElements);
 
-	template <typename... Args>
-	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale, std::function<void(Args...)> _callback)
+	void OnResize(int, int) override;
+
+	/*template <typename Func, typename... Args>*/
+	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale)
 	{
 		if (parent == nullptr) {
 			parent = root;
 		}
 
-		UIButton<Args...>* ret = new UIButton<Args...>(parent, pos, rot, scale, _callback);
+		UIButton* ret = new UIButton(parent, pos, rot, scale);
 		parent->children.push_back(ret);
-
 		return ret;
 	}
 

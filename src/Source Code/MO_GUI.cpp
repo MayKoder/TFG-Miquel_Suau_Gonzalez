@@ -13,7 +13,8 @@
 
 M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr)
 {
-	root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
+	root = nullptr;
+	//root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
 }
 
 M_GUI::~M_GUI()
@@ -30,37 +31,63 @@ bool M_GUI::Start()
 	float positionX = 0.0f / 100.f;
 	float positionY = 50.0f / 100.f;
 
-	float sizeX = 200.0f / App->moduleWindow->s_width;
+	float sizeX = 500.0f / App->moduleWindow->s_width;
 	float sizeY = 200.0f / App->moduleWindow->s_height;
 
-	//float scaleX = sizeX / 100.f;
-	//float scaleY = sizeY / 100.f;
-	UIElement* test = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(0.5f, 0.5f));
+	root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
+	//root = new UIElement(nullptr, float2::zero, float2::zero, float2(EngineExternal->moduleWindow->s_width, EngineExternal->moduleWindow->s_height));
 
-	UIElement* left = AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
-
-	std::function<void(UIElement*, bool&)> testu = [](UIElement* element, bool& state)
+	UIElement* floatingParent = AddUIElement(nullptr, float2(-1.0 + 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
+	//Not a fan of "auto" but in this case, it is faster
+	auto testu = [](UIElement* element, bool& state, int side)
 	{
-		element->parent->colorRGBA = float4::one / 2.f;
-
-		//float3 test = transformGL.Row3(3);
-		//test.y += 0.02;
-		//transformGL.SetRow3(3, test);
-
+		//for side, 0 = left, 1 = right, 2 = bottom
 		float3 test = element->parent->localTransform.Col3(3);
 		float3 size = element->parent->localTransform.GetScale();
 
-		(state == true) ? test.x -= size.x * 2 : test.x += size.x * 2;
+		switch (side)
+		{
+
+		case 0:
+			(state == true) ? test.x -= size.x * 2.0f : test.x += size.x * 2.0f;
+			break;
+
+		case 1:
+			(state != true) ? test.x -= size.x * 2.0f : test.x += size.x * 2.0f;
+			break;
+
+		case 2: 
+			(state == true) ? test.y -= size.y * 2.0f : test.y += size.y * 2.0f;
+			break;
+
+		default:
+			break;
+		}
+
 		state = !state;
 
 		element->parent->localTransform.SetCol3(3, test);
 
 		element->parent->UpdateTransform();
 	};
-	AddUIButton(left, float2(1.0 + 0.1, 0.f), float2(0.f, 0.f), float2(0.1f, 0.15f), testu);
+	UIButton* b1 = dynamic_cast<UIButton*>(AddUIButton(floatingParent, float2(1.0 + 0.1, 0.f), float2(0.f, 0.f), float2(0.1f, 0.15f)));
+	b1->SetupCallback(testu, b1, true, 0);
 
-	AddUIElement(nullptr, float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
-	AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95, 0.95));
+	floatingParent = AddUIElement(nullptr, float2(1.0 - 0.15, 0.0f), float2(0, 0), float2(0.15f, 0.8f));
+	b1 = dynamic_cast<UIButton*>(AddUIButton(floatingParent, float2(-1.0 - 0.1, 0.f), float2(0.f, 0.f), float2(0.1f, 0.15f)));
+	b1->SetupCallback(testu, b1, true, 1);
+
+	//AddUIElement(test, float2(0.0f, 0.0f), float2(0, 0), float2(0.95, 0.95));
+	/*UIElement* test =*/floatingParent = AddUIElement(nullptr, float2(0.0, -1.0f + 0.2f), float2(0, 0), float2(sizeX, sizeY));
+	AddUIElement(floatingParent, float2(0.0, 0.0f), float2(0, 0), float2(sizeX * 3.f, sizeY * 3.f))/*->SetOffset(10, 10, 10, 10)*/;
+
+
+	b1 = dynamic_cast<UIButton*>(AddUIButton(floatingParent, float2(0.0, 1.0 + 0.1), float2(0.f, 0.f), float2(0.15f, 0.1f)));
+	b1->SetupCallback(testu, b1, true, 2);
+
+	//AddUIElementRow(floatingParent, 6);
+
+	/*AddUIElement(AddUIElement(root, float2::zero, float2::zero, float2(0.9, 0.5)), float2::zero, float2::zero, float2(0.9, 0.9));*/
 
 	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(App->GetRandomInt(), "Library\/Shaders\/1569048839.shdr"));
 
@@ -143,4 +170,34 @@ UIElement* M_GUI::AddUIElement(UIElement* parent, float2 pos, float2 rot, float2
 	parent->children.push_back(ret);
 
 	return ret;
+}
+
+//Will work with correct offsets?
+void M_GUI::AddUIElementRow(UIElement* parent, int numberOfElements)
+{
+	if (parent == nullptr)
+		return;
+
+	float3 position = parent->localTransform.Col3(3);
+	float3 size = parent->localTransform.GetScale();
+
+	float spanSize = size.x * 2.0f;
+	float spanOffset = spanSize / (numberOfElements - 1);
+
+	float currentOffset = position.x - size.x;
+	for (size_t i = 0; i < numberOfElements; i++)
+	{
+		AddUIElement(parent, float2(currentOffset, 0.0f), float2::zero, float2(0.2, 0.2));
+		currentOffset += spanOffset;
+	}
+
+	return;
+}
+
+void M_GUI::OnResize(int width, int height)
+{
+	//delete root;
+	//root = new UIElement(nullptr, float2::zero, float2::zero, float2((float)width, (float)height));
+	//root->localTransform = float4x4::FromTRS(float3::zero, Quat::FromEulerXYZ(0.0f, 0.0f, 0.0f), float3((float)width, (float)height, 0.0f));
+	//root->UpdateTransform();
 }

@@ -1,8 +1,9 @@
 #ifdef vertex
 #version 330 core
-layout (location = 0) in vec3 aPos;
+layout (location = 0) in vec2 aPos;
 
 uniform mat4 model;
+//uniform mat4 projection;
 uniform vec4 inputColor;
 
 out vec2 texCoord;
@@ -12,7 +13,7 @@ void main()
 {
 inpColor = inputColor;
     texCoord = vec2((aPos.x + 1.0) / 2.0, 1 - (aPos.y + 1.0) / 2.0);
-    gl_Position = model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    gl_Position = model * vec4(aPos.x, aPos.y, 0.0, 1.0);
 }  
 #endif
 

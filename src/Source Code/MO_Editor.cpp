@@ -130,7 +130,7 @@ void M_Editor::Draw()
 
 	ImGuizmo::BeginFrame();
 
-	DrawMenuBar();
+	//DrawMenuBar();
 
 	//ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowBorderSize, 0);
 	//DrawTopBar();

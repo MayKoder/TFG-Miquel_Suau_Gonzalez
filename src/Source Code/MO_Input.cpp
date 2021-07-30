@@ -188,7 +188,10 @@ update_status ModuleInput::PreUpdate(float dt)
 			{
 				if (e.window.event == SDL_WINDOWEVENT_RESIZED)
 				{
-					App->moduleRenderer3D->OnResize(e.window.data1, e.window.data2);
+					for (size_t i = 0; i < App->list_modules.size(); i++)
+					{
+						App->list_modules[i]->OnResize(e.window.data1, e.window.data2);
+					}
 				}
 
 				if (e.window.event == SDL_WINDOWEVENT_CLOSE && e.window.windowID == SDL_GetWindowID(App->moduleWindow->window))

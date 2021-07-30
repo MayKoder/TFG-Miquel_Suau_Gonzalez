@@ -43,7 +43,7 @@ public:
 	update_status PostUpdate(float dt) override;
 	bool CleanUp() override;
 
-	void OnResize(int width, int height);
+	void OnResize(int width, int height) override;
 
 #ifndef STANDALONE
 	void OnGUI() override;

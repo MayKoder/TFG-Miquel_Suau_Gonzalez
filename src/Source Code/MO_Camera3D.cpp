@@ -116,7 +116,7 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	//Rotate around 0,0,0
 	//ASK: Should i also include Right alt?
 	//Maybe we could use quaternions?
-	if (App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && App->moduleInput->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT) 
+	if (/*App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && */App->moduleInput->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT) 
 	{
 		float3 target(0.f, 0.f, 0.f);
 		if (App->moduleEditor->GetSelectedGO() != nullptr)
