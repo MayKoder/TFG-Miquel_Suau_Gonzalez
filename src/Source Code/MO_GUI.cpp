@@ -34,6 +34,7 @@ bool M_GUI::Start()
 	float sizeX = 200.0f / App->moduleWindow->s_width;
 	float sizeY = 200.0f / App->moduleWindow->s_height;
 
+	//TODO: Lots to do here, UI is trash, moving on onto new things atm
 	root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
 	//root = new UIElement(nullptr, float2::zero, float2::zero, float2(EngineExternal->moduleWindow->s_width, EngineExternal->moduleWindow->s_height));
 

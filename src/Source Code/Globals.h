@@ -90,8 +90,8 @@ typedef unsigned __int64 uint64;
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
 
-#define MIN_WIDTH 512
-#define MIN_HEIGHT 384
+#define MIN_WIDTH 480
+#define MIN_HEIGHT 270
 
 #define SCREEN_SIZE 1
 #define TITLE "Diamond Engine v"

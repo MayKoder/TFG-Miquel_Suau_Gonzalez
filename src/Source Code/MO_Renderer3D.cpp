@@ -142,7 +142,7 @@ bool ModuleRenderer3D::Init()
 		glLightf(GL_LIGHT0, GL_AMBIENT, 0.75f);
 		glLightf(GL_LIGHT0, GL_DIFFUSE, 0.05f);
 
-		float pos[] = { 0, 0, 0, 1.0f };
+		float pos[] = { 0, 1, 0, 1.0f };
 		glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -232,8 +232,126 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//
 	App->moduleCamera->editorCamera.StartDraw();
 	//
+
+#pragma region IcoTest
+
+	glPointSize(10.0f);
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.f, 0.f, 0.f);
+
+	// create 12 vertices of a icosahedron
+	float t = (1.0 + sqrtf(5.0)) / 2.0;
+
+	float3 vertices[] = 
+	{
+		float3(-1, t, 0),
+		float3(1, t, 0),
+		float3(-1, -t, 0),
+		float3(1, -t, 0),
+
+		float3(0, -1, t),
+		float3(0, 1, t),
+		float3(0, -1, -t),
+		float3(0, 1, -t),
+
+		float3(t, 0, -1),
+		float3(t, 0, 1),
+		float3(-t, 0, -1),
+		float3(-t, 0, 1),
+	};
+
+	// 5 faces around point 0
+	glVertex3fv(&vertices[0].x);
+	glVertex3fv(&vertices[11].x);
+	glVertex3fv(&vertices[5].x);
+
+	glVertex3fv(&vertices[0].x);
+	glVertex3fv(&vertices[5].x);
+	glVertex3fv(&vertices[1].x);
+
+	glVertex3fv(&vertices[0].x);
+	glVertex3fv(&vertices[1].x);
+	glVertex3fv(&vertices[7].x);
+
+	glVertex3fv(&vertices[0].x);
+	glVertex3fv(&vertices[7].x);
+	glVertex3fv(&vertices[10].x);
+
+	glVertex3fv(&vertices[0].x);
+	glVertex3fv(&vertices[10].x);
+	glVertex3fv(&vertices[11].x);
+
+	//// 5 adjacent faces
+	glVertex3fv(&vertices[1].x);
+	glVertex3fv(&vertices[5].x);
+	glVertex3fv(&vertices[9].x);
+
+	glVertex3fv(&vertices[5].x);
+	glVertex3fv(&vertices[11].x);
+	glVertex3fv(&vertices[4].x);
+
+	glVertex3fv(&vertices[11].x);
+	glVertex3fv(&vertices[10].x);
+	glVertex3fv(&vertices[2].x);
+
+	glVertex3fv(&vertices[10].x);
+	glVertex3fv(&vertices[7].x);
+	glVertex3fv(&vertices[6].x);
+
+	glVertex3fv(&vertices[7].x);
+	glVertex3fv(&vertices[1].x);
+	glVertex3fv(&vertices[8].x);
+
+	//// 5 faces around point 3
+	glVertex3fv(&vertices[3].x);
+	glVertex3fv(&vertices[9].x);
+	glVertex3fv(&vertices[4].x);
+
+	glVertex3fv(&vertices[3].x);
+	glVertex3fv(&vertices[4].x);
+	glVertex3fv(&vertices[2].x);
+
+	glVertex3fv(&vertices[3].x);
+	glVertex3fv(&vertices[2].x);
+	glVertex3fv(&vertices[6].x);
+
+	glVertex3fv(&vertices[3].x);
+	glVertex3fv(&vertices[6].x);
+	glVertex3fv(&vertices[8].x);
+
+	glVertex3fv(&vertices[3].x);
+	glVertex3fv(&vertices[8].x);
+	glVertex3fv(&vertices[9].x);
+
+	//// 5 adjacent faces
+	glVertex3fv(&vertices[4].x);
+	glVertex3fv(&vertices[9].x);
+	glVertex3fv(&vertices[5].x);
+
+	glVertex3fv(&vertices[2].x);
+	glVertex3fv(&vertices[4].x);
+	glVertex3fv(&vertices[11].x);
+
+	glVertex3fv(&vertices[6].x);
+	glVertex3fv(&vertices[2].x);
+	glVertex3fv(&vertices[10].x);
+
+	glVertex3fv(&vertices[8].x);
+	glVertex3fv(&vertices[6].x);
+	glVertex3fv(&vertices[7].x);
+
+	glVertex3fv(&vertices[9].x);
+	glVertex3fv(&vertices[8].x);
+	glVertex3fv(&vertices[1].x);
+
+
+	glEnd();
+	glPointSize(1.0f);
+	glColor3f(1.f, 1.f, 1.f);
+
+#pragma endregion
 	
-	p.Render();
+	//p.Render();
 
 	//C_Transform trans;
 	//plane._mesh->RenderMesh(0, float3::one, false, EngineExternal->moduleScene->defaultMaterial, &trans);
@@ -253,7 +371,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+
 	skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
+	
 	//DebugLine(pickingDebug);
 	//DrawDebugLines();
 
@@ -264,39 +384,14 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	glDisable(GL_DEPTH_TEST);  //Rendering by call order now
 	App->moduleGUI->RenderUIElements();
 	glEnable(GL_DEPTH_TEST);  
+
+
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//App->moduleCamera->editorCamera.msaaFBO.UnbindFrameBuffer();
 	//App->moduleCamera->editorCamera.msaaFBO.ResolveToScreen();
 
 	App->moduleCamera->editorCamera.EndDraw();
 
-
-
-
-	////Draw game camera
-	//if (gameCamera != nullptr) 
-	//{
-	//	gameCamera->StartDraw();
-
-	//	lights[0].SetPos(5, 5, 5);
-
-	//	for (uint i = 0; i < MAX_LIGHTS; ++i)
-	//		lights[i].Render();
-
-	//	if (!renderQueue.empty())
-	//	{
-	//		for (size_t i = 0; i < renderQueue.size(); i++)
-	//		{
-	//			float distance = gameCamera->camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
-	//			renderQueueMap.emplace(distance, renderQueue[i]);
-	//		}
-
-	//		RenderWithOrdering(true);
-	//	}
-
-	//	skybox.DrawAsSkybox(gameCamera);
-	//	gameCamera->EndDraw();
-	//}
 
 
 #ifndef STANDALONE
