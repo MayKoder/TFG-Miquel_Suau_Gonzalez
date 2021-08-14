@@ -60,6 +60,8 @@ bool M_FileSystem::Start()
 	App->moduleScene->defaultMaterial = (ResourceMaterial*)App->moduleResources->RequestFromAssets("Assets/Materials/default.mat");
 	App->moduleRenderer3D->skybox.shaderRes = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(28971592, "Library/Shaders/1992884532.shdr"));
 
+	App->moduleRenderer3D->gridInstance.LoadShader("Library/Shaders/1554189485.shdr");
+
 	return true;
 }
 

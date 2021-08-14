@@ -1,49 +1,38 @@
-
 #pragma once
-#include "glmath.h"
-#include "Color.h"
 
-enum PrimitiveTypes
+#include<vector>
+class ResourceShader;
+
+
+#define NODE_SIDES 4
+struct GridNode
 {
-	Primitive_Point,
-	Primitive_Line,
-	Primitive_Plane,
-	Primitive_Cube,
-	Primitive_Sphere,
-	Primitive_Cylinder
+	GridNode* children[4];
 };
 
-class Primitive
+#define GRID_SIZE_X 5
+#define GRID_SIZE_Y 4
+#define GRID_NODE_SIZE 1.8f
+class GridManager
 {
 public:
+	GridManager();
+	~GridManager();
 
-	Primitive();
+	void LoadShader(const char* path);
+	void ClearMemory();
 
-	virtual void	Render() const;
-	virtual void	InnerRender() const;
-	void			SetPos(float x, float y, float z);
-	void			SetRotation(float angle, const vec3 &u);
-	void			Scale(float x, float y, float z);
-	PrimitiveTypes	GetType() const;
+	//GridNode* GetGridNode(int x, int y);
+	void RenderGridTemporal();
 
-public:
-	
-	Color color;
-	mat4x4 transform;
-	bool axis,wire;
+private:
 
-protected:
-	PrimitiveTypes type;
-};
+	GridNode baseNode;
+	std::vector<GridNode*> linealNodes;
 
-// ============================================
-class Grid : public Primitive
-{
-public:
-	Grid();
-	Grid(float x, float y, float z, float d);
-	void InnerRender() const;
-public:
-	vec3 normal;
-	float constant;
+	//GridNode grid[GRID_SIZE_X * GRID_SIZE_Y];
+	ResourceShader* shaderRes;
+
+	uint VBO;
+	uint VAO;
 };

@@ -102,14 +102,15 @@ void ResourceMesh::RenderMesh(GLuint textureID, float3 color, bool renderTexture
 		else
 			glUniform1i(glGetUniformLocation(material->shader->shaderProgramID, "hasTexture"), 0);
 
+
 		GLint modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "model_matrix");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, _transform->GetGlobalTransposed());
 
-		modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "view");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, EngineExternal->moduleRenderer3D->activeRenderCamera->ViewMatrixOpenGL().ptr());
 
-		modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "projection");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, EngineExternal->moduleRenderer3D->activeRenderCamera->ProjectionMatrixOpenGL().ptr());
+
+		EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(material->shader->shaderProgramID);
+
+
 
 		modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "normalMatrix");
 		float3x3 normalMatrix = _transform->globalTransform.Float3x3Part().Transposed();

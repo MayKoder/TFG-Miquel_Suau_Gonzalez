@@ -33,6 +33,7 @@ public:
 	void ReGenerateBuffer(int w, int h);
 
 	void PushCameraMatrix();
+	void PushCameraShaderVars(GLint material);
 
 	bool IsInsideFrustum(AABB& globalAABB);
 

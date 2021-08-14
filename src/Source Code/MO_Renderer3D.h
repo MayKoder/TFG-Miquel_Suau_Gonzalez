@@ -84,11 +84,13 @@ public:
 	C_Camera* activeRenderCamera = nullptr; //TODO: This is temporal
 	DE_Cubemap skybox;
 	C_DirectionalLight* directLight;
+	GridManager gridInstance;
 
 
 private:
 	std::vector<LineRender> lines;
 	LineSegment pickingDebug;
-	Grid p;
+
+
 	MMP_Plane plane;
 };

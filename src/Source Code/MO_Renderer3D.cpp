@@ -197,9 +197,8 @@ bool ModuleRenderer3D::Init()
 	skybox.CreateGLData();
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-	p = Grid(0, 0, 0, 0);
-	p.axis = true;
-	plane.GenerateData();
+
+	//plane.GenerateData();
 
 	return ret;
 }
@@ -233,125 +232,125 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	App->moduleCamera->editorCamera.StartDraw();
 	//
 
-#pragma region IcoTest
-
-	glPointSize(10.0f);
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.f, 0.f, 0.f);
-
-	// create 12 vertices of a icosahedron
-	float t = (1.0 + sqrtf(5.0)) / 2.0;
-
-	float3 vertices[] = 
-	{
-		float3(-1, t, 0),
-		float3(1, t, 0),
-		float3(-1, -t, 0),
-		float3(1, -t, 0),
-
-		float3(0, -1, t),
-		float3(0, 1, t),
-		float3(0, -1, -t),
-		float3(0, 1, -t),
-
-		float3(t, 0, -1),
-		float3(t, 0, 1),
-		float3(-t, 0, -1),
-		float3(-t, 0, 1),
-	};
-
-	// 5 faces around point 0
-	glVertex3fv(&vertices[0].x);
-	glVertex3fv(&vertices[11].x);
-	glVertex3fv(&vertices[5].x);
-
-	glVertex3fv(&vertices[0].x);
-	glVertex3fv(&vertices[5].x);
-	glVertex3fv(&vertices[1].x);
-
-	glVertex3fv(&vertices[0].x);
-	glVertex3fv(&vertices[1].x);
-	glVertex3fv(&vertices[7].x);
-
-	glVertex3fv(&vertices[0].x);
-	glVertex3fv(&vertices[7].x);
-	glVertex3fv(&vertices[10].x);
-
-	glVertex3fv(&vertices[0].x);
-	glVertex3fv(&vertices[10].x);
-	glVertex3fv(&vertices[11].x);
-
-	//// 5 adjacent faces
-	glVertex3fv(&vertices[1].x);
-	glVertex3fv(&vertices[5].x);
-	glVertex3fv(&vertices[9].x);
-
-	glVertex3fv(&vertices[5].x);
-	glVertex3fv(&vertices[11].x);
-	glVertex3fv(&vertices[4].x);
-
-	glVertex3fv(&vertices[11].x);
-	glVertex3fv(&vertices[10].x);
-	glVertex3fv(&vertices[2].x);
-
-	glVertex3fv(&vertices[10].x);
-	glVertex3fv(&vertices[7].x);
-	glVertex3fv(&vertices[6].x);
-
-	glVertex3fv(&vertices[7].x);
-	glVertex3fv(&vertices[1].x);
-	glVertex3fv(&vertices[8].x);
-
-	//// 5 faces around point 3
-	glVertex3fv(&vertices[3].x);
-	glVertex3fv(&vertices[9].x);
-	glVertex3fv(&vertices[4].x);
-
-	glVertex3fv(&vertices[3].x);
-	glVertex3fv(&vertices[4].x);
-	glVertex3fv(&vertices[2].x);
-
-	glVertex3fv(&vertices[3].x);
-	glVertex3fv(&vertices[2].x);
-	glVertex3fv(&vertices[6].x);
-
-	glVertex3fv(&vertices[3].x);
-	glVertex3fv(&vertices[6].x);
-	glVertex3fv(&vertices[8].x);
-
-	glVertex3fv(&vertices[3].x);
-	glVertex3fv(&vertices[8].x);
-	glVertex3fv(&vertices[9].x);
-
-	//// 5 adjacent faces
-	glVertex3fv(&vertices[4].x);
-	glVertex3fv(&vertices[9].x);
-	glVertex3fv(&vertices[5].x);
-
-	glVertex3fv(&vertices[2].x);
-	glVertex3fv(&vertices[4].x);
-	glVertex3fv(&vertices[11].x);
-
-	glVertex3fv(&vertices[6].x);
-	glVertex3fv(&vertices[2].x);
-	glVertex3fv(&vertices[10].x);
-
-	glVertex3fv(&vertices[8].x);
-	glVertex3fv(&vertices[6].x);
-	glVertex3fv(&vertices[7].x);
-
-	glVertex3fv(&vertices[9].x);
-	glVertex3fv(&vertices[8].x);
-	glVertex3fv(&vertices[1].x);
-
-
-	glEnd();
-	glPointSize(1.0f);
-	glColor3f(1.f, 1.f, 1.f);
-
-#pragma endregion
+//#pragma region IcoTest
+//
+//	glPointSize(10.0f);
+//	glBegin(GL_TRIANGLES);
+//	glColor3f(1.f, 0.f, 0.f);
+//
+//	// create 12 vertices of a icosahedron
+//	float t = (1.0 + sqrtf(5.0)) / 2.0;
+//
+//	float3 vertices[] = 
+//	{
+//		float3(-1, t, 0),
+//		float3(1, t, 0),
+//		float3(-1, -t, 0),
+//		float3(1, -t, 0),
+//
+//		float3(0, -1, t),
+//		float3(0, 1, t),
+//		float3(0, -1, -t),
+//		float3(0, 1, -t),
+//
+//		float3(t, 0, -1),
+//		float3(t, 0, 1),
+//		float3(-t, 0, -1),
+//		float3(-t, 0, 1),
+//	};
+//
+//	// 5 faces around point 0
+//	glVertex3fv(&vertices[0].x);
+//	glVertex3fv(&vertices[11].x);
+//	glVertex3fv(&vertices[5].x);
+//
+//	glVertex3fv(&vertices[0].x);
+//	glVertex3fv(&vertices[5].x);
+//	glVertex3fv(&vertices[1].x);
+//
+//	glVertex3fv(&vertices[0].x);
+//	glVertex3fv(&vertices[1].x);
+//	glVertex3fv(&vertices[7].x);
+//
+//	glVertex3fv(&vertices[0].x);
+//	glVertex3fv(&vertices[7].x);
+//	glVertex3fv(&vertices[10].x);
+//
+//	glVertex3fv(&vertices[0].x);
+//	glVertex3fv(&vertices[10].x);
+//	glVertex3fv(&vertices[11].x);
+//
+//	//// 5 adjacent faces
+//	glVertex3fv(&vertices[1].x);
+//	glVertex3fv(&vertices[5].x);
+//	glVertex3fv(&vertices[9].x);
+//
+//	glVertex3fv(&vertices[5].x);
+//	glVertex3fv(&vertices[11].x);
+//	glVertex3fv(&vertices[4].x);
+//
+//	glVertex3fv(&vertices[11].x);
+//	glVertex3fv(&vertices[10].x);
+//	glVertex3fv(&vertices[2].x);
+//
+//	glVertex3fv(&vertices[10].x);
+//	glVertex3fv(&vertices[7].x);
+//	glVertex3fv(&vertices[6].x);
+//
+//	glVertex3fv(&vertices[7].x);
+//	glVertex3fv(&vertices[1].x);
+//	glVertex3fv(&vertices[8].x);
+//
+//	//// 5 faces around point 3
+//	glVertex3fv(&vertices[3].x);
+//	glVertex3fv(&vertices[9].x);
+//	glVertex3fv(&vertices[4].x);
+//
+//	glVertex3fv(&vertices[3].x);
+//	glVertex3fv(&vertices[4].x);
+//	glVertex3fv(&vertices[2].x);
+//
+//	glVertex3fv(&vertices[3].x);
+//	glVertex3fv(&vertices[2].x);
+//	glVertex3fv(&vertices[6].x);
+//
+//	glVertex3fv(&vertices[3].x);
+//	glVertex3fv(&vertices[6].x);
+//	glVertex3fv(&vertices[8].x);
+//
+//	glVertex3fv(&vertices[3].x);
+//	glVertex3fv(&vertices[8].x);
+//	glVertex3fv(&vertices[9].x);
+//
+//	//// 5 adjacent faces
+//	glVertex3fv(&vertices[4].x);
+//	glVertex3fv(&vertices[9].x);
+//	glVertex3fv(&vertices[5].x);
+//
+//	glVertex3fv(&vertices[2].x);
+//	glVertex3fv(&vertices[4].x);
+//	glVertex3fv(&vertices[11].x);
+//
+//	glVertex3fv(&vertices[6].x);
+//	glVertex3fv(&vertices[2].x);
+//	glVertex3fv(&vertices[10].x);
+//
+//	glVertex3fv(&vertices[8].x);
+//	glVertex3fv(&vertices[6].x);
+//	glVertex3fv(&vertices[7].x);
+//
+//	glVertex3fv(&vertices[9].x);
+//	glVertex3fv(&vertices[8].x);
+//	glVertex3fv(&vertices[1].x);
+//
+//
+//	glEnd();
+//	glPointSize(1.0f);
+//	glColor3f(1.f, 1.f, 1.f);
+//
+//#pragma endregion
 	
-	//p.Render();
+	gridInstance.RenderGridTemporal();
 
 	//C_Transform trans;
 	//plane._mesh->RenderMesh(0, float3::one, false, EngineExternal->moduleScene->defaultMaterial, &trans);
@@ -411,6 +410,7 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOG(LogType::L_NORMAL, "Destroying 3D Renderer");
 	skybox.ClearMemory();
+	gridInstance.ClearMemory();
 
 	SDL_GL_DeleteContext(context);
 	ClearAllRenderData();

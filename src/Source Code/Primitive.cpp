@@ -1,130 +1,124 @@
 
 #include "Globals.h"
-#include <gl/GL.h>
-//#include <gl/GLU.h>
 #include "Primitive.h"
+#include "RE_Shader.h"
 
-// ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
-{}
+#include "MO_ResourceManager.h"
+#include "Application.h"
 
-// ------------------------------------------------------------
-PrimitiveTypes Primitive::GetType() const
+#include "MO_Renderer3D.h"
+#include "CO_Camera.h"
+
+GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0)
 {
-	return type;
+	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
+	//LOG(LogType::L_NORMAL, "wtf");
+	linealNodes.push_back(&baseNode);
 }
 
-// ------------------------------------------------------------
-void Primitive::Render() const
+GridManager::~GridManager()
 {
-	glPushMatrix();
-	glMultMatrixf(transform.M);
+}
 
-	if(axis == true)
+void GridManager::LoadShader(const char* path)
+{
+	shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1554189485, path));
+
+
+	std::vector<float> data;
+
+	for (size_t x = 0; x <= GRID_SIZE_X; x++)
 	{
-		// Draw Axis Grid
-		glLineWidth(2.0f);
+		data.push_back(x);
+		data.push_back(0.0f);
+		data.push_back(0.0f);
 
-		glBegin(GL_LINES);
-
-		glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(1.0f, 0.1f, 0.0f); glVertex3f(1.1f, -0.1f, 0.0f);
-		glVertex3f(1.1f, 0.1f, 0.0f); glVertex3f(1.0f, -0.1f, 0.0f);
-
-		glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(-0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-		glVertex3f(0.05f, 1.25f, 0.0f); glVertex3f(0.0f, 1.15f, 0.0f);
-		glVertex3f(0.0f, 1.15f, 0.0f); glVertex3f(0.0f, 1.05f, 0.0f);
-
-		glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-
-		glVertex3f(0.0f, 0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(-0.05f, 0.1f, 1.05f); glVertex3f(0.05f, 0.1f, 1.05f);
-		glVertex3f(0.05f, 0.1f, 1.05f); glVertex3f(-0.05f, -0.1f, 1.05f);
-		glVertex3f(-0.05f, -0.1f, 1.05f); glVertex3f(0.05f, -0.1f, 1.05f);
-
-		glEnd();
-
-		glLineWidth(1.0f);
+		data.push_back(x);
+		data.push_back(0.0f);
+		data.push_back(GRID_SIZE_Y);
 	}
 
-	glColor3f(color.r, color.g, color.b);
+	for (size_t y = 0; y <= GRID_SIZE_Y; y++)
+	{
+		data.push_back(0.0f);
+		data.push_back(0.0f);
+		data.push_back(y);
 
-	//if(wire)
-	//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//else
-	//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		data.push_back(GRID_SIZE_X);
+		data.push_back(0.0f);
+		data.push_back(y);
+	}
 
-	InnerRender();
 
-	glPopMatrix();
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, (GLuint*)&(VBO));
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+
+	//position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-// ------------------------------------------------------------
-void Primitive::InnerRender() const
+void GridManager::ClearMemory()
 {
-	glPointSize(5.0f);
+	EngineExternal->moduleResources->UnloadResource(shaderRes->GetUID());
 
+	glDeleteVertexArrays(1, &VAO);
+	VAO = 0u;
+	glDeleteBuffers(1, &VBO);
+	VBO = 0u;
+}
+
+//GridNode* GridManager::GetGridNode(int x, int y) {
+//	return &grid[(y * GRID_SIZE_X) + x];
+//}
+
+void GridManager::RenderGridTemporal()
+{
+
+	//shaderRes->Bind();
+	//EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
+
+	//glBindVertexArray(VAO);
+	//glDrawArrays(GL_LINES, 0, (GRID_SIZE_X * GRID_SIZE_Y) * 2);
+	//glBindVertexArray(0);
+
+	//shaderRes->Unbind();
+
+
+	//glLineWidth(1.0f);
+
+	//glColor3f(0.5, 0.5f, 0.5f);
+	//glBegin(GL_LINES);
+
+	//for (size_t x = 0; x <= GRID_SIZE_X; x++)
+	//{
+	//	glVertex3f(x, 0.0f, 0.0f);
+	//	glVertex3f(x, 0.0f, GRID_SIZE_Y);
+	//}
+
+	//for (size_t y = 0; y <= GRID_SIZE_Y; y++)
+	//{
+	//	glVertex3f(0.0f, 0.0f, y);
+	//	glVertex3f(GRID_SIZE_X, 0.0f, y);
+	//}
+
+	//glEnd();
+
+	glPointSize(10.0f);
+	glColor3f(1., 0.f, 0.f);
 	glBegin(GL_POINTS);
-
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
+	glVertex3f(0, 0, 0);
 	glEnd();
-
 	glPointSize(1.0f);
-}
 
-// ------------------------------------------------------------
-void Primitive::SetPos(float x, float y, float z)
-{
-	transform.translate(x, y, z);
-}
-
-// ------------------------------------------------------------
-void Primitive::SetRotation(float angle, const vec3 &u)
-{
-	transform.rotate(angle, u);
-}
-
-// ------------------------------------------------------------
-void Primitive::Scale(float x, float y, float z)
-{
-	transform.scale(x, y, z);
-}
-
-// PLANE ==================================================
-Grid::Grid() : Primitive(), normal(0, 1, 0), constant(1)
-{
-	type = PrimitiveTypes::Primitive_Plane;
-}
-
-Grid::Grid(float x, float y, float z, float d) : Primitive(), normal(x, y, z), constant(d)
-{
-	type = PrimitiveTypes::Primitive_Plane;
-}
-
-void Grid::InnerRender() const
-{
-	glLineWidth(1.0f);
-
-	glColor3f(0.5, 0.5f, 0.5f);
-	glBegin(GL_LINES);
-
-	float d = 50.0f;
-
-	for(float i = -d; i <= d; i += 1.0f)
-	{
-		glVertex3f(i, 0.0f, -d);
-		glVertex3f(i, 0.0f, d);
-		glVertex3f(-d, 0.0f, i);
-		glVertex3f(d, 0.0f, i);
-	}
-
-	glEnd();
-
-	glColor3f(1.f, 1.f, 1.f);
+	//glColor3f(1.f, 1.f, 1.f);
 }

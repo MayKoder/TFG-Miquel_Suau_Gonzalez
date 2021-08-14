@@ -7,6 +7,8 @@
 #include"MathGeoLib/include/Geometry/Plane.h"
 #include"MathGeoLib/include/Geometry/AABB.h"
 
+#include"RE_Material.h"
+
 #include"MO_Renderer3D.h"
 #include"MO_Scene.h"
 
@@ -248,6 +250,15 @@ void C_Camera::PushCameraMatrix()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf((GLfloat*)ViewMatrixOpenGL().v);
+}
+
+void C_Camera::PushCameraShaderVars(GLint shaderID)
+{
+	GLint modelLoc = glGetUniformLocation(shaderID, "view");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, ViewMatrixOpenGL().ptr());
+
+	modelLoc = glGetUniformLocation(shaderID, "projection");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, ProjectionMatrixOpenGL().ptr());
 }
 
 void C_Camera::LookAt(const float3& Spot)
