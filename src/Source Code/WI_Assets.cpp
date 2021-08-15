@@ -151,13 +151,14 @@ void W_Assets::DrawFileTree(AssetDir& file)
 		if (file.isDir == false && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_::ImGuiMouseButton_Left)) 
 		{
 			Resource::Type type = EngineExternal->moduleResources->GetTypeFromAssetExtension(file.importPath.c_str());
-			if (type == Resource::Type::SCRIPT || type == Resource::Type::SHADER)
-			{
-				W_TextEditor* txtEditor = dynamic_cast<W_TextEditor*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::TEXTEDITOR));
-				txtEditor->SetTextFromFile(file.importPath.c_str());
-				//Load script text and open visual studio?
-			}
-			else if(type == Resource::Type::MATERIAL)
+			//if (type == Resource::Type::SCRIPT || type == Resource::Type::SHADER)
+			//{
+			//	W_TextEditor* txtEditor = dynamic_cast<W_TextEditor*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::TEXTEDITOR));
+			//	txtEditor->SetTextFromFile(file.importPath.c_str());
+			//	//Load script text and open visual studio?
+			//}
+			//else 
+			if(type == Resource::Type::MATERIAL)
 			{
 				W_Inspector* inspector = dynamic_cast<W_Inspector*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::INSPECTOR));
 				inspector->SetEditingResource(EngineExternal->moduleResources->RequestFromAssets(selectedFile->importPath.c_str()));

@@ -56,7 +56,7 @@ public:
 
 	std::vector<Component*> components;
 
-	std::vector<SerializedField*> csReferences;
+	//std::vector<SerializedField*> csReferences;
 
 public:
 	std::string name;

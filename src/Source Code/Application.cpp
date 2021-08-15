@@ -16,7 +16,7 @@
 
 
 #include "MO_ResourceManager.h"
-#include "MO_MonoManager.h"
+//#include "MO_MonoManager.h"
 
 #include"DETime.h"
 
@@ -34,7 +34,7 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 	moduleRenderer3D = new ModuleRenderer3D(this);
 	moduleCamera = new ModuleCamera3D(this);
 
-	moduleMono = new M_MonoManager(this);
+	//moduleMono = new M_MonoManager(this);
 	moduleGUI = new M_GUI(this);
 
 	moduleResources = new M_ResourceManager(this);
@@ -57,7 +57,7 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 	// Renderer last!
 	AddModule(moduleCamera);
 
-	AddModule(moduleMono);
+	//AddModule(moduleMono);
 
 	AddModule(moduleResources);
 

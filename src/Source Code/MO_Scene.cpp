@@ -111,27 +111,27 @@ update_status M_Scene::Update(float dt)
 				gameObjectRoot->RecursiveUIDRegeneration();
 
 				//TODO: Duplicated code from scene loading C#, move to method
-				for (auto i = referenceMap.begin(); i != referenceMap.end(); ++i)
-				{
-					// Get the range of the current key
-					auto range = referenceMap.equal_range(i->first);
+				//for (auto i = referenceMap.begin(); i != referenceMap.end(); ++i)
+				//{
+				//	// Get the range of the current key
+				//	auto range = referenceMap.equal_range(i->first);
 
-					// Now render out that whole range
-					for (auto d = range.first; d != range.second; ++d)
-					{
-						d->second->fiValue.goValue = GetGOFromUID(EngineExternal->moduleScene->root, d->first);
+				//	// Now render out that whole range
+				//	for (auto d = range.first; d != range.second; ++d)
+				//	{
+				//		d->second->fiValue.goValue = GetGOFromUID(EngineExternal->moduleScene->root, d->first);
 
-						if (d->second->fiValue.goValue)
-						{
-							if (std::find(d->second->fiValue.goValue->csReferences.begin(), d->second->fiValue.goValue->csReferences.end(), d->second) == d->second->fiValue.goValue->csReferences.end())
-								d->second->fiValue.goValue->csReferences.push_back(d->second);
+				//		if (d->second->fiValue.goValue)
+				//		{
+				//			if (std::find(d->second->fiValue.goValue->csReferences.begin(), d->second->fiValue.goValue->csReferences.end(), d->second) == d->second->fiValue.goValue->csReferences.end())
+				//				d->second->fiValue.goValue->csReferences.push_back(d->second);
 
-							d->second->parentSC->SetField(d->second->field, d->second->fiValue.goValue);
-						}
-					}
-				}
+				//			d->second->parentSC->SetField(d->second->field, d->second->fiValue.goValue);
+				//		}
+				//	}
+				//}
 
-				referenceMap.clear();
+				//referenceMap.clear();
 
 				//Free memory
 				json_value_free(scene);
@@ -308,27 +308,27 @@ void M_Scene::LoadScene(const char* name)
 		parent = LoadGOData(json_array_get_object(sceneGO, i), parent);
 	}
 
-	for (auto i = referenceMap.begin(); i != referenceMap.end(); ++i)
-	{
-		// Get the range of the current key
-		auto range = referenceMap.equal_range(i->first);
+	//for (auto i = referenceMap.begin(); i != referenceMap.end(); ++i)
+	//{
+	//	// Get the range of the current key
+	//	auto range = referenceMap.equal_range(i->first);
 
-		// Now render out that whole range
-		for (auto d = range.first; d != range.second; ++d) 
-		{
-			d->second->fiValue.goValue = GetGOFromUID(EngineExternal->moduleScene->root, d->first);
+	//	// Now render out that whole range
+	//	for (auto d = range.first; d != range.second; ++d) 
+	//	{
+	//		d->second->fiValue.goValue = GetGOFromUID(EngineExternal->moduleScene->root, d->first);
 
-			if (d->second->fiValue.goValue) 
-			{
-				if (std::find(d->second->fiValue.goValue->csReferences.begin(), d->second->fiValue.goValue->csReferences.end(), d->second) == d->second->fiValue.goValue->csReferences.end())
-					d->second->fiValue.goValue->csReferences.push_back(d->second);
+	//		if (d->second->fiValue.goValue) 
+	//		{
+	//			if (std::find(d->second->fiValue.goValue->csReferences.begin(), d->second->fiValue.goValue->csReferences.end(), d->second) == d->second->fiValue.goValue->csReferences.end())
+	//				d->second->fiValue.goValue->csReferences.push_back(d->second);
 
-				d->second->parentSC->SetField(d->second->field, d->second->fiValue.goValue);
-			}
-		}
-	}
+	//			d->second->parentSC->SetField(d->second->field, d->second->fiValue.goValue);
+	//		}
+	//	}
+	//}
 
-	referenceMap.clear();
+	//referenceMap.clear();
 
 	//Free memory
 	json_value_free(scene);

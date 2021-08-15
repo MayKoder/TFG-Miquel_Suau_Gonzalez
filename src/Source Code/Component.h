@@ -17,7 +17,7 @@ public:
 		MeshRenderer,
 		Material,
 		Camera,
-		Script,
+		//Script,
 		DIRECTIONAL_LIGHT,
 		Count,
 	};

@@ -56,12 +56,12 @@ GameObject::~GameObject()
 	}
 	children.clear();
 
-	for (size_t i = 0; i < csReferences.size(); i++)
-	{
-		mono_field_set_value(mono_gchandle_get_target(csReferences[i]->parentSC->noGCobject), csReferences[i]->field, NULL);
-		csReferences[i]->fiValue.goValue = nullptr;
-	}
-	csReferences.clear();
+	//for (size_t i = 0; i < csReferences.size(); i++)
+	//{
+	//	mono_field_set_value(mono_gchandle_get_target(csReferences[i]->parentSC->noGCobject), csReferences[i]->field, NULL);
+	//	csReferences[i]->fiValue.goValue = nullptr;
+	//}
+	//csReferences.clear();
 }
 
 void GameObject::Update()
@@ -99,10 +99,10 @@ Component* GameObject::AddComponent(Component::Type _type, const char* params)
 	case Component::Type::Material:
 		ret = new C_Material(this);
 		break;
-	case Component::Type::Script:
-		assert(params != nullptr, "Script without name can't be created");
-		ret = new C_Script(this, params);
-		break;
+	//case Component::Type::Script:
+	//	assert(params != nullptr, "Script without name can't be created");
+	//	ret = new C_Script(this, params);
+	//	break;
 	case Component::Type::Camera:
 		ret = new C_Camera(this);
 		EngineExternal->moduleScene->SetGameCamera(dynamic_cast<C_Camera*>(ret));
@@ -127,15 +127,15 @@ Component* GameObject::GetComponent(Component::Type _type, const char* scriptNam
 	{
 		if (components[i]->type == _type) 
 		{
-			if (_type == Component::Type::Script)
-			{
-				if(scriptName != nullptr && strcmp(components[i]->GetName().c_str(), scriptName) == 0)
-					return components[i];
-			}
-			else 
-			{
+			//if (_type == Component::Type::Script)
+			//{
+			//	if(scriptName != nullptr && strcmp(components[i]->GetName().c_str(), scriptName) == 0)
+			//		return components[i];
+			//}
+			//else 
+			//{
 				return components[i];
-			}
+			//}
 		}
 	}
 

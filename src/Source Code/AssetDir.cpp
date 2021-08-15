@@ -159,14 +159,14 @@ void AssetDir::DeletePermanent()
 
 	EngineExternal->moduleFileSystem->DeleteAssetFile(importPath.c_str());
 
-	if (!isDir)
-	{
-		if (resourceType == Resource::Type::SCRIPT)
-		{
-			EngineExternal->moduleMono->RemoveScriptFromSLN(this->importPath.c_str());
-			EngineExternal->moduleMono->ReCompileCS();
-		}
-	}
+	//if (!isDir)
+	//{
+	//	if (resourceType == Resource::Type::SCRIPT)
+	//	{
+	//		EngineExternal->moduleMono->RemoveScriptFromSLN(this->importPath.c_str());
+	//		EngineExternal->moduleMono->ReCompileCS();
+	//	}
+	//}
 
 	EngineExternal->moduleFileSystem->DeleteAssetFile(metaFileDir.c_str());
 

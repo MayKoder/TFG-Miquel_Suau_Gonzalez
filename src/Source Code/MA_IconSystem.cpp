@@ -71,9 +71,9 @@ GLuint IconManager::GetIconTextureID(Resource::Type iconType)
 	case Resource::Type::SCENE:
 		ret = "SCENE";
 		break;
-	case Resource::Type::SCRIPT:
-		ret = "SCRIPT";
-		break;
+	//case Resource::Type::SCRIPT:
+	//	ret = "SCRIPT";
+	//	break;
 	case Resource::Type::SHADER:
 		ret = "SHADER";
 		break;

@@ -47,7 +47,7 @@ public:
 
 	GameObject* root;
 	std::vector<GameObject*> destroyList;
-	std::multimap<uint, SerializedField*> referenceMap;
+	//std::multimap<uint, SerializedField*> referenceMap;
 
 	ResourceMaterial* defaultMaterial;
 
