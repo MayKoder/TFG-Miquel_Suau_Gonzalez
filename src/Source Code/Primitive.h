@@ -40,6 +40,8 @@ public:
 	GridManager();
 	~GridManager();
 
+	void UpdateInput();
+
 	void LoadShader(const char* path);
 	void ClearMemory();
 
@@ -58,4 +60,6 @@ private:
 
 	uint VBO;
 	uint VAO;
+
+	GridNode* hoveredNode;
 };

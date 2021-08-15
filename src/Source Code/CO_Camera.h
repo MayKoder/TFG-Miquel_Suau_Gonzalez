@@ -57,6 +57,8 @@ public:
 	void Move(const float3& Movement);
 	float3 GetPosition();
 
+	LineSegment ScreenToWorld(float screen_x, float screen_y);
+
 private:
 	int msaaSamples;
 };

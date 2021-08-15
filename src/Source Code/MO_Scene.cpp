@@ -67,7 +67,6 @@ update_status M_Scene::PreUpdate(float dt)
 	return update_status::UPDATE_CONTINUE;
 }
 
-#include<chrono>
 update_status M_Scene::Update(float dt)
 {
 

@@ -3,30 +3,29 @@
 #include "Primitive.h"
 #include "RE_Shader.h"
 
-#include "MO_ResourceManager.h"
 #include "Application.h"
 
+#include "MO_ResourceManager.h"
 #include "MO_Renderer3D.h"
+#include "MO_Input.h"
+
 #include "CO_Camera.h"
 
-#include <iostream> 
-#include <ctime>
+#include <iostream>
+#include <chrono>
+typedef std::chrono::high_resolution_clock Clock;
+
+#include"MathGeoLib/include/Geometry/Plane.h"
+#include"MathGeoLib/include/Math/float4x4.h"
+#include"MO_Window.h"
 
 
-GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0)
+GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0), hoveredNode(nullptr)
 {
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
-	//LOG(LogType::L_NORMAL, "wtf");
 
 	baseNode.SetGridPosition(0, 0);
 	linealNodes.push_back(&baseNode);
-
-	baseNode.DivideNode(this);
-
-	baseNode.children[0]->DivideNode(this);
-	baseNode.children[1]->DivideNode(this);
-	baseNode.children[2]->DivideNode(this);
-	baseNode.children[3]->DivideNode(this);
 }
 
 GridManager::~GridManager()
@@ -40,6 +39,41 @@ GridManager::~GridManager()
 		}
 	}
 	linealNodes.clear();
+}
+
+void GridManager::UpdateInput()
+{
+
+	float2 position = float2(static_cast<float>(EngineExternal->moduleInput->GetMouseX()), static_cast<float>(EngineExternal->moduleInput->GetMouseY()));
+
+	float3 normal = float3::zero;
+	normal.x = (position.x - 0.0) / ((0.0 + EngineExternal->moduleWindow->s_width) - 0.0);
+	normal.y = (position.y - 0.0) / ((0.0 + EngineExternal->moduleWindow->s_height) - 0.0);
+
+	normal.x = (normal.x - 0.5f) / 0.5f;
+	normal.y = -((normal.y - 0.5f) / 0.5f);
+
+	LineSegment worldRay = EngineExternal->moduleRenderer3D->activeRenderCamera->ScreenToWorld(normal.x, normal.y);
+	
+
+	//----
+	Plane up = Plane(float3(0, 1, 0), 0.0f);
+
+	float3 ba = worldRay.b - worldRay.a;
+	float nDotA = Dot(up.normal, worldRay.a);
+	float nDotBA = Dot(up.normal, ba);
+
+	float3 ret = worldRay.a + (((up.d - nDotA) / nDotBA) * ba);
+	//----
+
+	hoveredNode = this->GetNodeAt_Slow(static_cast<int>(rint(ret.x)), static_cast<int>(rint(ret.z)));
+
+
+	if (hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN)
+	{
+		hoveredNode->DivideNode(this);
+	}
+
 }
 
 void GridManager::LoadShader(const char* path)
@@ -117,6 +151,24 @@ void GridManager::RenderGridTemporal()
 	for (size_t i = 0; i < linealNodes.size(); i++)
 	{
 		linealNodes[i]->RenderLines(shaderRes, VAO);
+
+		if (hoveredNode == linealNodes[i])
+		{
+			glColor3f(1., 0.f, 0.f);
+			glBegin(GL_LINES);
+
+			float3 position = float3(linealNodes[i]->GetGridPositionX(), 0.0, linealNodes[i]->GetGridPositionY());
+			float crossSize = 0.03;
+
+			glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);
+			glVertex3f(position.x + crossSize, 0.0, position.z - crossSize);
+
+			glVertex3f(position.x + crossSize, 0.0, position.z + crossSize);
+			glVertex3f(position.x - crossSize, 0.0, position.z - crossSize);
+
+			glEnd();
+			glColor3f(1., 1.f, 1.f);
+		}
 	}
 
 	//glLineWidth(1.0f);
@@ -150,7 +202,7 @@ void GridManager::RenderGridTemporal()
 
 GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 {
-	std::clock_t start = std::clock();
+	//auto t1 = Clock::now();
 
 	//code here
 	for (auto it = linealNodes.begin(); it != linealNodes.end(); ++it)
@@ -162,9 +214,9 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 	}
 	return nullptr;
 
-	double duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-	std::cout << duration << std::endl;
 
+	//auto t2 = Clock::now();
+	//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanoseconds" << std::endl;
 }
 
 GridNode::GridNode()
@@ -187,21 +239,6 @@ void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 	glBindVertexArray(0);
 
 	shaderRes->Unbind();
-
-	glColor3f(1., 0.f, 0.f);
-	glBegin(GL_LINES);
-
-	float3 position = float3(gridPosition[0], 0.0, gridPosition[1]);
-	float crossSize = 0.03;
-
-	glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);
-	glVertex3f(position.x + crossSize, 0.0, position.z - crossSize);
-
-	glVertex3f(position.x + crossSize, 0.0, position.z + crossSize);
-	glVertex3f(position.x - crossSize, 0.0, position.z - crossSize);
-
-	glEnd();
-	glColor3f(1., 1.f, 1.f);
 }
 
 bool GridNode::IsPosition(int x, int y)

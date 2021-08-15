@@ -287,6 +287,11 @@ float3 C_Camera::GetPosition()
 	return camFrustrum.pos;
 }
 
+LineSegment C_Camera::ScreenToWorld(float screen_x, float screen_y)
+{
+	return camFrustrum.UnProjectLineSegment(screen_x, screen_y);
+}
+
 float4x4 C_Camera::ViewMatrixOpenGL() const
 {
 	math::float4x4 mat = camFrustrum.ViewMatrix();
