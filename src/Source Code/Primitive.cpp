@@ -9,6 +9,10 @@
 #include "MO_Renderer3D.h"
 #include "CO_Camera.h"
 
+#include <iostream> 
+#include <ctime>
+
+
 GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0)
 {
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
@@ -18,6 +22,11 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0)
 	linealNodes.push_back(&baseNode);
 
 	baseNode.DivideNode(this);
+
+	baseNode.children[0]->DivideNode(this);
+	baseNode.children[1]->DivideNode(this);
+	baseNode.children[2]->DivideNode(this);
+	baseNode.children[3]->DivideNode(this);
 }
 
 GridManager::~GridManager()
@@ -129,14 +138,33 @@ void GridManager::RenderGridTemporal()
 
 	//glEnd();
 
-	glPointSize(10.0f);
-	glColor3f(1., 0.f, 0.f);
-	glBegin(GL_POINTS);
-	glVertex3f(0, 0, 0);
-	glEnd();
-	glPointSize(1.0f);
+	//glPointSize(10.0f);
+	//glColor3f(1., 0.f, 0.f);
+	//glBegin(GL_POINTS);
+	//glVertex3f(0, 0, 0);
+	//glEnd();
+	//glPointSize(1.0f);
 
 	//glColor3f(1.f, 1.f, 1.f);
+}
+
+GridNode* GridManager::GetNodeAt_Slow(int x, int y)
+{
+	std::clock_t start = std::clock();
+
+	//code here
+	for (auto it = linealNodes.begin(); it != linealNodes.end(); ++it)
+	{
+		if ((*it)->IsPosition(x, y)) 
+		{
+			return (*it);
+		}
+	}
+	return nullptr;
+
+	double duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	std::cout << duration << std::endl;
+
 }
 
 GridNode::GridNode()
@@ -159,17 +187,47 @@ void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 	glBindVertexArray(0);
 
 	shaderRes->Unbind();
+
+	glColor3f(1., 0.f, 0.f);
+	glBegin(GL_LINES);
+
+	float3 position = float3(gridPosition[0], 0.0, gridPosition[1]);
+	float crossSize = 0.03;
+
+	glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);
+	glVertex3f(position.x + crossSize, 0.0, position.z - crossSize);
+
+	glVertex3f(position.x + crossSize, 0.0, position.z + crossSize);
+	glVertex3f(position.x - crossSize, 0.0, position.z - crossSize);
+
+	glEnd();
+	glColor3f(1., 1.f, 1.f);
+}
+
+bool GridNode::IsPosition(int x, int y)
+{
+	return (gridPosition[0] == static_cast<float>(x) && gridPosition[1] == static_cast<float>(y));
 }
 
 void GridNode::SetGridPosition(int x, int y)
 {
-	gridPosition[0] = (float)x;
-	gridPosition[1] = (float)y;
+	gridPosition[0] = static_cast<float>(x);
+	gridPosition[1] = static_cast<float>(y);
 }
 
 float* GridNode::GetGridPosition()
 {
 	return gridPosition;
+}
+
+int GridNode::GetGridPositionX()
+{
+	return static_cast<int>(gridPosition[0]);
+}
+
+int GridNode::GetGridPositionY()
+{
+	return static_cast<int>(gridPosition[1]);
 }
 
 void GridNode::DivideNode(GridManager* instance)
@@ -179,31 +237,50 @@ void GridNode::DivideNode(GridManager* instance)
 
 		if (this->children[i] == nullptr) 
 		{
-			this->children[i] = new GridNode();
+
+			int x = this->GetGridPositionX();
+			int y = this->GetGridPositionY();
+
+			int position[2] = {0, 0};
 
 			switch (i)
 			{
 			case 0:
-				this->children[i]->SetGridPosition(0, 1);
+				position[0] = x;
+				position[1] = y+1;
 				break;
 
 			case 1:
-				this->children[i]->SetGridPosition(0, -1);
+				position[0] = x;
+				position[1] = y - 1;
 				break;
 
 			case 2:
-				this->children[i]->SetGridPosition(1, 0);
+				position[0] = x + 1;
+				position[1] = y;
 				break;
 
 			case 3:
-				this->children[i]->SetGridPosition(-1, 0);
+				position[0] = x - 1;
+				position[1] = y;
 				break;
 
 			default:
 				break;
 			}
 
-			instance->linealNodes.push_back(this->children[i]);
+			GridNode* ref = instance->GetNodeAt_Slow(position[0], position[1]);
+			if (ref == nullptr)
+			{
+				this->children[i] = new GridNode();
+				this->children[i]->SetGridPosition(position[0], position[1]);
+				instance->linealNodes.push_back(this->children[i]);
+			}
+			else 
+			{
+				this->children[i] = ref;
+			}
+
 		}
 	}
 }

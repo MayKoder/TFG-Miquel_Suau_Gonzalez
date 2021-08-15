@@ -7,23 +7,26 @@ class GridManager;
 #define NODE_SIDES 4
 struct GridNode
 {
-	enum Direction
-	{
-		UP, DOWN, RIGHT, LEFT
-	};
+	//enum Direction
+	//{
+	//	UP, DOWN, RIGHT, LEFT
+	//};
 
 	GridNode();
 
-	GridNode* children[NODE_SIDES];
-
-
 	void RenderLines(ResourceShader*, uint);
-
+	
+	bool IsPosition(int x, int y);
 	void SetGridPosition(int x, int y);
+
 	float* GetGridPosition();
+
+	int GetGridPositionX();
+	int GetGridPositionY();
 
 	void DivideNode(GridManager* instance);
 	
+	GridNode* children[NODE_SIDES];
 private:
 	float gridPosition[2];
 };
@@ -42,6 +45,8 @@ public:
 
 	//GridNode* GetGridNode(int x, int y);
 	void RenderGridTemporal();
+
+	GridNode* GetNodeAt_Slow(int x, int y);
 
 	std::vector<GridNode*> linealNodes;
 private:
