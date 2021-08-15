@@ -528,9 +528,6 @@
     <ClInclude Include="Source Code\IM_MaterialImporter.h">
       <Filter>Sources\Tools\Importers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\CS_Input_Bindings.h">
-      <Filter>Sources\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\INC_AllComponents.h">
       <Filter>Sources\Tools\MMath\INC_Packs</Filter>
     </ClInclude>

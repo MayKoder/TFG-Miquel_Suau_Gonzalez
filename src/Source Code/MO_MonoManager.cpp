@@ -13,7 +13,6 @@
 #include"GameObject.h"
 #include"CO_Script.h"
 #include"CS_Transform_Bindings.h"
-#include "CS_Input_Bindings.h"
 
 #include <iostream>
 #include <fstream> 
