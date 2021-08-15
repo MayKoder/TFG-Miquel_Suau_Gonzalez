@@ -1,6 +1,6 @@
 
 #include "Globals.h"
-#include "Primitive.h"
+#include "GridManager.h"
 #include "RE_Shader.h"
 
 #include "Application.h"
@@ -26,6 +26,44 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0), hoveredNode(nul
 
 	baseNode.SetGridPosition(0, 0);
 	linealNodes.push_back(&baseNode);
+
+
+#pragma region Expansion Test
+
+
+	GridNode* node = &baseNode;
+	baseNode.DivideNode(this);
+	for (size_t i = 0; i < NODE_SIDES; i++)
+	{
+
+		node = node->children[i];
+		for (size_t j = 0; j < 10; j++)
+		{
+			node->DivideNode(this);
+			node = node->children[i];
+		}
+
+		//GridNode* right;
+		//GridNode* left;
+
+		//left = node->children[GridNode::Direction::LEFT];
+		//right = node->children[GridNode::Direction::RIGHT];
+
+		//for (size_t i = 0; i < 10/2; i++)
+		//{
+		//	right->DivideNode(this);
+		//	left->DivideNode(this);
+		//}
+
+		node = &baseNode;
+
+	}
+
+
+#pragma endregion
+
+
+
 }
 
 GridManager::~GridManager()

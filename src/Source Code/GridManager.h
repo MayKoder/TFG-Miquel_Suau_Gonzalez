@@ -7,10 +7,10 @@ class GridManager;
 #define NODE_SIDES 4
 struct GridNode
 {
-	//enum Direction
-	//{
-	//	UP, DOWN, RIGHT, LEFT
-	//};
+	enum Direction
+	{
+		UP, DOWN, RIGHT, LEFT
+	};
 
 	GridNode();
 

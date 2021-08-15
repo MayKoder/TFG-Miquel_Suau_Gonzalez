@@ -185,7 +185,6 @@
     <ClInclude Include="Source Code\CO_Material.h" />
     <ClInclude Include="Source Code\CO_Script.h" />
     <ClInclude Include="Source Code\CO_Transform.h" />
-    <ClInclude Include="Source Code\CS_Transform_Bindings.h" />
     <ClInclude Include="Source Code\DEJsonSupport.h" />
     <ClInclude Include="Source Code\DERect.h" />
     <ClInclude Include="Source Code\DETime.h" />
@@ -290,7 +289,6 @@
     <ClInclude Include="Source Code\IM_TextureImporter.h" />
     <ClInclude Include="Source Code\INC_AllComponents.h" />
     <ClInclude Include="Source Code\MaykMath.h" />
-    <ClInclude Include="Source Code\DEModelNode.h" />
     <ClInclude Include="Source Code\MA_IconSystem.h" />
     <ClInclude Include="Source Code\MM_ProceduralMeshGenerator.h" />
     <ClInclude Include="Source Code\MO_GUI.h" />
@@ -309,7 +307,7 @@
     <ClInclude Include="Source Code\MO_ResourceManager.h" />
     <ClInclude Include="Source Code\MO_Scene.h" />
     <ClInclude Include="Source Code\OpenGL.h" />
-    <ClInclude Include="Source Code\Primitive.h" />
+    <ClInclude Include="Source Code\GridManager.h" />
     <ClInclude Include="Source Code\DEResource.h" />
     <ClInclude Include="Source Code\RE_Shader.h" />
     <ClInclude Include="Source Code\RE_Texture.h" />
@@ -419,7 +417,7 @@
     <ClCompile Include="Source Code\MO_Renderer3D.cpp" />
     <ClCompile Include="Source Code\MO_Window.cpp" />
     <ClCompile Include="Source Code\MO_Editor.cpp" />
-    <ClCompile Include="Source Code\Primitive.cpp" />
+    <ClCompile Include="Source Code\GridManager.cpp" />
     <ClCompile Include="Source Code\Timer.cpp" />
     <ClCompile Include="Source Code\Window.cpp" />
     <ClCompile Include="Source Code\WI_Configuration.cpp" />

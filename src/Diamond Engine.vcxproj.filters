@@ -114,9 +114,6 @@
     <ClInclude Include="Source Code\glmath.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\Primitive.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\Module.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
@@ -450,9 +447,6 @@
     <ClInclude Include="Source Code\AssetDir.h">
       <Filter>Sources\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\DEModelNode.h">
-      <Filter>Sources\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\WI_Scene.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
@@ -488,9 +482,6 @@
     </ClInclude>
     <ClInclude Include="Source Code\CO_Script.h">
       <Filter>Sources\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\CS_Transform_Bindings.h">
-      <Filter>Sources\Tools</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\ImTextEditor\TextEditor.h">
       <Filter>Externals\ImTextEditor</Filter>
@@ -543,6 +534,9 @@
     <ClInclude Include="Source Code\UIElement.h">
       <Filter>Sources\UIElements</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\GridManager.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -562,9 +556,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\glmath.cpp">
       <Filter>Sources\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\Primitive.cpp">
-      <Filter>Sources\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\EngineVersion.cpp">
       <Filter>Sources\Tools</Filter>
@@ -850,6 +841,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\UIElement.cpp">
       <Filter>Sources\UIElements</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GridManager.cpp">
+      <Filter>Sources\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

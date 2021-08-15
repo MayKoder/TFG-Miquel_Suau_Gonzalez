@@ -9,7 +9,7 @@
 #include"MathGeoLib/include/Geometry/LineSegment.h"
 
 #include"DE_Cubemap.h"
-#include"Primitive.h"
+#include"GridManager.h"
 
 #include"MM_ProceduralMeshGenerator.h"
 
