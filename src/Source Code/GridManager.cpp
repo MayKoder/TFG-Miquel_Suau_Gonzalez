@@ -26,11 +26,11 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0),
 
 
 
-	baseNode.SetGridPosition(0, 0);
-	linealNodes.push_back(&baseNode);
-	mapTest[baseNode.GetID()] = &baseNode;
+	mapTest[GridManager::CANTOR_MAPPING(0, 0)] = GridNode();
+	mapTest[GridManager::CANTOR_MAPPING(0, 0)].SetGridPosition(0, 0);
+	//linealNodes.push_back(&baseNode);
 
-	//baseNode.DivideNodeSquare(this, 30);
+	//mapTest[GridManager::CANTOR_MAPPING(0, 0)].DivideNodeSquare(this, 500);
 
 //#pragma region Expansion Test
 //
@@ -72,16 +72,22 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0),
 
 GridManager::~GridManager()
 {
-	if (linealNodes.size() > 1) 
-	{
-		for (size_t i = 1; i < linealNodes.size(); i++)
-		{
-			delete	linealNodes[i];
-			linealNodes[i] = nullptr;
-		}
-	}
-	linealNodes.clear();
+	//if (linealNodes.size() > 1) 
+	//{
+	//	for (size_t i = 1; i < linealNodes.size(); i++)
+	//	{
+	//		delete	linealNodes[i];
+	//		linealNodes[i] = nullptr;
+	//	}
+	//}
+	//linealNodes.clear();
 
+	//std::map<uint, GridNode*>::iterator it;
+	//for (it = mapTest.begin(); it != mapTest.end(); it++)
+	//{
+	//	delete (*it).second;
+	//	//(*it).second = nullptr;
+	//}
 	mapTest.clear();
 }
 
@@ -118,21 +124,7 @@ void GridManager::UpdateInput()
 		hoveredNode->DivideNodeCross(this);
 
 
-		std::vector<float> instanceData;
-		instanceData.reserve(linealNodes.size() * 2);
-		for (size_t i = 0; i < linealNodes.size(); i++)
-		{
-			instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionX()));
-			instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionY()));
-		}
-		instanceData.shrink_to_fit();
-
-
-		glBindVertexArray(VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-		glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
-
+		UpdateRenderData();
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -151,15 +143,6 @@ void GridManager::LoadShader(const char* path)
 		0.5, 0.0, -0.5,
 		-0.5, 0.0, -0.5,
 	};
-
-	std::vector<float> instanceData;
-	instanceData.reserve(linealNodes.size() * 2);
-	for (size_t i = 0; i < linealNodes.size(); i++)
-	{
-		instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionX()));
-		instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionY()));
-	}
-	instanceData.shrink_to_fit();
 
 
 	//for (size_t x = 0; x <= GRID_SIZE_X; x++)
@@ -198,8 +181,7 @@ void GridManager::LoadShader(const char* path)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-	glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+	UpdateRenderData();
 
 	//instance data attribute
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)0);
@@ -211,6 +193,26 @@ void GridManager::LoadShader(const char* path)
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void GridManager::UpdateRenderData()
+{
+	std::vector<float> instanceData;
+	instanceData.reserve(mapTest.size() * 2);
+
+	std::map<uint, GridNode>::iterator it;
+	for (it = mapTest.begin(); it != mapTest.end(); it++)
+	{
+		instanceData.push_back(static_cast<float>(it->second.GetGridPositionX()));
+		instanceData.push_back(static_cast<float>(it->second.GetGridPositionY()));
+	}
+	instanceData.shrink_to_fit();
+
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+	glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
 }
 
 void GridManager::ClearMemory()
@@ -239,10 +241,16 @@ void GridManager::RenderGridTemporal()
 
 	glBindVertexArray(VAO);
 	glDrawArraysInstanced(
-		GL_LINE_STRIP, 0, 5, linealNodes.size()
+		GL_LINE_STRIP, 0, 5, mapTest.size()
 	);
 	glBindVertexArray(0);
 	shaderRes->Unbind();
+
+	std::map<uint, GridNode>::iterator it;
+	for (it = mapTest.begin(); it != mapTest.end(); it++)
+	{
+		it->second.RenderLines(shaderRes);
+	}
 
 	if (hoveredNode != nullptr) {
 		glColor3f(1., 0.f, 0.f);
@@ -309,8 +317,10 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 	//return nullptr;
 
 	//Slow picking division took 103ms
-	return mapTest[GridManager::CANTOR_MAPPING(x, y)];
-
+	if (mapTest.find(GridManager::CANTOR_MAPPING(x, y)) != mapTest.end()) {
+		return &mapTest[GridManager::CANTOR_MAPPING(x, y)];
+	}
+	return nullptr;
 
 	//auto t2 = Clock::now();
 	//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanoseconds" << std::endl;
@@ -359,7 +369,7 @@ void GridNode::SearchAndFillChildren(GridManager* instance)
 
 }
 
-void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
+void GridNode::RenderLines(ResourceShader* shaderRes)
 {
 	//shaderRes->Bind();
 	//EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
@@ -374,27 +384,27 @@ void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 
 	//shaderRes->Unbind();
 
-	//glColor3f(1., 0.f, 0.f);
-	//glBegin(GL_LINES);
+	glColor3f(1., 0.f, 0.f);
+	glBegin(GL_LINES);
 
-	//float3 position = float3::zero;
-	//for (size_t i = 0; i < NODE_SIDES; i++)
-	//{
-	//	if (children[i] != nullptr) 
-	//	{
-	//		position = float3(this->GetGridPositionX(), 0.0f, this->GetGridPositionY());
-	//		glVertex3fv(&position.x);
+	float3 position = float3::zero;
+	for (size_t i = 0; i < NODE_SIDES; i++)
+	{
+		if (children[i] != nullptr) 
+		{
+			position = float3(this->GetGridPositionX(), 0.0f, this->GetGridPositionY());
+			glVertex3fv(&position.x);
 
-	//		float3 target = float3(children[i]->GetGridPositionX(), 0.0f, children[i]->GetGridPositionY());
-	//		float3 dir = target - position;
-	//		dir /= 2.5;
+			float3 target = float3(children[i]->GetGridPositionX(), 0.0f, children[i]->GetGridPositionY());
+			float3 dir = target - position;
+			dir /= 2.5;
 
-	//		glVertex3f(position.x + dir.x, 0.0, position.z + dir.z);
-	//	}
-	//}
+			glVertex3f(position.x + dir.x, 0.0, position.z + dir.z);
+		}
+	}
 
-	//glEnd();
-	//glColor3f(1., 1.f, 1.f);
+	glEnd();
+	glColor3f(1., 1.f, 1.f);
 }
 
 bool GridNode::IsPosition(int x, int y)
@@ -430,33 +440,32 @@ int GridNode::GetGridPositionY()
 
 GridNode* GridNode::DivideNode(GridManager* instance, int direction[2])
 {
+	int x = this->GetGridPositionX();
+	int y = this->GetGridPositionY();
 
-		int x = this->GetGridPositionX();
-		int y = this->GetGridPositionY();
-
-		int position[2] = { x + direction[0], y + direction[1]};
-
+	int position[2] = { x + direction[0], y + direction[1]};
 
 
-		GridNode* ref = instance->GetNodeAt_Slow(position[0], position[1]);
-		GridNode** childArrayPos = this->GetChildrenMemAddr(direction[0], direction[1]);
-		if (ref == nullptr)
-		{
-			*childArrayPos = new GridNode();
 
-			(*childArrayPos)->SetGridPosition(position[0], position[1]);
+	GridNode* ref = instance->GetNodeAt_Slow(position[0], position[1]);
+	GridNode** childArrayPos = this->GetChildrenMemAddr(direction[0], direction[1]);
+	if (ref == nullptr)
+	{
+		instance->mapTest[GridManager::CANTOR_MAPPING(position[0], position[1])] = GridNode();
 
-			instance->linealNodes.push_back((*childArrayPos));
-			instance->mapTest[(*childArrayPos)->GetID()] = (*childArrayPos);
+		*childArrayPos = &instance->mapTest[GridManager::CANTOR_MAPPING(position[0], position[1])];
+		(*childArrayPos)->SetGridPosition(position[0], position[1]);
 
-			(*childArrayPos)->SearchAndFillChildren(instance);
+		//instance->linealNodes.push_back((*childArrayPos));
 
-		}
-		else
-		{
-			*childArrayPos = ref;
-		}
-		return (*childArrayPos);
+		(*childArrayPos)->SearchAndFillChildren(instance);
+
+	}
+	else
+	{
+		*childArrayPos = ref;
+	}
+	return (*childArrayPos);
 }
 
 void GridNode::DivideNodeCross(GridManager* instance)
@@ -501,11 +510,12 @@ void GridNode::DivideNodeCross(GridManager* instance)
 			GridNode* ref = instance->GetNodeAt_Slow(position[0], position[1]);
 			if (ref == nullptr)
 			{
-				this->children[i] = new GridNode();
+				instance->mapTest[GridManager::CANTOR_MAPPING(position[0], position[1])] = GridNode();
+
+				this->children[i] = &instance->mapTest[GridManager::CANTOR_MAPPING(position[0], position[1])];
 				this->children[i]->SetGridPosition(position[0], position[1]);
 
-				instance->linealNodes.push_back(this->children[i]);
-				instance->mapTest[children[i]->GetID()] = children[i];
+				//instance->linealNodes.push_back(this->children[i]);
 
 
 				(*(this->children[i]->GetChildrenMemAddr(x - position[0], y - position[1]))) = this;

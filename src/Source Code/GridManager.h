@@ -23,7 +23,7 @@ struct GridNode
 	GridNode();
 	void SearchAndFillChildren(GridManager* instance);
 
-	void RenderLines(ResourceShader*, uint);
+	void RenderLines(ResourceShader*);
 	
 	bool IsPosition(int x, int y);
 	void SetGridPosition(int x, int y);
@@ -57,12 +57,15 @@ public:
 	void UpdateInput();
 
 	void LoadShader(const char* path);
+	void UpdateRenderData();
 	void ClearMemory();
 
 	//GridNode* GetGridNode(int x, int y);
 	void RenderGridTemporal();
 
 	GridNode* GetNodeAt_Slow(int x, int y);
+
+
 
 	static inline uint CANTOR_MAPPING(int x, int y) 
 	{
@@ -72,11 +75,10 @@ public:
 		return  ((_x + _y) * (_x + _y + 1) / 2) + _y;
 	}
 
-	std::vector<GridNode*> linealNodes;
-	std::map<uint, GridNode*> mapTest;
+	//std::vector<GridNode*> linealNodes;
+	std::map<uint, GridNode> mapTest;
 private:
 
-	GridNode baseNode;
 
 	//GridNode grid[GRID_SIZE_X * GRID_SIZE_Y];
 	ResourceShader* shaderRes;
