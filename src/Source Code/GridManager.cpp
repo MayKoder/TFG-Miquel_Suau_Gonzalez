@@ -24,10 +24,14 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0),
 {
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
 
+
+
 	baseNode.SetGridPosition(0, 0);
 	linealNodes.push_back(&baseNode);
+	mapTest[baseNode.GetID()] = &baseNode;
 
 	//baseNode.DivideNodeSquare(this, 30);
+
 //#pragma region Expansion Test
 //
 //
@@ -77,6 +81,8 @@ GridManager::~GridManager()
 		}
 	}
 	linealNodes.clear();
+
+	mapTest.clear();
 }
 
 void GridManager::UpdateInput()
@@ -116,8 +122,8 @@ void GridManager::UpdateInput()
 		instanceData.reserve(linealNodes.size() * 2);
 		for (size_t i = 0; i < linealNodes.size(); i++)
 		{
-			instanceData.push_back(linealNodes[i]->GetGridPositionX());
-			instanceData.push_back(linealNodes[i]->GetGridPositionY());
+			instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionX()));
+			instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionY()));
 		}
 		instanceData.shrink_to_fit();
 
@@ -150,8 +156,8 @@ void GridManager::LoadShader(const char* path)
 	instanceData.reserve(linealNodes.size() * 2);
 	for (size_t i = 0; i < linealNodes.size(); i++)
 	{
-		instanceData.push_back(linealNodes[i]->GetGridPositionX());
-		instanceData.push_back(linealNodes[i]->GetGridPositionY());
+		instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionX()));
+		instanceData.push_back(static_cast<float>(linealNodes[i]->GetGridPositionY()));
 	}
 	instanceData.shrink_to_fit();
 
@@ -226,7 +232,7 @@ void GridManager::ClearMemory()
 
 void GridManager::RenderGridTemporal()
 {
-	auto t1 = Clock::now();
+	//auto t1 = Clock::now();
 
 	shaderRes->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
@@ -242,7 +248,7 @@ void GridManager::RenderGridTemporal()
 		glColor3f(1., 0.f, 0.f);
 		glBegin(GL_LINES);
 
-		float3 position = float3(hoveredNode->GetGridPositionX(), 0.0, hoveredNode->GetGridPositionY());
+		float3 position = float3(static_cast<float>(hoveredNode->GetGridPositionX()), 0.0, static_cast<float>(hoveredNode->GetGridPositionY()));
 		float crossSize = 0.03;
 
 		glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);
@@ -255,8 +261,8 @@ void GridManager::RenderGridTemporal()
 		glColor3f(1., 1.f, 1.f);
 	}
 
-	auto t2 = Clock::now();
-	LOG(LogType::L_NORMAL, "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
+	//auto t2 = Clock::now();
+	//LOG(LogType::L_NORMAL, "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
 
 	//glLineWidth(1.0f);
 
@@ -292,14 +298,18 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 	//auto t1 = Clock::now();
 
 	//code here
-	for (auto it = linealNodes.begin(); it != linealNodes.end(); ++it)
-	{
-		if ((*it)->IsPosition(x, y)) 
-		{
-			return (*it);
-		}
-	}
-	return nullptr;
+	//Slow picking division took 38536ms
+	//for (auto it = linealNodes.begin(); it != linealNodes.end(); ++it)
+	//{
+	//	if ((*it)->IsPosition(x, y)) 
+	//	{
+	//		return (*it);
+	//	}
+	//}
+	//return nullptr;
+
+	//Slow picking division took 103ms
+	return mapTest[GridManager::CANTOR_MAPPING(x, y)];
 
 
 	//auto t2 = Clock::now();
@@ -389,28 +399,33 @@ void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 
 bool GridNode::IsPosition(int x, int y)
 {
-	return (gridPosition[0] == static_cast<float>(x) && gridPosition[1] == static_cast<float>(y));
+	return (gridPosition[0] == x && gridPosition[1] == y);
 }
 
 void GridNode::SetGridPosition(int x, int y)
 {
-	gridPosition[0] = static_cast<float>(x);
-	gridPosition[1] = static_cast<float>(y);
+	gridPosition[0] = x;
+	gridPosition[1] = y;
 }
 
-float* GridNode::GetGridPosition()
+int* GridNode::GetGridPosition()
 {
 	return gridPosition;
 }
 
+uint GridNode::GetID()
+{
+	return GridManager::CANTOR_MAPPING(gridPosition[0], gridPosition[1]);
+}
+
 int GridNode::GetGridPositionX()
 {
-	return static_cast<int>(gridPosition[0]);
+	return gridPosition[0];
 }
 
 int GridNode::GetGridPositionY()
 {
-	return static_cast<int>(gridPosition[1]);
+	return gridPosition[1];
 }
 
 GridNode* GridNode::DivideNode(GridManager* instance, int direction[2])
@@ -430,7 +445,9 @@ GridNode* GridNode::DivideNode(GridManager* instance, int direction[2])
 			*childArrayPos = new GridNode();
 
 			(*childArrayPos)->SetGridPosition(position[0], position[1]);
+
 			instance->linealNodes.push_back((*childArrayPos));
+			instance->mapTest[(*childArrayPos)->GetID()] = (*childArrayPos);
 
 			(*childArrayPos)->SearchAndFillChildren(instance);
 
@@ -486,7 +503,9 @@ void GridNode::DivideNodeCross(GridManager* instance)
 			{
 				this->children[i] = new GridNode();
 				this->children[i]->SetGridPosition(position[0], position[1]);
+
 				instance->linealNodes.push_back(this->children[i]);
+				instance->mapTest[children[i]->GetID()] = children[i];
 
 
 				(*(this->children[i]->GetChildrenMemAddr(x - position[0], y - position[1]))) = this;
@@ -538,34 +557,11 @@ void GridNode::DivideNodeSquare(GridManager* instance, int squareLength)
 			cNode = cNode->DivideNode(instance, direction);
 		}
 	}
-
-	//for numper of squared lenght
-		//divide right until there is no up
-		//divide up intil there is no left
-		//divide left until there is no down
-		//divide down until there is no right
 }
 
 GridNode** GridNode::GetChildrenMemAddr(int x, int y)
 {
 	GridNode** ret = nullptr;
-	//if (x == 0 && y == 1) 
-	//{
-
-	//}
-	//else if (x == 0 && y == -1) 
-	//{
-
-	//}
-	//else if (x == 1 && y == 0) 
-	//{
-
-	//}
-	//else if (x == -1 && y == 0) 
-	//{
-
-	//}
-
 	if (x > 0) 
 	{
 		ret = &children[2];
