@@ -27,40 +27,40 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0), hoveredNode(nul
 	baseNode.SetGridPosition(0, 0);
 	linealNodes.push_back(&baseNode);
 
-
-#pragma region Expansion Test
-
-
-	GridNode* node = &baseNode;
-	baseNode.DivideNode(this);
-	for (size_t i = 0; i < NODE_SIDES; i++)
-	{
-
-		node = node->children[i];
-		for (size_t j = 0; j < 10; j++)
-		{
-			node->DivideNode(this);
-			node = node->children[i];
-		}
-
-		//GridNode* right;
-		//GridNode* left;
-
-		//left = node->children[GridNode::Direction::LEFT];
-		//right = node->children[GridNode::Direction::RIGHT];
-
-		//for (size_t i = 0; i < 10/2; i++)
-		//{
-		//	right->DivideNode(this);
-		//	left->DivideNode(this);
-		//}
-
-		node = &baseNode;
-
-	}
-
-
-#pragma endregion
+	baseNode.DivideNodeSquare(this, 30);
+//#pragma region Expansion Test
+//
+//
+//	GridNode* node = &baseNode;
+//	baseNode.DivideNodeCross(this);
+//	for (size_t i = 0; i < NODE_SIDES; i++)
+//	{
+//
+//		node = node->children[i];
+//		for (size_t j = 0; j < 10; j++)
+//		{
+//			node->DivideNodeCross(this);
+//			node = node->children[i];
+//		}
+//
+//		//GridNode* right;
+//		//GridNode* left;
+//
+//		//left = node->children[GridNode::Direction::LEFT];
+//		//right = node->children[GridNode::Direction::RIGHT];
+//
+//		//for (size_t i = 0; i < 10/2; i++)
+//		//{
+//		//	right->DivideNode(this);
+//		//	left->DivideNode(this);
+//		//}
+//
+//		node = &baseNode;
+//
+//	}
+//
+//
+//#pragma endregion
 
 
 
@@ -109,7 +109,7 @@ void GridManager::UpdateInput()
 
 	if (hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN)
 	{
-		hoveredNode->DivideNode(this);
+		hoveredNode->DivideNodeCross(this);
 	}
 
 }
@@ -263,6 +263,43 @@ GridNode::GridNode()
 	memset(gridPosition, 0.0, sizeof(gridPosition));
 }
 
+void GridNode::SearchAndFillChildren(GridManager* instance)
+{
+	int x = this->GetGridPositionX();
+	int y = this->GetGridPositionY();
+
+	if (children[0] == nullptr) {
+		children[0] = instance->GetNodeAt_Slow(x, y + 1);
+
+		if (children[0]) {
+			children[0]->SearchAndFillChildren(instance);
+		}
+	}
+
+	if (children[1] == nullptr) {
+		children[1] = instance->GetNodeAt_Slow(x, y - 1);
+		if (children[1]) {
+			children[1]->SearchAndFillChildren(instance);
+		}
+	}
+
+	if (children[2] == nullptr) {
+		children[2] = instance->GetNodeAt_Slow(x + 1, y);
+		if (children[2]) {
+			children[2]->SearchAndFillChildren(instance);
+		}
+	}
+
+	if (children[3] == nullptr) {
+		children[3] = instance->GetNodeAt_Slow(x - 1, y);
+		if (children[3]) {
+			children[3]->SearchAndFillChildren(instance);
+		}
+	}
+
+
+}
+
 void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 {
 	shaderRes->Bind();
@@ -277,6 +314,23 @@ void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 	glBindVertexArray(0);
 
 	shaderRes->Unbind();
+
+	glColor3f(1., 0.f, 0.f);
+	glBegin(GL_LINES);
+
+	float3 position = float3::zero;
+	for (size_t i = 0; i < NODE_SIDES; i++)
+	{
+		if (children[i] != nullptr) 
+		{
+			position = float3(this->GetGridPositionX(), 0.0f, this->GetGridPositionY());
+			glVertex3fv(&position.x);
+			glVertex3f(children[i]->GetGridPositionX(), 0.0, children[i]->GetGridPositionY());
+		}
+	}
+
+	glEnd();
+	glColor3f(1., 1.f, 1.f);
 }
 
 bool GridNode::IsPosition(int x, int y)
@@ -305,7 +359,36 @@ int GridNode::GetGridPositionY()
 	return static_cast<int>(gridPosition[1]);
 }
 
-void GridNode::DivideNode(GridManager* instance)
+GridNode* GridNode::DivideNode(GridManager* instance, int direction[2])
+{
+
+		int x = this->GetGridPositionX();
+		int y = this->GetGridPositionY();
+
+		int position[2] = { x + direction[0], y + direction[1]};
+
+
+
+		GridNode* ref = instance->GetNodeAt_Slow(position[0], position[1]);
+		GridNode** childArrayPos = this->GetChildrenMemAddr(direction[0], direction[1]);
+		if (ref == nullptr)
+		{
+			*childArrayPos = new GridNode();
+
+			(*childArrayPos)->SetGridPosition(position[0], position[1]);
+			instance->linealNodes.push_back((*childArrayPos));
+
+			(*childArrayPos)->SearchAndFillChildren(instance);
+
+		}
+		else
+		{
+			*childArrayPos = ref;
+		}
+		return (*childArrayPos);
+}
+
+void GridNode::DivideNodeCross(GridManager* instance)
 {
 	for (size_t i = 0; i < sizeof(children) / sizeof(GridNode*); i++)
 	{
@@ -350,6 +433,12 @@ void GridNode::DivideNode(GridManager* instance)
 				this->children[i] = new GridNode();
 				this->children[i]->SetGridPosition(position[0], position[1]);
 				instance->linealNodes.push_back(this->children[i]);
+
+
+				(*(this->children[i]->GetChildrenMemAddr(x - position[0], y - position[1]))) = this;
+				this->children[i]->SearchAndFillChildren(instance);
+				//(*(this->children[i]->GetChildrenMemAddr(position[0] - x, position[1] - y)))->SearchAndFillChildren(instance);
+
 			}
 			else 
 			{
@@ -358,4 +447,87 @@ void GridNode::DivideNode(GridManager* instance)
 
 		}
 	}
+}
+
+void GridNode::DivideNodeSquare(GridManager* instance, int squareLength)
+{
+
+	int direction[2] = { 1, 0 };
+	
+	GridNode* cNode = this;
+	cNode = cNode->DivideNode(instance, direction);
+	for (size_t i = 0; i < squareLength; i++)
+	{
+
+
+		direction[0] = 0; direction[1] = 1;
+		while (cNode->children[LEFT] != nullptr)
+		{
+			cNode = cNode->DivideNode(instance, direction);
+		}
+
+		direction[0] = -1; direction[1] = 0;
+		while (cNode->children[DOWN] != nullptr)
+		{
+			cNode = cNode->DivideNode(instance, direction);
+		}
+
+		direction[0] = 0; direction[1] = -1;
+		while (cNode->children[RIGHT] != nullptr)
+		{
+			cNode = cNode->DivideNode(instance, direction);
+		}
+
+		direction[0] = 1; direction[1] = 0;
+		while (cNode->children[UP] != nullptr)
+		{
+			cNode = cNode->DivideNode(instance, direction);
+		}
+	}
+
+	//for numper of squared lenght
+		//divide right until there is no up
+		//divide up intil there is no left
+		//divide left until there is no down
+		//divide down until there is no right
+}
+
+GridNode** GridNode::GetChildrenMemAddr(int x, int y)
+{
+	GridNode** ret = nullptr;
+	//if (x == 0 && y == 1) 
+	//{
+
+	//}
+	//else if (x == 0 && y == -1) 
+	//{
+
+	//}
+	//else if (x == 1 && y == 0) 
+	//{
+
+	//}
+	//else if (x == -1 && y == 0) 
+	//{
+
+	//}
+
+	if (x > 0) 
+	{
+		ret = &children[2];
+	}
+	else if (x < 0) 
+	{
+		ret = &children[3];
+	}
+	else if (y > 0) 
+	{
+		ret = &children[0];
+	}
+	else if (y < 0) 
+	{
+		ret = &children[1];
+	}
+
+	return ret;
 }

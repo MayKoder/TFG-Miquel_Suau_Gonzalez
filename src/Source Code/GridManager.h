@@ -13,6 +13,7 @@ struct GridNode
 	};
 
 	GridNode();
+	void SearchAndFillChildren(GridManager* instance);
 
 	void RenderLines(ResourceShader*, uint);
 	
@@ -24,7 +25,11 @@ struct GridNode
 	int GetGridPositionX();
 	int GetGridPositionY();
 
-	void DivideNode(GridManager* instance);
+	GridNode* DivideNode(GridManager* instance, int direction[2]);
+	void DivideNodeCross(GridManager* instance);
+	void DivideNodeSquare(GridManager* instance, int squareLength);
+
+	GridNode** GetChildrenMemAddr(int x, int y);
 	
 	GridNode* children[NODE_SIDES];
 private:
