@@ -20,7 +20,7 @@ typedef std::chrono::high_resolution_clock Clock;
 #include"MO_Window.h"
 
 
-GridManager::GridManager() : shaderRes(nullptr), VBO(0), VAO(0), hoveredNode(nullptr)
+GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0), hoveredNode(nullptr)
 {
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
 
@@ -127,6 +127,14 @@ void GridManager::LoadShader(const char* path)
 		-0.5, 0.0, -0.5,
 	};
 
+	std::vector<float> instanceData;
+	instanceData.reserve(linealNodes.size() * 2);
+	for (size_t i = 0; i < linealNodes.size(); i++)
+	{
+		instanceData.push_back(linealNodes[i]->GetGridPositionX());
+		instanceData.push_back(linealNodes[i]->GetGridPositionY());
+	}
+	instanceData.shrink_to_fit();
 
 
 	//for (size_t x = 0; x <= GRID_SIZE_X; x++)
@@ -154,6 +162,7 @@ void GridManager::LoadShader(const char* path)
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, (GLuint*)&(VBO));
+	glGenBuffers(1, (GLuint*)&(instanceVBO));
 
 	glBindVertexArray(VAO);
 
@@ -163,6 +172,16 @@ void GridManager::LoadShader(const char* path)
 	//position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+	glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+
+	//instance data attribute
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+	
+	glVertexAttribDivisor(0, 0);
+	glVertexAttribDivisor(1, 1);
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -177,6 +196,9 @@ void GridManager::ClearMemory()
 	VAO = 0u;
 	glDeleteBuffers(1, &VBO);
 	VBO = 0u;
+
+	glDeleteBuffers(1, &instanceVBO);
+	instanceVBO = 0u;
 }
 
 //GridNode* GridManager::GetGridNode(int x, int y) {
@@ -185,29 +207,42 @@ void GridManager::ClearMemory()
 
 void GridManager::RenderGridTemporal()
 {
+	auto t1 = Clock::now();
 
-	for (size_t i = 0; i < linealNodes.size(); i++)
-	{
-		linealNodes[i]->RenderLines(shaderRes, VAO);
+	//for (size_t i = 0; i < linealNodes.size(); i++)
+	//{
+	//	linealNodes[i]->RenderLines(shaderRes, VAO);
 
-		if (hoveredNode == linealNodes[i])
-		{
-			glColor3f(1., 0.f, 0.f);
-			glBegin(GL_LINES);
+	//}
+	shaderRes->Bind();
+	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
-			float3 position = float3(linealNodes[i]->GetGridPositionX(), 0.0, linealNodes[i]->GetGridPositionY());
-			float crossSize = 0.03;
+	glBindVertexArray(VAO);
+	glDrawArraysInstanced(
+		GL_LINE_STRIP, 0, 5, linealNodes.size()
+	);
+	glBindVertexArray(0);
+	shaderRes->Unbind();
 
-			glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);
-			glVertex3f(position.x + crossSize, 0.0, position.z - crossSize);
+	if (hoveredNode != nullptr) {
+		glColor3f(1., 0.f, 0.f);
+		glBegin(GL_LINES);
 
-			glVertex3f(position.x + crossSize, 0.0, position.z + crossSize);
-			glVertex3f(position.x - crossSize, 0.0, position.z - crossSize);
+		float3 position = float3(hoveredNode->GetGridPositionX(), 0.0, hoveredNode->GetGridPositionY());
+		float crossSize = 0.03;
 
-			glEnd();
-			glColor3f(1., 1.f, 1.f);
-		}
+		glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);
+		glVertex3f(position.x + crossSize, 0.0, position.z - crossSize);
+
+		glVertex3f(position.x + crossSize, 0.0, position.z + crossSize);
+		glVertex3f(position.x - crossSize, 0.0, position.z - crossSize);
+
+		glEnd();
+		glColor3f(1., 1.f, 1.f);
 	}
+
+	auto t2 = Clock::now();
+	LOG(LogType::L_NORMAL, "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
 
 	//glLineWidth(1.0f);
 
@@ -302,35 +337,40 @@ void GridNode::SearchAndFillChildren(GridManager* instance)
 
 void GridNode::RenderLines(ResourceShader* shaderRes, uint VAO)
 {
-	shaderRes->Bind();
-	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
+	//shaderRes->Bind();
+	//EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
-	GLint modelLoc = glGetUniformLocation(shaderRes->shaderProgramID, "gridPosition");
-	glUniform2fv(modelLoc, 1, gridPosition);
+	//GLint modelLoc = glGetUniformLocation(shaderRes->shaderProgramID, "gridPosition");
+	//glUniform2fv(modelLoc, 1, gridPosition);
 
-	glBindVertexArray(VAO);
-	//glDrawArrays(GL_LINES, 0, (GRID_SIZE_X * GRID_SIZE_Y) + 2);
-	glDrawArrays(GL_LINE_STRIP, 0, 5);
-	glBindVertexArray(0);
+	//glBindVertexArray(VAO);
+	////glDrawArrays(GL_LINES, 0, (GRID_SIZE_X * GRID_SIZE_Y) + 2);
+	//glDrawArrays(GL_LINE_STRIP, 0, 5);
+	//glBindVertexArray(0);
 
-	shaderRes->Unbind();
+	//shaderRes->Unbind();
 
-	glColor3f(1., 0.f, 0.f);
-	glBegin(GL_LINES);
+	//glColor3f(1., 0.f, 0.f);
+	//glBegin(GL_LINES);
 
-	float3 position = float3::zero;
-	for (size_t i = 0; i < NODE_SIDES; i++)
-	{
-		if (children[i] != nullptr) 
-		{
-			position = float3(this->GetGridPositionX(), 0.0f, this->GetGridPositionY());
-			glVertex3fv(&position.x);
-			glVertex3f(children[i]->GetGridPositionX(), 0.0, children[i]->GetGridPositionY());
-		}
-	}
+	//float3 position = float3::zero;
+	//for (size_t i = 0; i < NODE_SIDES; i++)
+	//{
+	//	if (children[i] != nullptr) 
+	//	{
+	//		position = float3(this->GetGridPositionX(), 0.0f, this->GetGridPositionY());
+	//		glVertex3fv(&position.x);
 
-	glEnd();
-	glColor3f(1., 1.f, 1.f);
+	//		float3 target = float3(children[i]->GetGridPositionX(), 0.0f, children[i]->GetGridPositionY());
+	//		float3 dir = target - position;
+	//		dir /= 2.5;
+
+	//		glVertex3f(position.x + dir.x, 0.0, position.z + dir.z);
+	//	}
+	//}
+
+	//glEnd();
+	//glColor3f(1., 1.f, 1.f);
 }
 
 bool GridNode::IsPosition(int x, int y)

@@ -63,8 +63,9 @@ private:
 	//GridNode grid[GRID_SIZE_X * GRID_SIZE_Y];
 	ResourceShader* shaderRes;
 
-	uint VBO;
 	uint VAO;
+	uint VBO; //Mesh positions
+	uint instanceVBO;
 
 	GridNode* hoveredNode;
 };
