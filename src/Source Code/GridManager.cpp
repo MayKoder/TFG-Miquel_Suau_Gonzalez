@@ -27,7 +27,7 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0),
 	baseNode.SetGridPosition(0, 0);
 	linealNodes.push_back(&baseNode);
 
-	baseNode.DivideNodeSquare(this, 30);
+	//baseNode.DivideNodeSquare(this, 30);
 //#pragma region Expansion Test
 //
 //
@@ -110,6 +110,25 @@ void GridManager::UpdateInput()
 	if (hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN)
 	{
 		hoveredNode->DivideNodeCross(this);
+
+
+		std::vector<float> instanceData;
+		instanceData.reserve(linealNodes.size() * 2);
+		for (size_t i = 0; i < linealNodes.size(); i++)
+		{
+			instanceData.push_back(linealNodes[i]->GetGridPositionX());
+			instanceData.push_back(linealNodes[i]->GetGridPositionY());
+		}
+		instanceData.shrink_to_fit();
+
+
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+		glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 }
@@ -209,11 +228,6 @@ void GridManager::RenderGridTemporal()
 {
 	auto t1 = Clock::now();
 
-	//for (size_t i = 0; i < linealNodes.size(); i++)
-	//{
-	//	linealNodes[i]->RenderLines(shaderRes, VAO);
-
-	//}
 	shaderRes->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
