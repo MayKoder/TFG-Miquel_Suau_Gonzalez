@@ -120,30 +120,6 @@
     <ClInclude Include="Source Code\EngineVersion.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_impl_opengl3.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_impl_sdl.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_internal.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imstb_rectpack.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imstb_textedit.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imstb_truetype.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h">
-      <Filter>Externals\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\MaykMath.h">
       <Filter>Sources\Tools\MMath</Filter>
     </ClInclude>
@@ -335,9 +311,6 @@
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\parson\parson.h">
       <Filter>Externals\parson</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\External Libraries\ImGui\ImGuiUtils.h">
-      <Filter>Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\mmgr\mmgr.h">
       <Filter>Externals\mmgr</Filter>
@@ -537,6 +510,21 @@
     <ClInclude Include="Source Code\GridManager.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h">
+      <Filter>Externals\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h">
+      <Filter>Externals\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_internal.h">
+      <Filter>Externals\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\backends\imgui_impl_opengl3.h">
+      <Filter>Externals\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\External Libraries\ImGui\backends\imgui_impl_sdl.h">
+      <Filter>Externals\ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -559,24 +547,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\EngineVersion.cpp">
       <Filter>Sources\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_opengl3.cpp">
-      <Filter>Externals\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl.cpp">
-      <Filter>Externals\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_widgets.cpp">
-      <Filter>Externals\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp">
-      <Filter>Externals\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp">
-      <Filter>Externals\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp">
-      <Filter>Externals\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\MaykMath.cpp">
       <Filter>Sources\Tools\MMath</Filter>
@@ -845,6 +815,27 @@
     <ClCompile Include="Source Code\GridManager.cpp">
       <Filter>Sources\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_tables.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_widgets.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\External Libraries\ImGui\backends\imgui_impl_sdl.cpp">
+      <Filter>Externals\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\External Libraries\MathGeoLib\include\Math\Matrix.inl">
@@ -868,5 +859,10 @@
     <None Include="Source Code\External Libraries\DevIL\include\config.h.win">
       <Filter>Externals\DevIL</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Source Code\External Libraries\ImGui\misc\debuggers\imgui.natvis">
+      <Filter>Externals\ImGui</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
-#include "MO_Window.h"
 #include "EngineVersion.h"
 #include "ImGui/imgui.h"
+#include "MO_Window.h"
 #include "MO_Renderer3D.h"
 
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled), s_width(0), s_height(0), brightness(1.f)

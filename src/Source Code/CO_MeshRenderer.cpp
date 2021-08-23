@@ -1,6 +1,5 @@
 #include "CO_MeshRenderer.h"
 #include "RE_Mesh.h"
-#include "OpenGL.h"
 
 #include "Application.h"
 #include "MO_Renderer3D.h"

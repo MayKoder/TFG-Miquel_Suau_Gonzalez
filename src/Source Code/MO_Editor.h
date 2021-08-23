@@ -44,8 +44,8 @@ public:
 
 	void Draw();
 	void DrawMenuBar();
-	void DrawTopBar();
-	void CreateDockSpace();
+	//void DrawTopBar();
+	//void CreateDockSpace();
 
 	bool CleanUp() override;
 

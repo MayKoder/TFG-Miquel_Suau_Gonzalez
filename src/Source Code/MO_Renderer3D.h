@@ -4,7 +4,6 @@
 
 #include <queue>
 
-#include "OpenGL.h"
 #include"MathGeoLib/include/Math/float3.h"
 #include"MathGeoLib/include/Geometry/LineSegment.h"
 
@@ -20,6 +19,9 @@ class C_MeshRenderer;
 class ResourceTexture;
 class C_Camera;
 class C_DirectionalLight;
+
+typedef unsigned int	GLuint;		/* 4-byte unsigned */
+typedef unsigned char	GLubyte;	/* 1-byte unsigned */
 
 #define MAX_LIGHTS 1
 

@@ -3,12 +3,13 @@
 #include "MathGeoLib/include/Math/Quat.h"
 #include "MathGeoLib/include/Algorithm/Random/LCG.h"
 
+#include"glmath.h"
 #include"OpenGL.h"
+
 #include"RE_Shader.h"
 #include"MO_Window.h"
 #include"MO_Camera3D.h"
 #include"Application.h"
-#include"glmath.h"
 
 UIElement::UIElement(UIElement* _parent, float2 pos, float2 rot, float2 scale) : parent(_parent), colorRGBA(float4::one),
 rectOffset(float4::zero)

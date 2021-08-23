@@ -204,15 +204,11 @@
     <ClInclude Include="Source Code\External Libraries\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="Source Code\External Libraries\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="Source Code\External Libraries\ImGuizmo\ImZoomSlider.h" />
+    <ClInclude Include="Source Code\External Libraries\ImGui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="Source Code\External Libraries\ImGui\backends\imgui_impl_sdl.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imconfig.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui.h" />
-    <ClInclude Include="Source Code\External Libraries\ImGui\ImGuiUtils.h" />
-    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_impl_opengl3.h" />
-    <ClInclude Include="Source Code\External Libraries\ImGui\imgui_impl_sdl.h" />
     <ClInclude Include="Source Code\External Libraries\ImGui\imgui_internal.h" />
-    <ClInclude Include="Source Code\External Libraries\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="Source Code\External Libraries\ImGui\imstb_textedit.h" />
-    <ClInclude Include="Source Code\External Libraries\ImGui\imstb_truetype.h" />
     <ClInclude Include="Source Code\External Libraries\ImTextEditor\TextEditor.h" />
     <ClInclude Include="Source Code\External Libraries\MathGeoLib\include\Algorithm\Random\LCG.h" />
     <ClInclude Include="Source Code\External Libraries\MathGeoLib\include\Geometry\AABB.h" />
@@ -344,11 +340,12 @@
     <ClCompile Include="Source Code\External Libraries\ImGuizmo\ImGradient.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGuizmo\ImSequencer.cpp" />
+    <ClCompile Include="Source Code\External Libraries\ImGui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Source Code\External Libraries\ImGui\backends\imgui_impl_sdl.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="Source Code\External Libraries\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImTextEditor\TextEditor.cpp" />
     <ClCompile Include="Source Code\External Libraries\MathGeoLib\include\Algorithm\Random\LCG.cpp" />
@@ -434,6 +431,9 @@
     <None Include="Source Code\External Libraries\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_CPP.inl" />
     <None Include="Source Code\External Libraries\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
     <None Include="Source Code\External Libraries\MathGeoLib\include\Math\Matrix.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Source Code\External Libraries\ImGui\misc\debuggers\imgui.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

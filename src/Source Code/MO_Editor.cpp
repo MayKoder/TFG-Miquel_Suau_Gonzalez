@@ -2,13 +2,14 @@
 
 #include "Application.h"
 
-#include "MMGui.h"
+//#include "MMGui.h"
 #include "parson/parson.h"
 
 //ImGui Includes
 #include "ImGui/imgui.h"
-#include "ImGui/imgui_impl_sdl.h"
-#include "ImGui/imgui_impl_opengl3.h"
+#include "ImGui/backends/imgui_impl_sdl.h"
+#include "ImGui/backends/imgui_impl_opengl3.h"
+#include "SDL/include/SDL.h"
 
 #include"DETime.h"
 #include"AssetDir.h"
@@ -31,6 +32,8 @@
 #include"GameObject.h"
 #include"IM_TextureImporter.h"
 #include"MO_Camera3D.h"
+
+#include "SDL/include/SDL_opengl.h"
 
 //TODO: Do i really need all those includes?
 M_Editor::M_Editor(Application* app, bool start_enabled) : Module(app, start_enabled), displayWindow(false),
@@ -66,44 +69,48 @@ bool M_Editor::Init()
 
 	LOG(LogType::L_NORMAL, "Init: ImGui");
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+	//IMGUI_CHECKVERSION();
+	//ImGui::CreateContext();
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+	//////io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	////io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+	////io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
-	//io.ConfigViewportsNoDecoration = true;                    
-	//io.ConfigViewportsNoAutoMerge = true;
+	////io.ConfigViewportsNoDecoration = true;                    
+	////io.ConfigViewportsNoAutoMerge = true;
 
-	ImGuiStyle* style = &ImGui::GetStyle();
-	style->WindowMenuButtonPosition = ImGuiDir_None;
-	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.219f, 0.219f, 0.219f, 1.f);
-	style->Colors[ImGuiCol_MenuBarBg] = ImVec4(1.f, 1.f, 1.f, 1.f);
+	////ImGuiStyle* style = &ImGui::GetStyle();
+	////style->WindowMenuButtonPosition = ImGuiDir_None;
+	////style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.219f, 0.219f, 0.219f, 1.f);
+	////style->Colors[ImGuiCol_MenuBarBg] = ImVec4(1.f, 1.f, 1.f, 1.f);
 
-	style->Colors[ImGuiCol_TitleBg] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
-	style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
+	////style->Colors[ImGuiCol_TitleBg] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
+	////style->Colors[ImGuiCol_TitleBgActive] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
 
-	style->Colors[ImGuiCol_Separator] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
-	style->Colors[ImGuiCol_SeparatorActive] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
+	////style->Colors[ImGuiCol_Separator] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
+	////style->Colors[ImGuiCol_SeparatorActive] = ImVec4(0.152f, 0.152f, 0.152f, 1.f);
 
-	style->Colors[ImGuiCol_WindowBg] = ImVec4(0.211, 0.211, 0.211, 1.f);
-	//style->WindowBorderSize = 0.0f;
+	////style->Colors[ImGuiCol_WindowBg] = ImVec4(0.211, 0.211, 0.211, 1.f);
+	//////style->WindowBorderSize = 0.0f;
 
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		style->WindowRounding = 0.0f;
-		style->Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
+	////if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	////{
+	////	style->WindowRounding = 0.0f;
+	////	style->Colors[ImGuiCol_WindowBg].w = 1.0f;
+	////}
 
 
-	ImGui_ImplSDL2_InitForOpenGL(App->moduleWindow->window, App->moduleRenderer3D->context);
-	ImGui_ImplOpenGL3_Init();
+	//ImGui::StyleColorsDark();
+	////ImGui::StyleColorsClassic();
 
-	io.MouseDrawCursor = false;
-	io.IniFilename = "Settings/imgui.ini";
-	playingTint = ImVec4(1, 1, 1, 1);
+	//// Setup Platform/Renderer backends
+	//bool test2 = ImGui_ImplSDL2_InitForOpenGL(App->moduleWindow->window, App->moduleRenderer3D->context);
+	//bool test = ImGui_ImplOpenGL3_Init();
+
+	//io.MouseDrawCursor = false;
+	//io.IniFilename = "Settings/imgui.ini";
+	//playingTint = ImVec4(1, 1, 1, 1);
 	//io.IniFilename = NULL;
 
 	return true;
@@ -120,59 +127,59 @@ bool M_Editor::Start()
 
 void M_Editor::Draw()
 {
-	//glClearColor(0.08f, 0.08f, 0.08f, 1.f);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	////glClearColor(0.08f, 0.08f, 0.08f, 1.f);
+	////glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Start the Dear ImGui frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(App->moduleWindow->window);
-	ImGui::NewFrame();
+	//// Start the Dear ImGui frame
+	//ImGui_ImplOpenGL3_NewFrame();
+	//ImGui_ImplSDL2_NewFrame(App->moduleWindow->window);
+	//ImGui::NewFrame();
 
-	ImGuizmo::BeginFrame();
+	//ImGuizmo::BeginFrame();
 
-	//DrawMenuBar();
+	////DrawMenuBar();
 
-	//ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowBorderSize, 0);
-	//DrawTopBar();
-	//ImGui::PopStyleVar();
+	////ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowBorderSize, 0);
+	////DrawTopBar();
+	////ImGui::PopStyleVar();
 
-	//CreateDockSpace();
+	////CreateDockSpace();
 
 
-	for (unsigned int i = 0; i < windows.size(); i++)
-	{
-		if (windows[i]->active)
-		{
-			windows[i]->Draw();
-		}
-	}
+	//for (unsigned int i = 0; i < windows.size(); i++)
+	//{
+	//	if (windows[i]->active)
+	//	{
+	//		windows[i]->Draw();
+	//	}
+	//}
 
-	if (ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left)) 
-	{
-		W_Hierarchy* hier = dynamic_cast<W_Hierarchy*>(GetEditorWindow(EditorWindow::HIERARCHY));
-		hier->dropTarget = nullptr;
-	}
+	//if (ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left)) 
+	//{
+	//	W_Hierarchy* hier = dynamic_cast<W_Hierarchy*>(GetEditorWindow(EditorWindow::HIERARCHY));
+	//	hier->dropTarget = nullptr;
+	//}
 
-	if (displayWindow)
-	{
-		ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_MenuBarBg, ImVec4(0.f, 0.f, 0.f, 1.f));
-		ImGui::ShowDemoWindow();
-		ImGui::PopStyleColor();
-	}
+	//if (displayWindow)
+	//{
+	//	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_MenuBarBg, ImVec4(0.f, 0.f, 0.f, 1.f));
+	//	ImGui::ShowDemoWindow();
+	//	ImGui::PopStyleColor();
+	//}
 
-	//Rendering
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	////Rendering
+	//ImGui::Render();
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-	}
+	//ImGuiIO& io = ImGui::GetIO(); (void)io;
+	//if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	//{
+	//	SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+	//	SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+	//	ImGui::UpdatePlatformWindows();
+	//	ImGui::RenderPlatformWindowsDefault();
+	//	SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+	//}
 
 }
 
@@ -180,10 +187,6 @@ void M_Editor::Draw()
 bool M_Editor::CleanUp()
 {
 	LOG(LogType::L_NORMAL, "Editor CleanUp");
-
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
 
 	for (unsigned int i = 0; i < windows.size(); ++i)
 	{
@@ -304,101 +307,101 @@ void M_Editor::DrawMenuBar()
 	ImGui::PopStyleColor(1);
 }
 
-void M_Editor::DrawTopBar()
-{
-	//Main menu bar 2
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-	ImGui::SetNextWindowPos(viewport->GetWorkPos());
-	ImGui::SetNextWindowViewport(viewport->ID);
-	ImGuiContext& g = *GImGui;
-
-	g.NextWindowData.MenuBarOffsetMinVal = ImVec2(g.Style.DisplaySafeAreaPadding.x, ImMax(g.Style.DisplaySafeAreaPadding.y - g.Style.FramePadding.y, 0.0f));
-
-	ImGui::SetNextWindowSize(ImVec2(g.IO.DisplaySize.x, (g.NextWindowData.MenuBarOffsetMinVal.y + g.FontBaseSize + g.Style.FramePadding.y) * 2.5f));
-
-	g.NextWindowData.MenuBarOffsetMinVal = ImVec2(0.f, 0.f);
-
-
-	if (ImGui::Begin("ButtonsNavBar", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDocking))
-	{
-
-		viewportCorSize = ImGui::GetWindowSize().y;
-
-		ImGuiStyle& style = ImGui::GetStyle();
-		float w = ImGui::CalcItemWidth();
-		float spacing = style.ItemInnerSpacing.x;
-		float button_sz = ImGui::GetFrameHeight();
-		ImGui::PushItemWidth((w - spacing * 2.0f - button_sz * 2.0f) * 0.13f);
-		if (ImGui::BeginCombo("##styleDropdown", "Style"))
-		{
-			//It's never a good idea to change a vector content
-			//while iterating over it
-			bool fileChanged = false;
-			for (int n = 0; n < styles.size(); n++)
-			{
-				if (ImGui::Button(styles[n].c_str()))
-					ChangeStyleTo(styles[n].c_str());
-
-				ImGui::SameLine();
-				std::string label("X" + std::to_string(n));
-				if (ImGui::Button(label.c_str()))
-				{
-					//Delete style
-					DeleteStyle(styles[n].c_str());
-					fileChanged = true;
-				}
-			}
-
-			ImGui::Separator();
-
-			//WARNING, TODO: Temporal fix, this is bad, fix it
-			ImGui::PushItemWidth(10 * MAX_STY_INPUT);
-			ImGui::InputText("##sName: ", styleInput, MAX_STY_INPUT);
-			ImGui::PopItemWidth();
-
-			if (ImGui::Button("Save current style") && styleInput[0] != '\0')
-			{
-				SaveStyle(styleInput);
-				styleInput[0] = '\0';
-				fileChanged = true;
-			}
-
-			if (fileChanged)
-				UpdateLoadedStylesVector(&styles);
-
-			ImGui::EndCombo();
-		}
-		ImGui::PopItemWidth();
-
-		ImGui::SameLine((ImGui::GetContentRegionMax().x / 2.f) - 100);
-
-
-		ImGui::SameLine(ImGui::GetContentRegionMax().x - (ImGui::GetButtonSize("Take Screenshoot").x + style.FramePadding.x));
-		if (ImGui::Button("Take Screenshoot")) 
-		{
-			TextureImporter::TakeScreenshot(App->moduleCamera->editorCamera.resolvedFBO.GetFrameBuffer());
-		}
-	}
-	ImGui::End();
-
-	//ImGui::PopStyleColor();
-}
-
-void M_Editor::CreateDockSpace()
-{
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-	ImVec2 dockPos(viewport->GetWorkPos());
-	dockPos.y += viewportCorSize;
-	ImGui::SetNextWindowPos(dockPos);
-
-	ImVec2 dockSize(viewport->GetWorkSize());
-	dockSize.y -= viewportCorSize;
-	ImGui::SetNextWindowSize(dockSize);
-
-	dockspace_id = ImGui::DockSpaceOverViewportCustom(viewport, ImGuiDockNodeFlags_PassthruCentralNode, dockPos, dockSize, nullptr);
-}
+//void M_Editor::DrawTopBar()
+//{
+//	//Main menu bar 2
+//	ImGuiViewport* viewport = ImGui::GetMainViewport();
+//
+//	ImGui::SetNextWindowPos(viewport->GetWorkPos());
+//	ImGui::SetNextWindowViewport(viewport->ID);
+//	ImGuiContext& g = *GImGui;
+//
+//	g.NextWindowData.MenuBarOffsetMinVal = ImVec2(g.Style.DisplaySafeAreaPadding.x, ImMax(g.Style.DisplaySafeAreaPadding.y - g.Style.FramePadding.y, 0.0f));
+//
+//	ImGui::SetNextWindowSize(ImVec2(g.IO.DisplaySize.x, (g.NextWindowData.MenuBarOffsetMinVal.y + g.FontBaseSize + g.Style.FramePadding.y) * 2.5f));
+//
+//	g.NextWindowData.MenuBarOffsetMinVal = ImVec2(0.f, 0.f);
+//
+//
+//	if (ImGui::Begin("ButtonsNavBar", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDocking))
+//	{
+//
+//		viewportCorSize = ImGui::GetWindowSize().y;
+//
+//		ImGuiStyle& style = ImGui::GetStyle();
+//		float w = ImGui::CalcItemWidth();
+//		float spacing = style.ItemInnerSpacing.x;
+//		float button_sz = ImGui::GetFrameHeight();
+//		ImGui::PushItemWidth((w - spacing * 2.0f - button_sz * 2.0f) * 0.13f);
+//		if (ImGui::BeginCombo("##styleDropdown", "Style"))
+//		{
+//			//It's never a good idea to change a vector content
+//			//while iterating over it
+//			bool fileChanged = false;
+//			for (int n = 0; n < styles.size(); n++)
+//			{
+//				if (ImGui::Button(styles[n].c_str()))
+//					ChangeStyleTo(styles[n].c_str());
+//
+//				ImGui::SameLine();
+//				std::string label("X" + std::to_string(n));
+//				if (ImGui::Button(label.c_str()))
+//				{
+//					//Delete style
+//					DeleteStyle(styles[n].c_str());
+//					fileChanged = true;
+//				}
+//			}
+//
+//			ImGui::Separator();
+//
+//			//WARNING, TODO: Temporal fix, this is bad, fix it
+//			ImGui::PushItemWidth(10 * MAX_STY_INPUT);
+//			ImGui::InputText("##sName: ", styleInput, MAX_STY_INPUT);
+//			ImGui::PopItemWidth();
+//
+//			if (ImGui::Button("Save current style") && styleInput[0] != '\0')
+//			{
+//				SaveStyle(styleInput);
+//				styleInput[0] = '\0';
+//				fileChanged = true;
+//			}
+//
+//			if (fileChanged)
+//				UpdateLoadedStylesVector(&styles);
+//
+//			ImGui::EndCombo();
+//		}
+//		ImGui::PopItemWidth();
+//
+//		ImGui::SameLine((ImGui::GetContentRegionMax().x / 2.f) - 100);
+//
+//
+//		ImGui::SameLine(ImGui::GetContentRegionMax().x - (ImGui::GetButtonSize("Take Screenshoot").x + style.FramePadding.x));
+//		if (ImGui::Button("Take Screenshoot")) 
+//		{
+//			TextureImporter::TakeScreenshot(App->moduleCamera->editorCamera.resolvedFBO.GetFrameBuffer());
+//		}
+//	}
+//	ImGui::End();
+//
+//	//ImGui::PopStyleColor();
+//}
+//
+//void M_Editor::CreateDockSpace()
+//{
+//	ImGuiViewport* viewport = ImGui::GetMainViewport();
+//
+//	ImVec2 dockPos(viewport->GetWorkPos());
+//	dockPos.y += viewportCorSize;
+//	ImGui::SetNextWindowPos(dockPos);
+//
+//	ImVec2 dockSize(viewport->GetWorkSize());
+//	dockSize.y -= viewportCorSize;
+//	ImGui::SetNextWindowSize(dockSize);
+//
+//	dockspace_id = ImGui::DockSpaceOverViewportCustom(viewport, ImGuiDockNodeFlags_PassthruCentralNode, dockPos, dockSize, nullptr);
+//}
 
 
 void M_Editor::DrawCreateMenu()

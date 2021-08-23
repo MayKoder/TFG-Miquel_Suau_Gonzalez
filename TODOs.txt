@@ -1,0 +1,3 @@
+[DONE] Change ImGui to normal version and not docking
+
+If needed, cull instance culling for nodes

@@ -1,12 +1,13 @@
 #include "Globals.h"
 #include "Application.h"
 #include "MO_Input.h"
-#include "ImGui/imgui_impl_sdl.h"
 
 #include "MO_Renderer3D.h"
 #include "MO_Window.h"
 #include "IM_FileSystem.h"
 #include "MO_Scene.h"
+
+#include "ImGui/backends/imgui_impl_sdl.h"
 
 #define MAX_KEYS 300
 
@@ -244,7 +245,7 @@ bool ModuleInput::CleanUp()
 #ifndef STANDALONE
 void ModuleInput::OnGUI()
 {
-	if (ImGui::CollapsingHeader("Input", ImGuiTreeNodeFlags_DefaultOpen))
+	/*if (ImGui::CollapsingHeader("Input", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("----------Mouse Inputs----------");
 		ImGui::Text("Mouse: X = %d, Y = %d, Z = %d", mouse_x, mouse_y, mouse_z);
@@ -282,6 +283,6 @@ void ModuleInput::OnGUI()
 		ImGui::Text("GamePad: Pressing DPad Down: %d", game_pad[SDL_CONTROLLER_BUTTON_DPAD_DOWN] == KEY_REPEAT);
 		ImGui::Text("GamePad: Pressing DPad Left: %d", game_pad[SDL_CONTROLLER_BUTTON_DPAD_LEFT] == KEY_REPEAT);
 		ImGui::Text("GamePad: Pressing DPad Right: %d", game_pad[SDL_CONTROLLER_BUTTON_DPAD_RIGHT] == KEY_REPEAT);
-	}
+	}*/
 }
 #endif // !STANDALONE

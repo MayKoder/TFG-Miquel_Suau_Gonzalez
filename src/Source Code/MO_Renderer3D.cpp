@@ -2,6 +2,12 @@
 #include "MaykMath.h"
 #include "MMGui.h"
 
+//ImGui Includes
+#include "ImGui/imgui.h"
+#include "ImGui/backends/imgui_impl_sdl.h"
+#include "ImGui/backends/imgui_impl_opengl3.h"
+#include "SDL/include/SDL.h"
+
 #include "MO_Window.h"
 #include "MO_Camera3D.h"
 #include "MO_Editor.h"
@@ -62,6 +68,7 @@ bool ModuleRenderer3D::Init()
 
 	//Create context
 	context = SDL_GL_CreateContext(App->moduleWindow->window);
+	SDL_GL_MakeCurrent(App->moduleWindow->window, context);
 	if(context == NULL)
 	{
 		LOG(LogType::L_ERROR, "OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -394,9 +401,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 
 
-#ifndef STANDALONE
-	App->moduleEditor->Draw();
-#endif // !STANDALONE
+//#ifndef STANDALONE
+//	App->moduleEditor->Draw();
+//#endif // !STANDALONE
 	
 	//TEMPORAL: Delete here so you can call mouse picking from scene window, should not be here in the future
 	ClearAllRenderData();

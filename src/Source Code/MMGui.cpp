@@ -53,36 +53,36 @@ void ImGui::TextURL(const char* name_, const char* URL_, uint8_t sameLineBefore,
         ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
 }
 
-ImGuiID ImGui::DockSpaceOverViewportCustom(ImGuiViewport* viewport, ImGuiDockNodeFlags dockspace_flags, ImVec2 position, ImVec2 size, const ImGuiWindowClass* window_class)
-{
-    if (viewport == NULL)
-        viewport = GetMainViewport();
-
-    SetNextWindowPos(position);
-    SetNextWindowSize(size);
-    SetNextWindowViewport(viewport->ID);
-
-    ImGuiWindowFlags host_window_flags = 0;
-    host_window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking;
-    host_window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-        host_window_flags |= ImGuiWindowFlags_NoBackground;
-
-    char label[32];
-    ImFormatString(label, IM_ARRAYSIZE(label), "DockSpaceViewport_%08X", viewport->ID);
-
-    PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-    PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    Begin(label, NULL, host_window_flags);
-    PopStyleVar(3);
-
-    ImGuiID dockspace_id = GetID("DockSpace");
-    DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags, window_class);
-    End();
-
-    return dockspace_id;
-}
+//ImGuiID ImGui::DockSpaceOverViewportCustom(ImGuiViewport* viewport, ImGuiDockNodeFlags dockspace_flags, ImVec2 position, ImVec2 size, const ImGuiWindowClass* window_class)
+//{
+//    if (viewport == NULL)
+//        viewport = GetMainViewport();
+//
+//    SetNextWindowPos(position);
+//    SetNextWindowSize(size);
+//    SetNextWindowViewport(viewport->ID);
+//
+//    ImGuiWindowFlags host_window_flags = 0;
+//    host_window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking;
+//    host_window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+//    if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+//        host_window_flags |= ImGuiWindowFlags_NoBackground;
+//
+//    char label[32];
+//    ImFormatString(label, IM_ARRAYSIZE(label), "DockSpaceViewport_%08X", viewport->ID);
+//
+//    PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+//    PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+//    PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+//    Begin(label, NULL, host_window_flags);
+//    PopStyleVar(3);
+//
+//    ImGuiID dockspace_id = GetID("DockSpace");
+//    DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags, window_class);
+//    End();
+//
+//    return dockspace_id;
+//}
 
 ImVec2 ImGui::GetButtonSize(const char* text, const ImVec2 size_arg)
 {

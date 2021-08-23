@@ -1,5 +1,4 @@
 #include "CO_DirectionalLight.h"
-#include "OpenGL.h"
 #include "Application.h"
 #include"MO_Renderer3D.h"
 

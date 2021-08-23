@@ -16,6 +16,7 @@ public:
 	M_GUI(Application* app, bool start_enabled = true);
 	virtual ~M_GUI();
 
+	bool Init() override;
 	bool Start() override;
 	update_status Update(float dt) override;
 	bool CleanUp() override;

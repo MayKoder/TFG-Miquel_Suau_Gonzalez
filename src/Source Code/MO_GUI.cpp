@@ -7,9 +7,13 @@
 #include "CO_Camera.h"
 
 #include "Application.h"
-#include "OpenGL.h"
 
 #include"RE_Shader.h"
+
+#include "ImGui/imgui.h"
+#include "ImGui/backends/imgui_impl_sdl.h"
+#include "ImGui/backends/imgui_impl_opengl3.h"
+#include "OpenGL.h"
 
 M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr)
 {
@@ -23,6 +27,24 @@ M_GUI::~M_GUI()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	VAO = 0; VBO = 0;
+}
+
+bool M_GUI::Init()
+{
+	//TODO: Move this to gui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+
+	ImGui::StyleColorsDark();
+	bool test2 = ImGui_ImplSDL2_InitForOpenGL(App->moduleWindow->window, App->moduleRenderer3D->context);
+	bool test = ImGui_ImplOpenGL3_Init();
+
+	io.MouseDrawCursor = false;
+	io.IniFilename = "Settings/imgui.ini";
+
+	return true;
 }
 
 bool M_GUI::Start()
@@ -113,6 +135,7 @@ bool M_GUI::Start()
 
 update_status M_GUI::Update(float dt)
 {
+	//TODO: Move this inside renderer or maybe input update loop?
 	if (App->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN) 
 	{
 		RecursiveUpdateElements(root);
@@ -122,6 +145,11 @@ update_status M_GUI::Update(float dt)
 
 bool M_GUI::CleanUp()
 {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
+
 	App->moduleResources->UnloadResource(uiShader->GetUID());
 	
 	delete root;
@@ -132,11 +160,18 @@ bool M_GUI::CleanUp()
 
 void M_GUI::RenderUIElements()
 {
-	uiShader->Bind();
+	//uiShader->Bind();
 
-	root->RenderElement(VAO, uiShader);
+	//root->RenderElement(VAO, uiShader);
 
-	uiShader->Unbind();
+	//uiShader->Unbind();
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 bool M_GUI::RecursiveUpdateElements(UIElement* element)

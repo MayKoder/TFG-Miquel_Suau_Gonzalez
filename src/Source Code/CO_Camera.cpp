@@ -14,7 +14,6 @@
 
 #include"GameObject.h"
 #include"CO_Transform.h"
-#include"OpenGL.h"
 #include"MO_Window.h"
 
 C_Camera::C_Camera() : Component(nullptr), fov(60.0f), cullingState(true),
