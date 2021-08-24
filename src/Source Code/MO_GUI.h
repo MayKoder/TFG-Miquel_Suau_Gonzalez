@@ -8,6 +8,30 @@ static float uiPlaneData[] =
 	/*0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0,*/
 };
 
+#include"ImGui/imgui.h"
+struct PanelTemp 
+{
+	PanelTemp() : pos(ImVec2(0.f, 0.f)), size(ImVec2(0.f, 0.f)), pivot(ImVec2(0.f, 0.f)), buttonAnchor(0.f, 0.f) {}
+
+	void Set(ImVec2 _pivot, ImVec2 _pos, ImVec2 _size, ImVec2 _acPoint)
+	{
+		pos = _pos;
+		size = _size;
+		pivot = _pivot;
+		buttonAnchor = _acPoint;
+		//: pos(_pos), size(_size), pivot(_pivot)
+	}
+
+public: 
+	ImVec2 size;
+	ImVec2 pos;
+	ImVec2 pivot;
+
+	ImVec2 buttonAnchor;
+	
+	bool isOpen = false;
+};
+
 //template<typename... Args>
 class M_GUI : public Module
 {
@@ -47,4 +71,6 @@ public:
 	UIElement* root;
 
 	ResourceShader* uiShader;
+
+	PanelTemp imGuiPanels[3];
 };

@@ -30,7 +30,7 @@ GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0),
 	mapTest[GridManager::CANTOR_MAPPING(0, 0)].SetGridPosition(0, 0);
 	//linealNodes.push_back(&baseNode);
 
-	mapTest[GridManager::CANTOR_MAPPING(0, 0)].DivideNodeSquare(this, 500);
+	//mapTest[GridManager::CANTOR_MAPPING(0, 0)].DivideNodeSquare(this, 500);
 
 //#pragma region Expansion Test
 //

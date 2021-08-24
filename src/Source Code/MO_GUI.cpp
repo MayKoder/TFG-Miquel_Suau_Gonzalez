@@ -10,7 +10,6 @@
 
 #include"RE_Shader.h"
 
-#include "ImGui/imgui.h"
 #include "ImGui/backends/imgui_impl_sdl.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
 #include "OpenGL.h"
@@ -42,7 +41,7 @@ bool M_GUI::Init()
 	bool test = ImGui_ImplOpenGL3_Init();
 
 	io.MouseDrawCursor = false;
-	io.IniFilename = "Settings/imgui.ini";
+	io.IniFilename = NULL;
 
 	return true;
 }
@@ -130,6 +129,13 @@ bool M_GUI::Start()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+
+
+	//WILL USE IMGUI FOR NOW
+	imGuiPanels[0].Set(ImVec2(0.0, 0.5), ImVec2(0, App->moduleWindow->s_height / 2), ImVec2(App->moduleWindow->s_width / 7, App->moduleWindow->s_height / 1.4), ImVec2(1.0, 0.0));
+	imGuiPanels[1].Set(ImVec2(1.0, 0.5), ImVec2(App->moduleWindow->s_width, App->moduleWindow->s_height / 2), ImVec2(App->moduleWindow->s_width / 7, App->moduleWindow->s_height / 1.4), ImVec2(-1.0, 0.0));
+	imGuiPanels[2].Set(ImVec2(0.5, 1.0), ImVec2(App->moduleWindow->s_width / 2, App->moduleWindow->s_height), ImVec2(App->moduleWindow->s_width / 2, App->moduleWindow->s_height / 4), ImVec2(0.0, -1.0));
+
 	return true;
 }
 
@@ -169,6 +175,39 @@ void M_GUI::RenderUIElements()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
+
+
+	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
+	for (size_t i = 0; i < 3; i++)
+	{
+		PanelTemp* panel = &imGuiPanels[i];
+		ImGui::SetNextWindowPos(panel->pos, 0, panel->pivot);
+		ImGui::SetNextWindowSize(panel->size);
+		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
+		{
+		}
+		ImGui::End();
+
+
+
+
+		ImVec2 size = ImVec2(App->moduleWindow->s_width / 10, App->moduleWindow->s_height / 25);
+		ImVec2 p0 = ImVec2(panel->pos.x + (panel->size.x * panel->buttonAnchor.x) - (size.x / 2), panel->pos.y + (panel->size.y * panel->buttonAnchor.y) - size.y);
+		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
+
+		ImU32 col_b = ImGui::GetColorU32(IM_COL32(255, 255, 255, 255));
+		draw_list->AddRectFilled(p0, p1, col_b);
+		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) == true) {
+			ImVec4 rect = ImVec4(p0.x, p0.y, size.x, size.y);
+			ImVec2 point = ImGui::GetMousePos();
+			if ((point.x <= rect.x + rect.z && point.x >= rect.x) &&
+				point.y <= rect.y + rect.w && point.y >= rect.y)
+			{
+				LOG(LogType::L_NORMAL, "yyyyyyay %f, %f", point.x, point.y);
+			}
+		}
+	}
+
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

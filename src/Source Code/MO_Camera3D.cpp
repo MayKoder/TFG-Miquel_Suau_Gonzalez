@@ -180,12 +180,23 @@ void ModuleCamera3D::OrbitalRotation(float3 center, float dt)
 		direction = X * direction;
 	}
 
-	float4x4 mat = editorCamera.camFrustrum.WorldMatrix();
-	mat.SetRotatePart(direction.Normalized());
-	editorCamera.camFrustrum.SetWorldMatrix(mat.Float3x4Part());
+	//if ((center + (editorCamera.camFrustrum.front * -distance)).y >= 0.25) 
+	//{
 
-	editorCamera.camFrustrum.pos = center + (editorCamera.camFrustrum.front * -distance);
-	editorCamera.LookAt(center);
+		float4x4 mat = editorCamera.camFrustrum.WorldMatrix();
+		mat.SetRotatePart(direction.Normalized());
+		editorCamera.camFrustrum.SetWorldMatrix(mat.Float3x4Part());
+
+		editorCamera.camFrustrum.pos = center + (editorCamera.camFrustrum.front * -distance);
+		editorCamera.LookAt(center);
+	//}
+	//else 
+	//{
+	//	float3 ret = center + (editorCamera.camFrustrum.front * -distance);
+	//	ret.y = 0.25f;
+	//	editorCamera.camFrustrum.pos = ret;
+	//	editorCamera.LookAt(center);
+	//}
 }
 
 void ModuleCamera3D::FreeRotation(float dt)
