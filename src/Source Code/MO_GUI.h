@@ -11,15 +11,40 @@ static float uiPlaneData[] =
 #include"ImGui/imgui.h"
 struct PanelTemp 
 {
-	PanelTemp() : pos(ImVec2(0.f, 0.f)), size(ImVec2(0.f, 0.f)), pivot(ImVec2(0.f, 0.f)), buttonAnchor(0.f, 0.f) {}
+	PanelTemp() : pos(0.f, 0.f), size(0.f, 0.f), pivot(0.f, 0.f), buttonRect(0.f, 0.f, 0, 0), closeOffset(0.f, 0.f) {}
 
-	void Set(ImVec2 _pivot, ImVec2 _pos, ImVec2 _size, ImVec2 _acPoint)
+	void Set(ImVec2 _pivot, ImVec2 _pos, ImVec2 _size, ImVec4 _acPoint, ImVec2 _closedOffset)
 	{
 		pos = _pos;
 		size = _size;
 		pivot = _pivot;
-		buttonAnchor = _acPoint;
+		buttonRect = _acPoint;
+		closeOffset = _closedOffset;
 		//: pos(_pos), size(_size), pivot(_pivot)
+	}
+
+	/*Shift vertical and horizontal by half the size, set to 0 to avoid shift, -1 to invert or 2 to shift full size*/
+	void ShiftHalfSize(float x = 1, float y = 1) 
+	{
+		buttonRect.x += (buttonRect.z * 0.5f) * x;
+		buttonRect.y += (buttonRect.w * 0.5f) * y;
+	}
+
+	void OnToggleClick() 
+	{
+
+		ImVec2 p0 = ImVec2(buttonRect.x, buttonRect.y);
+		ImVec2 size = ImVec2(buttonRect.z, buttonRect.w);
+
+		ImVec4 rect = ImVec4(p0.x, p0.y, size.x, size.y);
+		ImVec2 point = ImGui::GetMousePos();
+		if ((point.x <= rect.x + rect.z && point.x >= rect.x) &&
+			point.y <= rect.y + rect.w && point.y >= rect.y)
+		{
+			isOpen = !isOpen;
+			buttonRect.x += isOpen == true ? closeOffset.x : -closeOffset.x;
+			buttonRect.y += isOpen == true ? closeOffset.y : -closeOffset.y;
+		}
 	}
 
 public: 
@@ -27,9 +52,13 @@ public:
 	ImVec2 pos;
 	ImVec2 pivot;
 
-	ImVec2 buttonAnchor;
+	std::function<void(int)> drawCallback; //I'm fucking done, this is dumb, should have hardcoded all this shit
+
+	/*X, Y = position // Z, W = button size*/
+	ImVec4 buttonRect;
+	ImVec2 closeOffset; //May think of a better way to do this
 	
-	bool isOpen = false;
+	bool isOpen = true;
 };
 
 //template<typename... Args>
@@ -52,6 +81,8 @@ public:
 	void AddUIElementRow(UIElement* parent, int numberOfElements);
 
 	void OnResize(int, int) override;
+
+	void SetPanelData();
 
 	/*template <typename Func, typename... Args>*/
 	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale)
