@@ -170,7 +170,7 @@ bool M_GUI::Start()
 				//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
 				//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
 
-				if(ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
+				if(ImGui::IsWindowFocused() && ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
 					ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
 
 				ImGui::Button((std::to_string(i) + "Test").c_str(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y));
@@ -182,6 +182,10 @@ bool M_GUI::Start()
 		ImGui::End();
 	};
 	send->drawCallback = customDrawCalls;
+
+	test.Set(0, 1, 0.1, false);
+	test.isActive = true;
+	test.stepOverride = CustomEasings::easeInOutBounce;
 
 	return true;
 }
@@ -219,6 +223,12 @@ void M_GUI::RenderUIElements()
 
 	//uiShader->Unbind();
 
+	glPointSize(50);
+	glBegin(GL_POINTS);
+	glVertex3f(0.f, test.GetAndStep(App->GetDT()), 0.0f);
+	glEnd();
+	glPointSize(1.0);
+
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
@@ -236,7 +246,7 @@ void M_GUI::RenderUIElements()
 
 
 		ImVec2 size = ImVec2(panel->buttonRect.x, panel->buttonRect.y);
-		ImVec2 p0 = ImVec2(panel->animator.value.x + panel->closeOffset.x, panel->animator.value.y + panel->closeOffset.y);
+		ImVec2 p0 = ImVec2(panel->animator.Get().x + panel->closeOffset.x, panel->animator.Get().y + panel->closeOffset.y);
 		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
 
 		ImU32 col_b = ImGui::GetColorU32(IM_COL32(255, 255, 255, 255));

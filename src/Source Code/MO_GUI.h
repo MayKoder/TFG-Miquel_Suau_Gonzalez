@@ -44,13 +44,6 @@ struct PanelTemp
 		{
 			//isOpen = !isOpen;
 			animator.Invert();
-			//if (animator.isActive == true) 
-			//{
-			//	animator.Invert();
-			//}
-			//animator.isActive = true;
-			//buttonRect.x += isOpen == true ? closeOffset.x : -closeOffset.x;
-			//buttonRect.y += isOpen == true ? closeOffset.y : -closeOffset.y;
 		}
 	}
 
@@ -113,4 +106,6 @@ public:
 	ResourceShader* uiShader;
 
 	PanelTemp imGuiPanels[3];
+
+	Tween<float> test;
 };

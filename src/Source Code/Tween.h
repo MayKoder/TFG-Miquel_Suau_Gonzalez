@@ -1,21 +1,11 @@
 #pragma once
 
+#include<functional>
+
 template<class T>
 struct Tween
 {
-
-	T maxValue;
-	T minValue;
-
-	float speed;
-	float t;
-
-	bool isActive = false;
-
-	T value;
-	T* ptrValue = nullptr; //Maybe we could use only the pointer? not sure
-
-	void Set(T min, T max, float _speed, bool playOnStart = false) 
+	void Set(T min, T max, float _speed, bool playOnStart = false)
 	{
 		minValue = min;
 		maxValue = max;
@@ -55,36 +45,71 @@ struct Tween
 		//value = minValue;
 	}
 
-	T GetAndStep(float dt) 
+	T GetAndStep(float dt)
 	{
-		if (isActive == true) 
+		if (isActive == true)
 		{
 			value = Step(dt);
 		}
 		return value;
 	}
-	void StepByPointer(float dt) 
+	void StepByPointer(float dt)
 	{
 		assert(ptrValue == nullptr, "PTR is nullptr, something is wrong")
-		*ptrValue = Step(dt)
+			* ptrValue = Step(dt)
 	}
 
-	T Step(float dt) 
+	T Step(float dt)
 	{
-		t += dt * speed;
+		return stepOverride(this, dt);
+	}
+
+private:
+	T maxValue;
+	T minValue;
+
+
+
+	T value;
+	T* ptrValue = nullptr; //Maybe we could use only the pointer? not sure
+
+public:
+	float speed;
+	float t;
+	bool isActive = false;
+	std::function<T(Tween<T>*, float)> stepOverride = [](Tween<T>* ent, float dt) 
+	{
+		ent->t += dt * ent->speed;
 
 		//t = (t < 0.5 ? pow(2, 20 * t - 10) / 2
 		//	: (2 - pow(2, -20 * t + 10)) / 2) * 40;
 
-		if (t >= 1.0) {
-			t = 0.0;
-			isActive = false;
+		if (ent->t >= 1.0) {
+			ent->t = 0.0;
+			ent->isActive = false;
 		}
 
 		//T tmp = -2 * value + 2;
 		//value = t < 0.5 ? 8 * value * value * value * value : 1 - (tmp*tmp*tmp*tmp) / 2;
 
-		return (value * (1.0 - t)) + (maxValue * t);
+		return (ent->value * (1.0 - ent->t)) + (ent->maxValue * ent->t);
 		//return (t * maxValue) + (1.0 - t) * value;
-	}
+	};
 };
+
+#include"Globals.h"
+namespace CustomEasings
+{
+	static std::function<float(Tween<float>*, float)> easeInOutBounce = [](Tween<float>* ent, float dt)
+	{
+		ent->t += dt * ent->speed;
+		float t = ent->t;
+
+		if (t < 0.5) {
+			return 8 * pow(2, 8 * (t - 1)) * abs(sin(t * PI * 7));
+		}
+		else {
+			return 1 - 8 * pow(2, -8 * t) * abs(sin(t * PI * 7));
+		}
+	};
+}
