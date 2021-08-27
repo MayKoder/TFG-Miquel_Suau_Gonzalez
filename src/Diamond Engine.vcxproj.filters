@@ -117,9 +117,6 @@
     <ClInclude Include="Source Code\Module.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\EngineVersion.h">
-      <Filter>Sources\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\MaykMath.h">
       <Filter>Sources\Tools\MMath</Filter>
     </ClInclude>
@@ -525,6 +522,9 @@
     <ClInclude Include="Source Code\External Libraries\ImGui\backends\imgui_impl_sdl.h">
       <Filter>Externals\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\Tween.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -544,9 +544,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\glmath.cpp">
       <Filter>Sources\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\EngineVersion.cpp">
-      <Filter>Sources\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\MaykMath.cpp">
       <Filter>Sources\Tools\MMath</Filter>

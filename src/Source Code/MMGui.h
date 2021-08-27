@@ -12,7 +12,9 @@
 namespace ImGui
 {
     void CenterNextElement(ImVec2 windowSize, float widthRatio);
+
     bool MiddleButton(const char* title, ImVec2 windowSize, float widthRatio);
+    void ToggleButton(const char* str_id, bool* v);
 
     void GreySeparator();
 

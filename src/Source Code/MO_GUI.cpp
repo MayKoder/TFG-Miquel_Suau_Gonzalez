@@ -10,6 +10,7 @@
 
 #include"RE_Shader.h"
 
+#include"MMGui.h"
 #include "ImGui/backends/imgui_impl_sdl.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
 #include "OpenGL.h"
@@ -136,6 +137,7 @@ bool M_GUI::Start()
 	PanelTemp* send = &imGuiPanels[0];
 	std::function<void(int)> customDrawCalls = [send] (int i)
 	{
+		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
 
@@ -147,6 +149,7 @@ bool M_GUI::Start()
 	send = &imGuiPanels[1];
 	customDrawCalls = [send](int i)
 	{
+		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
 
@@ -158,12 +161,22 @@ bool M_GUI::Start()
 	send = &imGuiPanels[2];
 	customDrawCalls = [send](int i)
 	{
+		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_AlwaysHorizontalScrollbar))
 		{
 			for (size_t i = 0; i < 5; i++)
 			{
+				//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
+				//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
+				//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
+
+				if(ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
+					ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
+
 				ImGui::Button((std::to_string(i) + "Test").c_str(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y));
 				ImGui::SameLine();
+
+				//ImGui::PopStyleColor(1);
 			}
 		}
 		ImGui::End();
@@ -217,14 +230,13 @@ void M_GUI::RenderUIElements()
 		PanelTemp* panel = &imGuiPanels[i];
 		if (panel->isOpen == true) 
 		{
-			ImGui::SetNextWindowPos(panel->pos, 0, panel->pivot);
 			ImGui::SetNextWindowSize(panel->size);
 			panel->drawCallback(i);
 		}
 
 
-		ImVec2 size = ImVec2(panel->buttonRect.z, panel->buttonRect.w);
-		ImVec2 p0 = ImVec2(panel->buttonRect.x, panel->buttonRect.y);
+		ImVec2 size = ImVec2(panel->buttonRect.x, panel->buttonRect.y);
+		ImVec2 p0 = ImVec2(panel->animator.value.x + panel->closeOffset.x, panel->animator.value.y + panel->closeOffset.y);
 		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
 
 		ImU32 col_b = ImGui::GetColorU32(IM_COL32(255, 255, 255, 255));
@@ -232,7 +244,7 @@ void M_GUI::RenderUIElements()
 
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) == true) 
 		{
-			panel->OnToggleClick();
+			panel->OnToggleClick(p0);
 		}
 	}
 
@@ -313,27 +325,33 @@ void M_GUI::SetPanelData()
 	int w = App->moduleWindow->s_width;
 	int h = App->moduleWindow->s_height;
 
-	imGuiPanels[0].Set(
+	PanelTemp* send = &imGuiPanels[0];
+	send->Set(
 		ImVec2(0.0, 0.5), 
 		ImVec2(0, h / 2), 
 		ImVec2(w / 7, h / 1.4), 
-		ImVec4(w / 7, h / 2, w / 50, h / 8),
-		ImVec2(w / 7, 0));
-	imGuiPanels[0].ShiftHalfSize(0, -1);
+		ImVec2(w / 50, h / 8),
+		ImVec2(w / 7, -(h/8) / 2));
+	send->animator.Set(send->pos, float2(send->pos.x - send->size.x, send->pos.y), .25f, true);
+	send->animator.Invert();
 
+	send = &imGuiPanels[1];
 	imGuiPanels[1].Set(
 		ImVec2(1.0, 0.5), 
 		ImVec2(w, h / 2), 
 		ImVec2(w / 7, h / 1.4), 
-		ImVec4(w - (w / 7), h / 2, w / 50, h / 8),
-		ImVec2(-(w / 7), 0));
-	imGuiPanels[1].ShiftHalfSize(-2, -1);
+		ImVec2(w / 50, h / 8),
+		ImVec2(-(w / 7) - (w/50), -(h/8)/2));
+	send->animator.Set(send->pos, float2(App->moduleWindow->s_width + send->size.x, send->pos.y), .25f, true);
+	send->animator.Invert();
 
+	send = &imGuiPanels[2];
 	imGuiPanels[2].Set(
 		ImVec2(0.5, 1.0), 
 		ImVec2(w / 2, h), 
 		ImVec2(w / 2, h / 4), 
-		ImVec4(w / 2, h - (h  / 4), w / 10, h / 25),
-		ImVec2(0, -(h / 4)));
-	imGuiPanels[2].ShiftHalfSize(-1, -2);
+		ImVec2(w / 10, h / 25),
+		ImVec2(-(w/10)/2, -(h / 4) - h/25));
+	send->animator.Set(send->pos, float2(send->pos.x, send->pos.y + send->size.y), .25f, true);
+	send->animator.Invert();
 }

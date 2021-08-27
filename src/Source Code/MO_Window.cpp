@@ -1,6 +1,5 @@
 #include "Globals.h"
 #include "Application.h"
-#include "EngineVersion.h"
 #include "ImGui/imgui.h"
 #include "MO_Window.h"
 #include "MO_Renderer3D.h"
@@ -91,7 +90,7 @@ bool ModuleWindow::Init()
 	}
 
 	//Title Init
-	const std::string title(TITLE + EngineVersion::GetVersion() + " by Miquel Suau Gonzalez (MayKoder)");
+	const std::string title(TITLE "0.1 by MayKoder");
 	SetTitle(title.c_str());
 
 	return ret;

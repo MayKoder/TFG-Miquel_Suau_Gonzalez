@@ -190,7 +190,6 @@
     <ClInclude Include="Source Code\DETime.h" />
     <ClInclude Include="Source Code\DE_Cubemap.h" />
     <ClInclude Include="Source Code\DE_FrameBuffer.h" />
-    <ClInclude Include="Source Code\EngineVersion.h" />
     <ClInclude Include="Source Code\External Libraries\DevIL\include\devil_cpp_wrapper.hpp" />
     <ClInclude Include="Source Code\External Libraries\DevIL\include\devil_internal_exports.h" />
     <ClInclude Include="Source Code\External Libraries\DevIL\include\il.h" />
@@ -308,6 +307,7 @@
     <ClInclude Include="Source Code\RE_Shader.h" />
     <ClInclude Include="Source Code\RE_Texture.h" />
     <ClInclude Include="Source Code\Timer.h" />
+    <ClInclude Include="Source Code\Tween.h" />
     <ClInclude Include="Source Code\UIElement.h" />
     <ClInclude Include="Source Code\Window.h" />
     <ClInclude Include="Source Code\WI_Assets.h" />
@@ -335,7 +335,6 @@
     <ClCompile Include="Source Code\DETime.cpp" />
     <ClCompile Include="Source Code\DE_Cubemap.cpp" />
     <ClCompile Include="Source Code\DE_FrameBuffer.cpp" />
-    <ClCompile Include="Source Code\EngineVersion.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGuizmo\ImGradient.cpp" />
     <ClCompile Include="Source Code\External Libraries\ImGuizmo\ImGuizmo.cpp" />
