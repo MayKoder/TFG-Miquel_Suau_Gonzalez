@@ -85,45 +85,45 @@ void W_Scene::Draw()
 
 
 		//Draw gizmo
-		if (App->moduleEditor->GetSelectedGO())
-		{
-			if (!ImGuizmo::IsUsing() && ImGui::IsWindowHovered()) 
-			{
-				if (App->moduleInput->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
-					operation = ImGuizmo::OPERATION::TRANSLATE;
-				if (App->moduleInput->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
-					operation = ImGuizmo::OPERATION::ROTATE;
-				if (App->moduleInput->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-					operation = ImGuizmo::OPERATION::SCALE;
-				if (App->moduleInput->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-					operation = ImGuizmo::OPERATION::BOUNDS;
+		//if (App->moduleEditor->GetSelectedGO())
+		//{
+		//	if (!ImGuizmo::IsUsing() && ImGui::IsWindowHovered()) 
+		//	{
+		//		if (App->moduleInput->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+		//			operation = ImGuizmo::OPERATION::TRANSLATE;
+		//		if (App->moduleInput->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+		//			operation = ImGuizmo::OPERATION::ROTATE;
+		//		if (App->moduleInput->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+		//			operation = ImGuizmo::OPERATION::SCALE;
+		//		if (App->moduleInput->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		//			operation = ImGuizmo::OPERATION::BOUNDS;
 
-				if (operation == ImGuizmo::OPERATION::SCALE && mode != ImGuizmo::MODE::LOCAL)
-					mode = ImGuizmo::MODE::LOCAL;
-			}
+		//		if (operation == ImGuizmo::OPERATION::SCALE && mode != ImGuizmo::MODE::LOCAL)
+		//			mode = ImGuizmo::MODE::LOCAL;
+		//	}
 
-			ImVec2 cornerPos = ImGui::GetWindowPos();
-			ImVec2 _size = ImGui::GetContentRegionMax();
+		//	ImVec2 cornerPos = ImGui::GetWindowPos();
+		//	ImVec2 _size = ImGui::GetContentRegionMax();
 
-			//The small offset is due to some error margin in the rect height
-			ImGuiContext& g = *ImGui::GetCurrentContext();
-			int offset = ImGui::GetFrameHeight() / 2;
-			ImGuizmo::SetRect(cornerPos.x, cornerPos.y + offset, _size.x, _size.y);
+		//	//The small offset is due to some error margin in the rect height
+		//	ImGuiContext& g = *ImGui::GetCurrentContext();
+		//	int offset = ImGui::GetFrameHeight() / 2;
+		//	ImGuizmo::SetRect(cornerPos.x, cornerPos.y + offset, _size.x, _size.y);
 
-			ImGuizmo::SetDrawlist();
-			//ImGui::PushClipRect(ImGui::GetWindowSize(), ImGui::GetWindowSize(), true);
-			C_Transform* trans = App->moduleEditor->GetSelectedGO()->transform;
-			float4x4 mat = trans->globalTransform.Transposed();
+		//	ImGuizmo::SetDrawlist();
+		//	//ImGui::PushClipRect(ImGui::GetWindowSize(), ImGui::GetWindowSize(), true);
+		//	//C_Transform* trans = App->moduleEditor->GetSelectedGO()->transform;
+		//	//float4x4 mat = trans->globalTransform.Transposed();
 
-			//ERROR: World mode makes rotations go byebye
-			if (ImGuizmo::Manipulate(App->moduleCamera->editorCamera.ViewMatrixOpenGL().v[0], App->moduleCamera->editorCamera.ProjectionMatrixOpenGL().v[0], operation, mode, mat.ptr()) && ImGui::IsWindowHovered())
-			{
-				mat.Transpose();
-				//mat.Decompose(trans->position, trans->rotation, trans->localScale);
-				trans->SetTransformWithGlobal(mat);
-				trans->updateTransform = true;
-			}
-		}
+		//	//ERROR: World mode makes rotations go byebye
+		//	//if (ImGuizmo::Manipulate(App->moduleCamera->editorCamera.ViewMatrixOpenGL().v[0], App->moduleCamera->editorCamera.ProjectionMatrixOpenGL().v[0], operation, mode, mat.ptr()) && ImGui::IsWindowHovered())
+		//	//{
+		//	//	mat.Transpose();
+		//	//	//mat.Decompose(trans->position, trans->rotation, trans->localScale);
+		//	//	trans->SetTransformWithGlobal(mat);
+		//	//	trans->updateTransform = true;
+		//	//}
+		//}
 
 		if (ImGui::IsMouseClicked(0) && !ImGuizmo::IsUsing() && !App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN)
 		{
@@ -136,7 +136,7 @@ void W_Scene::Draw()
 			{
 				LineSegment picking = App->moduleCamera->editorCamera.camFrustrum.UnProjectLineSegment(normal.x, normal.y);
 				App->moduleRenderer3D->RayToMeshQueueIntersection(picking);
-				App->moduleEditor->SetSelectedAsset(nullptr);
+				//App->moduleEditor->SetSelectedAsset(nullptr);
 			}
 		}
 

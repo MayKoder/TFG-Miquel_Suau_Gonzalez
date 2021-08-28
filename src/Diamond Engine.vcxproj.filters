@@ -82,9 +82,6 @@
     <Filter Include="Sources\Tools\MMath\INC_Packs">
       <UniqueIdentifier>{0cb31e81-3904-46c0-8a3a-c06e72338b1d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Tools\MMath\MMM_Procedural">
-      <UniqueIdentifier>{f3a4d34a-882b-4e38-87d9-78235694d532}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources\UIElements">
       <UniqueIdentifier>{75a56bd2-2f1a-414c-a33f-34ff4b8dd012}</UniqueIdentifier>
     </Filter>
@@ -96,6 +93,9 @@
     </Filter>
     <Filter Include="Sources\UIElements\Windows\Derived">
       <UniqueIdentifier>{3ddf461c-663f-41e9-afb5-dba7922c1012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Tools\MMath\CD_MMM_Procedural">
+      <UniqueIdentifier>{f3a4d34a-882b-4e38-87d9-78235694d532}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -496,7 +496,7 @@
       <Filter>Sources\Components\Derived</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\MM_ProceduralMeshGenerator.h">
-      <Filter>Sources\Tools\MMath\MMM_Procedural</Filter>
+      <Filter>Sources\Tools\MMath\CD_MMM_Procedural</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\MO_GUI.h">
       <Filter>Sources\Modules</Filter>
@@ -523,6 +523,9 @@
       <Filter>Externals\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\Tween.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\CreationTool.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -801,7 +804,7 @@
       <Filter>Sources\Components\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\MM_ProceduralMeshGenerator.cpp">
-      <Filter>Sources\Tools\MMath\MMM_Procedural</Filter>
+      <Filter>Sources\Tools\MMath\CD_MMM_Procedural</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\MO_GUI.cpp">
       <Filter>Sources\Modules</Filter>

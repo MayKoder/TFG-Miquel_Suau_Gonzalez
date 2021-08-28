@@ -11,11 +11,18 @@
 #include"RE_Shader.h"
 
 #include"MMGui.h"
+
+//ImGui Includes
+#include "ImGui/imgui.h"
 #include "ImGui/backends/imgui_impl_sdl.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
+#include "SDL/include/SDL.h"
 #include "OpenGL.h"
 
-M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr)
+#include "Tween.h"
+#include"CreationTool.h"
+
+M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr), selectedTool(nullptr)
 {
 	root = nullptr;
 	//root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
@@ -31,18 +38,7 @@ M_GUI::~M_GUI()
 
 bool M_GUI::Init()
 {
-	//TODO: Move this to gui
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-
-	ImGui::StyleColorsDark();
-	bool test2 = ImGui_ImplSDL2_InitForOpenGL(App->moduleWindow->window, App->moduleRenderer3D->context);
-	bool test = ImGui_ImplOpenGL3_Init();
-
-	io.MouseDrawCursor = false;
-	io.IniFilename = NULL;
+	this->uiTools[0] = new ToolAddRemove("Add/Remove node");
 
 	return true;
 }
@@ -133,6 +129,18 @@ bool M_GUI::Start()
 
 
 	//------------------------------------ WILL USE IMGUI FOR NOW ----------------------------------------//
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+
+	ImGui::StyleColorsDark();
+	ImGui_ImplSDL2_InitForOpenGL(App->moduleWindow->window, App->moduleRenderer3D->context);
+	ImGui_ImplOpenGL3_Init();
+
+	io.MouseDrawCursor = false;
+	io.IniFilename = NULL;
+
 	SetPanelData();
 	PanelTemp* send = &imGuiPanels[0];
 	std::function<void(int)> customDrawCalls = [send] (int i)
@@ -159,21 +167,22 @@ bool M_GUI::Start()
 	send->drawCallback = customDrawCalls;
 
 	send = &imGuiPanels[2];
-	customDrawCalls = [send](int i)
+	customDrawCalls = [this, send](int i)
 	{
 		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_AlwaysHorizontalScrollbar))
 		{
-			for (size_t i = 0; i < 5; i++)
+			if (ImGui::IsWindowFocused() && ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
+				ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
+			for (size_t i = 0; i < UI_TOOLS_MAX; i++)
 			{
 				//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
 				//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
 				//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
 
-				if(ImGui::IsWindowFocused() && ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
-					ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
-
-				ImGui::Button((std::to_string(i) + "Test").c_str(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y));
+				if (ImGui::Button(uiTools[i]->GetName(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y))) {
+					this->selectedTool = uiTools[i];
+				}
 				ImGui::SameLine();
 
 				//ImGui::PopStyleColor(1);
@@ -206,6 +215,11 @@ bool M_GUI::CleanUp()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
+	for (size_t i = 0; i < UI_TOOLS_MAX; i++)
+	{
+		delete uiTools[i];
+		uiTools[i] = nullptr;
+	}
 
 	App->moduleResources->UnloadResource(uiShader->GetUID());
 	

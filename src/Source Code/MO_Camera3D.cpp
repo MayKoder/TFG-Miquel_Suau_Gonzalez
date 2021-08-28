@@ -119,11 +119,11 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	if (/*App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && */App->moduleInput->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT) 
 	{
 		float3 target(0.f, 0.f, 0.f);
-		if (App->moduleEditor->GetSelectedGO() != nullptr)
-		{
-			float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
-			target.Set(maTogl.x, maTogl.y, maTogl.z);
-		}
+		//if (App->moduleEditor->GetSelectedGO() != nullptr)
+		//{
+		//	float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
+		//	target.Set(maTogl.x, maTogl.y, maTogl.z);
+		//}
 		OrbitalRotation(target, dt);
 	}
 
@@ -131,11 +131,11 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	if (App->moduleInput->GetKey(SDL_SCANCODE_F) == KEY_DOWN) 
 	{
 		float3 target(0.f, 0.f, 0.f);
-		if (App->moduleEditor->GetSelectedGO() != nullptr) 
-		{
-			float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
-			target.Set(maTogl.x, maTogl.y, maTogl.z);
-		}
+		//if (App->moduleEditor->GetSelectedGO() != nullptr) 
+		//{
+		//	float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
+		//	target.Set(maTogl.x, maTogl.y, maTogl.z);
+		//}
 		FocusCamera(target, 10.f);
 	}
 #endif // !STANDALONE

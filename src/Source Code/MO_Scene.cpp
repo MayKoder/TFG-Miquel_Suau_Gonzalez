@@ -43,12 +43,12 @@ bool M_Scene::Init()
 bool M_Scene::Start()
 {
 
-#ifndef STANDALONE
-	//TODO IMPORTANT: This is why we should save icons .meta, or we could generate them every time
-	//But this will introduce some randomized problems with ID duplications
-	// TODO: Maybe this should be handled on the editor module? texture #include is stupid
-	App->moduleEditor->editorIcons.LoadPreDefinedIcons();
-#endif // !STANDALONE
+//#ifndef STANDALONE
+//	//TODO IMPORTANT: This is why we should save icons .meta, or we could generate them every time
+//	//But this will introduce some randomized problems with ID duplications
+//	// TODO: Maybe this should be handled on the editor module? texture #include is stupid
+//	App->moduleEditor->editorIcons.LoadPreDefinedIcons();
+//#endif // !STANDALONE
 
 	return true;
 }
@@ -71,76 +71,76 @@ update_status M_Scene::Update(float dt)
 {
 
 	//TODO: Only do c/v when the hier or scene widows are focused?
-	if (App->moduleInput->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT && App->moduleInput->GetKey(SDL_SCANCODE_C) == KEY_DOWN && App->moduleEditor->GetSelectedGO() != nullptr)
-	{
-		JSON_Value* file = json_value_init_object();
-		DEConfig root_object(json_value_get_object(file));
+	//if (App->moduleInput->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT && App->moduleInput->GetKey(SDL_SCANCODE_C) == KEY_DOWN && App->moduleEditor->GetSelectedGO() != nullptr)
+	//{
+	//	JSON_Value* file = json_value_init_object();
+	//	DEConfig root_object(json_value_get_object(file));
 
-		JSON_Value* goArray = json_value_init_array();
-		App->moduleEditor->GetSelectedGO()->SaveToJson(json_value_get_array(goArray));
-		json_object_set_value(root_object.nObj, "Game Objects", goArray);
+	//	JSON_Value* goArray = json_value_init_array();
+	//	App->moduleEditor->GetSelectedGO()->SaveToJson(json_value_get_array(goArray));
+	//	json_object_set_value(root_object.nObj, "Game Objects", goArray);
 
-		//Save file 
-		json_serialize_to_file_pretty(file, "EngineIcons/cntlC.json");
+	//	//Save file 
+	//	json_serialize_to_file_pretty(file, "EngineIcons/cntlC.json");
 
-		//Free memory
-		json_value_free(file);
-	}
-	if (App->moduleInput->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT && App->moduleInput->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
-	{
-		if (FileSystem::Exists("EngineIcons/cntlC.json") == true) 
-		{
-			JSON_Value* scene = json_parse_file("EngineIcons/cntlC.json");
+	//	//Free memory
+	//	json_value_free(file);
+	//}
+	//if (App->moduleInput->GetKey(SDL_SCANCODE_LCTRL) == KEY_REPEAT && App->moduleInput->GetKey(SDL_SCANCODE_V) == KEY_DOWN)
+	//{
+	//	if (FileSystem::Exists("EngineIcons/cntlC.json") == true) 
+	//	{
+	//		JSON_Value* scene = json_parse_file("EngineIcons/cntlC.json");
 
-			//TODO: Duplicated code from scene loading, move to method
-			if (scene != NULL) 
-			{
+	//		//TODO: Duplicated code from scene loading, move to method
+	//		if (scene != NULL) 
+	//		{
 
-				JSON_Object* sceneObj = json_value_get_object(scene);
-				JSON_Array* sceneGO = json_object_get_array(sceneObj, "Game Objects");
-				JSON_Object* goJsonObj = json_array_get_object(sceneGO, 0);
+	//			JSON_Object* sceneObj = json_value_get_object(scene);
+	//			JSON_Array* sceneGO = json_object_get_array(sceneObj, "Game Objects");
+	//			JSON_Object* goJsonObj = json_array_get_object(sceneGO, 0);
 
-				GameObject* parent = (App->moduleEditor->GetSelectedGO() == nullptr) ? root : App->moduleEditor->GetSelectedGO();
-				GameObject* gameObjectRoot = nullptr;
-				for (size_t i = 0; i < json_array_get_count(sceneGO); i++)
-				{
-					parent = LoadGOData(json_array_get_object(sceneGO, i), parent);
-					if (i == 0)
-						gameObjectRoot = parent;
-				}
-				gameObjectRoot->RecursiveUIDRegeneration();
+	//			GameObject* parent = (App->moduleEditor->GetSelectedGO() == nullptr) ? root : App->moduleEditor->GetSelectedGO();
+	//			GameObject* gameObjectRoot = nullptr;
+	//			for (size_t i = 0; i < json_array_get_count(sceneGO); i++)
+	//			{
+	//				parent = LoadGOData(json_array_get_object(sceneGO, i), parent);
+	//				if (i == 0)
+	//					gameObjectRoot = parent;
+	//			}
+	//			gameObjectRoot->RecursiveUIDRegeneration();
 
-				//TODO: Duplicated code from scene loading C#, move to method
-				//for (auto i = referenceMap.begin(); i != referenceMap.end(); ++i)
-				//{
-				//	// Get the range of the current key
-				//	auto range = referenceMap.equal_range(i->first);
+	//			//TODO: Duplicated code from scene loading C#, move to method
+	//			//for (auto i = referenceMap.begin(); i != referenceMap.end(); ++i)
+	//			//{
+	//			//	// Get the range of the current key
+	//			//	auto range = referenceMap.equal_range(i->first);
 
-				//	// Now render out that whole range
-				//	for (auto d = range.first; d != range.second; ++d)
-				//	{
-				//		d->second->fiValue.goValue = GetGOFromUID(EngineExternal->moduleScene->root, d->first);
+	//			//	// Now render out that whole range
+	//			//	for (auto d = range.first; d != range.second; ++d)
+	//			//	{
+	//			//		d->second->fiValue.goValue = GetGOFromUID(EngineExternal->moduleScene->root, d->first);
 
-				//		if (d->second->fiValue.goValue)
-				//		{
-				//			if (std::find(d->second->fiValue.goValue->csReferences.begin(), d->second->fiValue.goValue->csReferences.end(), d->second) == d->second->fiValue.goValue->csReferences.end())
-				//				d->second->fiValue.goValue->csReferences.push_back(d->second);
+	//			//		if (d->second->fiValue.goValue)
+	//			//		{
+	//			//			if (std::find(d->second->fiValue.goValue->csReferences.begin(), d->second->fiValue.goValue->csReferences.end(), d->second) == d->second->fiValue.goValue->csReferences.end())
+	//			//				d->second->fiValue.goValue->csReferences.push_back(d->second);
 
-				//			d->second->parentSC->SetField(d->second->field, d->second->fiValue.goValue);
-				//		}
-				//	}
-				//}
+	//			//			d->second->parentSC->SetField(d->second->field, d->second->fiValue.goValue);
+	//			//		}
+	//			//	}
+	//			//}
 
-				//referenceMap.clear();
+	//			//referenceMap.clear();
 
-				//Free memory
-				json_value_free(scene);
-			}
-		}
-	}
+	//			//Free memory
+	//			json_value_free(scene);
+	//		}
+	//	}
+	//}
 
-	if (App->moduleInput->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN && App->moduleEditor->GetSelectedGO() != nullptr && App->moduleEditor->GetSelectedAsset() == nullptr)
-		App->moduleEditor->GetSelectedGO()->Destroy();
+	//if (App->moduleInput->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN && App->moduleEditor->GetSelectedGO() != nullptr && App->moduleEditor->GetSelectedAsset() == nullptr)
+	//	App->moduleEditor->GetSelectedGO()->Destroy();
 
 
 
@@ -370,10 +370,10 @@ void M_Scene::CleanScene()
 	delete root;
 	root = nullptr;
 
-#ifndef STANDALONE
-	App->moduleEditor->SetSelectedGO(nullptr);
-	SetGameCamera(nullptr);
-#endif
+//#ifndef STANDALONE
+//	App->moduleEditor->SetSelectedGO(nullptr);
+//	SetGameCamera(nullptr);
+//#endif
 
 	root = CreateGameObject("Scene root", nullptr);
 }

@@ -82,19 +82,19 @@ void W_Assets::Draw()
 		DrawFileTree(*displayFolder);
 		DrawFileTree(EngineExternal->moduleResources->meshesLibraryRoot);
 
-		if (selectedFile != nullptr && /*ImGui::IsWindowHovered() &&*/ EngineExternal->moduleInput->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN) 
-		{																																	//This prevents mesh removal because mesh files have no dirName
-			if ((selectedFile->resourceType != Resource::Type::UNKNOWN || selectedFile->isDir) && strcmp(selectedFile->dirName.c_str(), "Meshes") != 0) 
-			{
-				EngineExternal->moduleEditor->SetSelectedGO(nullptr);
+		//if (selectedFile != nullptr && /*ImGui::IsWindowHovered() &&*/ EngineExternal->moduleInput->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN) 
+		//{																																	//This prevents mesh removal because mesh files have no dirName
+		//	if ((selectedFile->resourceType != Resource::Type::UNKNOWN || selectedFile->isDir) && strcmp(selectedFile->dirName.c_str(), "Meshes") != 0) 
+		//	{
+		//		EngineExternal->moduleEditor->SetSelectedGO(nullptr);
 
-				selectedFile->DeletePermanent();
-				selectedFile = nullptr;
+		//		selectedFile->DeletePermanent();
+		//		selectedFile = nullptr;
 
-				EngineExternal->moduleResources->PopulateFileArray();
-			}
+		//		EngineExternal->moduleResources->PopulateFileArray();
+		//	}
 
-		}
+		//}
 
 		if (ImGui::BeginPopupContextWindow())
 		{
@@ -137,8 +137,8 @@ void W_Assets::DrawFileTree(AssetDir& file)
 	}
 
 
-	ImGui::Image((ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID(file.resourceType), ImVec2(12, 12), ImVec2(0, 1), ImVec2(1, 0));
-	ImGui::SameLine();
+	//ImGui::Image((ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID(file.resourceType), ImVec2(12, 12), ImVec2(0, 1), ImVec2(1, 0));
+	//ImGui::SameLine();
 
 	bool nodeOpen = ImGui::TreeNodeEx(&file, flags, file.dirName.c_str());
 
@@ -158,11 +158,11 @@ void W_Assets::DrawFileTree(AssetDir& file)
 			//	//Load script text and open visual studio?
 			//}
 			//else 
-			if(type == Resource::Type::MATERIAL)
-			{
-				W_Inspector* inspector = dynamic_cast<W_Inspector*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::INSPECTOR));
-				inspector->SetEditingResource(EngineExternal->moduleResources->RequestFromAssets(selectedFile->importPath.c_str()));
-			}
+			//if(type == Resource::Type::MATERIAL)
+			//{
+			//	W_Inspector* inspector = dynamic_cast<W_Inspector*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::INSPECTOR));
+			//	inspector->SetEditingResource(EngineExternal->moduleResources->RequestFromAssets(selectedFile->importPath.c_str()));
+			//}
 		}
 	}
 

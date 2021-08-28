@@ -75,9 +75,9 @@ void W_Console::Draw()
 			{
 				cLog = &visibleLogs[i];
 
-				ImGui::Image(GetMsgType(cLog->lType), ImVec2(20, 20), ImVec2(0, 1), ImVec2(1, 0));
+				//ImGui::Image(GetMsgType(cLog->lType), ImVec2(20, 20), ImVec2(0, 1), ImVec2(1, 0));
 
-				ImGui::SameLine();
+				//ImGui::SameLine();
 	
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4);
 				ImGui::TextWrapped(cLog->msg.c_str());
@@ -141,27 +141,27 @@ void W_Console::FilterLogs()
 	}
 }
 
-ImTextureID W_Console::GetMsgType(LogType type)
-{	
-	ImTextureID ret = 0;
-
-	switch (type)
-	{
-		case LogType::L_NORMAL:
-			ret = (ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID("INFO");
-			break;
-
-		case LogType::L_WARNING:
-			ret = (ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID("WARNING");
-			break;
-
-		case LogType::L_ERROR:
-			ret = (ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID("ERROR");
-			break;
-	}
-
-	return ret;
-}
+//ImTextureID W_Console::GetMsgType(LogType type)
+//{	
+//	ImTextureID ret = 0;
+//
+//	switch (type)
+//	{
+//		case LogType::L_NORMAL:
+//			ret = (ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID("INFO");
+//			break;
+//
+//		case LogType::L_WARNING:
+//			ret = (ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID("WARNING");
+//			break;
+//
+//		case LogType::L_ERROR:
+//			ret = (ImTextureID)EngineExternal->moduleEditor->editorIcons.GetIconTextureID("ERROR");
+//			break;
+//	}
+//
+//	return ret;
+//}
 
 LogMessage::LogMessage(std::string& s_msg, LogType _type) : prints(1), lType(_type)
 {

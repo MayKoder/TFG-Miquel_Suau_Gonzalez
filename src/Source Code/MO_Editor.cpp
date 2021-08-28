@@ -602,10 +602,10 @@ void M_Editor::SetSelectedAsset(AssetDir* _file)
 
 void M_Editor::LogToConsole(const char* msg, LogType _type)
 {
-		W_Console* consoleWindow = dynamic_cast<W_Console*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::CONSOLE));
+		//W_Console* consoleWindow = dynamic_cast<W_Console*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::CONSOLE));
 
-		if (consoleWindow != nullptr)
-			consoleWindow->AddLog(msg, _type);
+		//if (consoleWindow != nullptr)
+		//	consoleWindow->AddLog(msg, _type);
 }
 
 #endif

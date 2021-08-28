@@ -48,13 +48,14 @@ private:
 #define GRID_SIZE_X 5
 #define GRID_SIZE_Y 4
 #define GRID_NODE_SIZE 1.8f
+class Tool;
 class GridManager
 {
 public:
 	GridManager();
 	~GridManager();
 
-	void UpdateInput();
+	void UpdateInput(Tool*);
 
 	void LoadShader(const char* path);
 	void UpdateRenderData();

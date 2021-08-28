@@ -19,6 +19,8 @@ typedef std::chrono::high_resolution_clock Clock;
 #include"MathGeoLib/include/Math/float4x4.h"
 #include"MO_Window.h"
 
+#include "CreationTool.h"
+
 
 GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0), hoveredNode(nullptr)
 {
@@ -91,7 +93,7 @@ GridManager::~GridManager()
 	mapTest.clear();
 }
 
-void GridManager::UpdateInput()
+void GridManager::UpdateInput(Tool* selectedTool)
 {
 
 	float2 position = float2(static_cast<float>(EngineExternal->moduleInput->GetMouseX()), static_cast<float>(EngineExternal->moduleInput->GetMouseY()));
@@ -115,19 +117,22 @@ void GridManager::UpdateInput()
 
 	float3 ret = worldRay.a + (((up.d - nDotA) / nDotBA) * ba);
 	//----
-
 	hoveredNode = this->GetNodeAt_Slow(static_cast<int>(rint(ret.x)), static_cast<int>(rint(ret.z)));
 
-
-	if (hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN)
-	{
-		hoveredNode->DivideNodeCross(this);
-
-
-		UpdateRenderData();
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	if (selectedTool != nullptr && hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN) {
+		selectedTool->Use();
 	}
+
+
+	//if (hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN)
+	//{
+	//	hoveredNode->DivideNodeCross(this);
+
+
+	//	UpdateRenderData();
+	//	glBindVertexArray(0);
+	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//}
 
 }
 

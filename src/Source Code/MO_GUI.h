@@ -64,6 +64,8 @@ public:
 };
 
 //template<typename... Args>
+#define UI_TOOLS_MAX 1
+class Tool;
 class M_GUI : public Module
 {
 
@@ -106,6 +108,9 @@ public:
 	ResourceShader* uiShader;
 
 	PanelTemp imGuiPanels[3];
+
+	Tool* uiTools[UI_TOOLS_MAX];
+	Tool* selectedTool;
 
 	Tween<float> test;
 };

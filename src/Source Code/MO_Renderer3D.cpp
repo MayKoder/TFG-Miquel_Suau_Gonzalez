@@ -2,12 +2,6 @@
 #include "MaykMath.h"
 #include "MMGui.h"
 
-//ImGui Includes
-#include "ImGui/imgui.h"
-#include "ImGui/backends/imgui_impl_sdl.h"
-#include "ImGui/backends/imgui_impl_opengl3.h"
-#include "SDL/include/SDL.h"
-
 #include "MO_Window.h"
 #include "MO_Camera3D.h"
 #include "MO_Editor.h"
@@ -213,7 +207,7 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
-	gridInstance.UpdateInput();
+	gridInstance.UpdateInput(App->moduleGUI->selectedTool);
 	return UPDATE_CONTINUE;
 }
 
@@ -603,18 +597,18 @@ void ModuleRenderer3D::RayToMeshQueueIntersection(LineSegment& ray)
 	}
 	canSelect.clear();
 
-#ifndef STANDALONE
-	if (distMap.begin() != distMap.end())
-	{
-		App->moduleEditor->SetSelectedGO((*distMap.begin()).second->GetGO());
-		selected = true;
-	}
-
-
-	//If nothing is selected, set selected GO to null
-	if(!selected)
-		App->moduleEditor->SetSelectedGO(nullptr);
-#endif // !STANDALONE
+//#ifndef STANDALONE
+//	if (distMap.begin() != distMap.end())
+//	{
+//		App->moduleEditor->SetSelectedGO((*distMap.begin()).second->GetGO());
+//		selected = true;
+//	}
+//
+//
+//	//If nothing is selected, set selected GO to null
+//	if(!selected)
+//		App->moduleEditor->SetSelectedGO(nullptr);
+//#endif // !STANDALONE
 	distMap.clear();
 }
 

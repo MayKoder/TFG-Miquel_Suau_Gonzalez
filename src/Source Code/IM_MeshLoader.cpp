@@ -27,7 +27,7 @@
 #ifndef STANDALONE
 void  MeshLoader::logCallback(const char* message, char* user)
 {
-	EngineExternal->moduleEditor->LogToConsole(message);
+	//EngineExternal->moduleEditor->LogToConsole(message);
 }
 
 void MeshLoader::EnableDebugMode()

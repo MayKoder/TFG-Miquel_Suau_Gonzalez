@@ -39,7 +39,7 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 
 	moduleResources = new M_ResourceManager(this);
 
-	moduleEditor = new M_Editor(this);
+	//moduleEditor = new M_Editor(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -60,10 +60,10 @@ Application::Application() : quitApplicationState(false), fpsCap(60)
 
 	AddModule(moduleResources);
 
-	AddModule(moduleEditor);
+	//AddModule(moduleEditor);
+	AddModule(moduleGUI);
 
 	AddModule(moduleRenderer3D);
-	AddModule(moduleGUI);
 }
 
 

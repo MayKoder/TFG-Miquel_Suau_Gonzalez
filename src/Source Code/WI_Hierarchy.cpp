@@ -34,18 +34,18 @@ void W_Hierarchy::Draw()
 			DrawGameObjectsTree(cSceneReference->root, false);
 		}
 
-		if (ImGui::BeginPopupContextWindow())
-		{
-			EngineExternal->moduleEditor->DrawCreateMenu();
-			if (ImGui::Selectable("Create Empty"))
-			{
-				GameObject* parent = (EngineExternal->moduleEditor->GetSelectedGO() != nullptr) ? EngineExternal->moduleEditor->GetSelectedGO() : EngineExternal->moduleScene->root;
-				EngineExternal->moduleScene->CreateGameObject("Empty", parent);
+		//if (ImGui::BeginPopupContextWindow())
+		//{
+		//	EngineExternal->moduleEditor->DrawCreateMenu();
+		//	if (ImGui::Selectable("Create Empty"))
+		//	{
+		//		GameObject* parent = (EngineExternal->moduleEditor->GetSelectedGO() != nullptr) ? EngineExternal->moduleEditor->GetSelectedGO() : EngineExternal->moduleScene->root;
+		//		EngineExternal->moduleScene->CreateGameObject("Empty", parent);
 
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
+		//		ImGui::CloseCurrentPopup();
+		//	}
+		//	ImGui::EndPopup();
+		//}
 	}
 	ImGui::End();
 }
@@ -66,8 +66,8 @@ void W_Hierarchy::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)
 	if (node->children.size() == 0)
 		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-	if (node == EngineExternal->moduleEditor->GetSelectedGO())
-		flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
+	//if (node == EngineExternal->moduleEditor->GetSelectedGO())
+	//	flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
 
 
 	if (drawAsDisabled)
@@ -93,12 +93,12 @@ void W_Hierarchy::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)
 			ImGui::EndDragDropSource();
 		}
 
-		if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		{
-			EngineExternal->moduleEditor->SetSelectedGO(node);
-			if (EngineExternal->moduleEditor->GetSelectedAsset() != nullptr)
-				EngineExternal->moduleEditor->SetSelectedAsset(nullptr);
-		}
+		//if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		//{
+		//	EngineExternal->moduleEditor->SetSelectedGO(node);
+		//	if (EngineExternal->moduleEditor->GetSelectedAsset() != nullptr)
+		//		EngineExternal->moduleEditor->SetSelectedAsset(nullptr);
+		//}
 	}
 
 	node->showChildren = (node->children.size() == 0) ? false : nodeOpen;
