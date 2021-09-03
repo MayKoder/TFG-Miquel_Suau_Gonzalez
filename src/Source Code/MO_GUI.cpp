@@ -22,10 +22,15 @@
 #include "Tween.h"
 #include"CreationTool.h"
 
+#include"OpenAL/include/AL/al.h"
+
 M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr), selectedTool(nullptr)
 {
 	root = nullptr;
+	memset(uiTools, NULL, sizeof(uiTools));
 	//root = new UIElement(nullptr, float2::zero, float2::zero, float2::one);
+
+	
 }
 
 M_GUI::~M_GUI()
@@ -141,7 +146,7 @@ bool M_GUI::Start()
 	io.MouseDrawCursor = false;
 	io.IniFilename = NULL;
 
-	SetPanelData();
+	SetPanelData(App->moduleWindow->s_width, App->moduleWindow->s_height);
 	PanelTemp* send = &imGuiPanels[0];
 	std::function<void(int)> customDrawCalls = [send] (int i)
 	{
@@ -341,13 +346,11 @@ void M_GUI::OnResize(int width, int height)
 	//root = new UIElement(nullptr, float2::zero, float2::zero, float2((float)width, (float)height));
 	//root->localTransform = float4x4::FromTRS(float3::zero, Quat::FromEulerXYZ(0.0f, 0.0f, 0.0f), float3((float)width, (float)height, 0.0f));
 	//root->UpdateTransform();
-	SetPanelData();
+	SetPanelData(width, height);
 }
 
-void M_GUI::SetPanelData()
+void M_GUI::SetPanelData(int w, int h)
 {
-	int w = App->moduleWindow->s_width;
-	int h = App->moduleWindow->s_height;
 
 	PanelTemp* send = &imGuiPanels[0];
 	send->Set(

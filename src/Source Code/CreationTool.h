@@ -4,7 +4,6 @@
 class Tool
 {
 public:
-	Tool(): toolName(nullptr) {}
 	Tool(const char* _tName): toolName(_tName) {
 
 	}
@@ -36,7 +35,8 @@ public:
 
 	void Use() override 
 	{
-		LOG(LogType::L_NORMAL, "Hola");
+		LOG(LogType::L_NORMAL, "Add/Remove node");
+		EngineExternal->moduleRenderer3D->gridInstance.DivideHoveredClick();
 	};
 
 private:

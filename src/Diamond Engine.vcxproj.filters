@@ -97,6 +97,9 @@
     <Filter Include="Sources\Tools\MMath\CD_MMM_Procedural">
       <UniqueIdentifier>{f3a4d34a-882b-4e38-87d9-78235694d532}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Sound">
+      <UniqueIdentifier>{8b58ad6c-271c-48e1-9d8b-a7a2ded3ded1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source Code\Globals.h">
@@ -528,6 +531,9 @@
     <ClInclude Include="Source Code\CreationTool.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\alhelpers.h">
+      <Filter>Sources\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -835,6 +841,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\External Libraries\ImGui\backends\imgui_impl_sdl.cpp">
       <Filter>Externals\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\alhelpers.c">
+      <Filter>Sources\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

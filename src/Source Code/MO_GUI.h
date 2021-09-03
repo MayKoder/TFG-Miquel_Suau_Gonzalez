@@ -86,7 +86,7 @@ public:
 
 	void OnResize(int, int) override;
 
-	void SetPanelData();
+	void SetPanelData(int, int);
 
 	/*template <typename Func, typename... Args>*/
 	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale)

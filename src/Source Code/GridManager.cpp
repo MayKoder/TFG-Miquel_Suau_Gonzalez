@@ -124,16 +124,22 @@ void GridManager::UpdateInput(Tool* selectedTool)
 	}
 
 
-	//if (hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN)
-	//{
-	//	hoveredNode->DivideNodeCross(this);
-
-
-	//	UpdateRenderData();
-	//	glBindVertexArray(0);
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//if (EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN) {
+	//	DivideHoveredClick();
 	//}
 
+}
+
+void GridManager::DivideHoveredClick()
+{
+	if (hoveredNode != nullptr)
+	{
+		hoveredNode->DivideNodeCross(this);
+
+		UpdateRenderData();
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 }
 
 void GridManager::LoadShader(const char* path)

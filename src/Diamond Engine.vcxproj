@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source Code\alhelpers.h" />
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\AssetDir.h" />
     <ClInclude Include="Source Code\Color.h" />
@@ -320,6 +321,7 @@
     <ClInclude Include="Source Code\WI_TextEditor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source Code\alhelpers.c" />
     <ClCompile Include="Source Code\Application.cpp" />
     <ClCompile Include="Source Code\AssetDir.cpp" />
     <ClCompile Include="Source Code\Color.cpp" />

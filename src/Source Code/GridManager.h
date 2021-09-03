@@ -56,6 +56,7 @@ public:
 	~GridManager();
 
 	void UpdateInput(Tool*);
+	void DivideHoveredClick();
 
 	void LoadShader(const char* path);
 	void UpdateRenderData();
