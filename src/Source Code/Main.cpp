@@ -127,50 +127,50 @@ int main(int argc, char** argv)
 	LOG(LogType::L_NORMAL, "Starting game '%s'...", TITLE);
 
 #pragma region Audio test
-	{
+	//{
 
-		ALuint source, buffer;
-		ALfloat offset;
-		ALenum state;
+	//	ALuint source, buffer;
+	//	ALfloat offset;
+	//	ALenum state;
 
-		/* Initialize OpenAL. */
-		argv++; argc--;
-		if (InitAL(&argv, &argc) != 0)
-			return 1;
+	//	/* Initialize OpenAL. */
+	//	argv++; argc--;
+	//	if (InitAL(&argv, &argc) != 0)
+	//		return 1;
 
-		/* Load the sound into a buffer. */
-		buffer = LoadSound("test.wav");
-		if (!buffer)
-		{
-			CloseAL();
-			return 1;
-		}
+	//	/* Load the sound into a buffer. */
+	//	buffer = LoadSound("test.wav");
+	//	if (!buffer)
+	//	{
+	//		CloseAL();
+	//		return 1;
+	//	}
 
-		/* Create the source to play the sound with. */
-		source = 0;
-		alGenSources(1, &source);
-		alSourcei(source, AL_BUFFER, (ALint)buffer);
-		assert(alGetError() == AL_NO_ERROR && "Failed to setup sound source");
+	//	/* Create the source to play the sound with. */
+	//	source = 0;
+	//	alGenSources(1, &source);
+	//	alSourcei(source, AL_BUFFER, (ALint)buffer);
+	//	assert(alGetError() == AL_NO_ERROR && "Failed to setup sound source");
 
-		/* Play the sound until it finishes. */
-		alSourcePlay(source);
-		do {
-			al_nssleep(10000000);
-			alGetSourcei(source, AL_SOURCE_STATE, &state);
+	//	/* Play the sound until it finishes. */
+	//	alSourcePlay(source);
+	//	do {
+	//		al_nssleep(10000000);
+	//		alGetSourcei(source, AL_SOURCE_STATE, &state);
 
-			/* Get the source offset. */
-			alGetSourcef(source, AL_SEC_OFFSET, &offset);
-			printf("\rOffset: %f  ", offset);
-			fflush(stdout);
-		} while (alGetError() == AL_NO_ERROR && state == AL_PLAYING);
-		printf("\n");
+	//		/* Get the source offset. */
+	//		alGetSourcef(source, AL_SEC_OFFSET, &offset);
+	//		printf("\rOffset: %f  ", offset);
+	//		fflush(stdout);
+	//	} while (alGetError() == AL_NO_ERROR && state == AL_PLAYING);
+	//	printf("\n");
 
-		/* All done. Delete resources, and close down OpenAL. */
-		alDeleteSources(1, &source);
-		alDeleteBuffers(1, &buffer);
+	//	/* All done. Delete resources, and close down OpenAL. */
+	//	alDeleteSources(1, &source);
+	//	alDeleteBuffers(1, &buffer);
 
-		CloseAL();
-	}
+	//	CloseAL();
+	//}
 #pragma endregion
 
 

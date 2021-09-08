@@ -316,7 +316,6 @@
     <ClInclude Include="Source Code\WI_Configuration.h" />
     <ClInclude Include="Source Code\WI_Console.h" />
     <ClInclude Include="Source Code\WI_Hierarchy.h" />
-    <ClInclude Include="Source Code\WI_Inspector.h" />
     <ClInclude Include="Source Code\WI_Scene.h" />
     <ClInclude Include="Source Code\WI_TextEditor.h" />
   </ItemGroup>
@@ -421,7 +420,6 @@
     <ClCompile Include="Source Code\Window.cpp" />
     <ClCompile Include="Source Code\WI_Configuration.cpp" />
     <ClCompile Include="Source Code\WI_Console.cpp" />
-    <ClCompile Include="Source Code\WI_Inspector.cpp" />
     <ClCompile Include="Source Code\WI_Scene.cpp" />
     <ClCompile Include="Source Code\WI_TextEditor.cpp" />
   </ItemGroup>

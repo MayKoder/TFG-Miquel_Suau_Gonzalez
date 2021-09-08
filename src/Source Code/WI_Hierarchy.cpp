@@ -7,7 +7,6 @@
 #include "MO_Scene.h"
 #include "MO_Editor.h"
 #include "Application.h"
-#include "WI_Inspector.h"
 #include "MO_Input.h"
 #include"AssetDir.h"
 

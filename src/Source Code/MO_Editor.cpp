@@ -23,7 +23,6 @@
 //Window types
 #include "WI_Configuration.h"
 #include "WI_Console.h"
-#include "WI_Inspector.h"
 #include "WI_Hierarchy.h"
 #include "WI_Scene.h"
 #include "WI_Assets.h"
@@ -45,7 +44,6 @@ viewportCorSize(0.f), dockspace_id(0)
 	windows[static_cast<unsigned int>(EditorWindow::ASSETS)] = new W_Assets();
 	windows[static_cast<unsigned int>(EditorWindow::CONSOLE)] = new W_Console();
 	windows[static_cast<unsigned int>(EditorWindow::HIERARCHY)] = new W_Hierarchy(App->moduleScene);
-	windows[static_cast<unsigned int>(EditorWindow::INSPECTOR)] = new W_Inspector();
 	//windows[static_cast<unsigned int>(EditorWindow::SCENE)] = new W_Scene(App);
 	//windows[static_cast<unsigned int>(EditorWindow::GAME)] = new W_Game();
 	windows[static_cast<unsigned int>(EditorWindow::TEXTEDITOR)] = new W_TextEditor();
@@ -565,28 +563,10 @@ void M_Editor::UpdateLoadedStylesVector(std::vector<std::string>* _styles)
 	json_value_free(file);
 }
 
-GameObject* M_Editor::GetSelectedGO()
-{
-	if (windows.size() == 0)
-		return nullptr;
-
-	W_Inspector* inspector =dynamic_cast<W_Inspector*>(GetEditorWindow(EditorWindow::INSPECTOR));
-	return inspector->selectedGO;
-}
-
 GameObject* M_Editor::GetDraggingGO()
 {
 	W_Hierarchy* hier = dynamic_cast<W_Hierarchy*>(GetEditorWindow(EditorWindow::HIERARCHY));
 	return hier->dropTarget;
-}
-
-void M_Editor::SetSelectedGO(GameObject* _obj)
-{
-	W_Inspector* inspector = dynamic_cast<W_Inspector*>(GetEditorWindow(EditorWindow::INSPECTOR));
-
-	inspector->selectedGO = _obj;
-	inspector->SetEditingResource(nullptr);
-	//SetSelectedAsset(nullptr);
 }
 
 AssetDir* M_Editor::GetSelectedAsset()

@@ -2,7 +2,6 @@
 
 #include"WI_Assets.h"
 #include"WI_TextEditor.h"
-#include"WI_Inspector.h"
 
 #include"IM_FileSystem.h"
 #include"IM_ShaderImporter.h"

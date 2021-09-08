@@ -423,9 +423,6 @@
     <ClInclude Include="Source Code\WI_Scene.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\WI_Inspector.h">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\WI_Hierarchy.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
@@ -735,9 +732,6 @@
       <Filter>Sources\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\WI_Scene.cpp">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\WI_Inspector.cpp">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\WI_Hierarchy.cpp">

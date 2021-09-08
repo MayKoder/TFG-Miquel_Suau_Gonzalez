@@ -21,7 +21,6 @@ enum class EditorWindow {
 	ASSETS,
 	CONSOLE,
 	HIERARCHY,
-	INSPECTOR,
 	//SCENE,
 	//GAME,
 	TEXTEDITOR,
@@ -57,9 +56,7 @@ public:
 	void DeleteStyle(const char* styleName);
 	void UpdateLoadedStylesVector(std::vector<std::string>* _styles);
 
-	GameObject* GetSelectedGO();
 	GameObject* GetDraggingGO();
-	void SetSelectedGO(GameObject* _obj);
 
 	AssetDir* GetSelectedAsset();
 	void SetSelectedAsset(AssetDir* _file);
