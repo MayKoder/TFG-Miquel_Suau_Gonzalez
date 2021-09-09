@@ -314,10 +314,8 @@
     <ClInclude Include="Source Code\Window.h" />
     <ClInclude Include="Source Code\WI_Assets.h" />
     <ClInclude Include="Source Code\WI_Configuration.h" />
-    <ClInclude Include="Source Code\WI_Console.h" />
     <ClInclude Include="Source Code\WI_Hierarchy.h" />
     <ClInclude Include="Source Code\WI_Scene.h" />
-    <ClInclude Include="Source Code\WI_TextEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\alhelpers.c" />
@@ -419,9 +417,7 @@
     <ClCompile Include="Source Code\Timer.cpp" />
     <ClCompile Include="Source Code\Window.cpp" />
     <ClCompile Include="Source Code\WI_Configuration.cpp" />
-    <ClCompile Include="Source Code\WI_Console.cpp" />
     <ClCompile Include="Source Code\WI_Scene.cpp" />
-    <ClCompile Include="Source Code\WI_TextEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\External Libraries\DevIL\include\config.h.win" />

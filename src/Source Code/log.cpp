@@ -2,7 +2,7 @@
 #include "Globals.h"
 
 #include "Application.h"
-#include "MO_Editor.h"
+#include "MO_GUI.h"
 
 void log(const char file[], int line, LogType _type, const char* format, ...)
 {
@@ -17,11 +17,9 @@ void log(const char file[], int line, LogType _type, const char* format, ...)
 	sprintf_s(tmp_string2, 4096, "\n%s(%d) : %s", file, line, tmp_string);
 	OutputDebugString(tmp_string2);
 
-//#ifndef STANDALONE
-//	if (EngineExternal != nullptr && EngineExternal->moduleEditor != nullptr)
-//	{
-//		EngineExternal->moduleEditor->LogToConsole(tmp_string, _type);
-//	}
-//#endif // !STANDALONE
+	if (EngineExternal != nullptr && EngineExternal->moduleGUI != nullptr)
+	{
+		EngineExternal->moduleGUI->developerWindow.AddLog(tmp_string, _type);
+	}
 
 }

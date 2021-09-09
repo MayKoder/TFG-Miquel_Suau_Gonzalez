@@ -1,7 +1,6 @@
 #ifndef STANDALONE
 
 #include"WI_Assets.h"
-#include"WI_TextEditor.h"
 
 #include"IM_FileSystem.h"
 #include"IM_ShaderImporter.h"

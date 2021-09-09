@@ -1,9 +1,8 @@
 #include "IM_ShaderImporter.h"
 #include "OpenGL.h"
-#include<string>
-#include"Globals.h"
-#include"IM_FileSystem.h"
-#include "WI_TextEditor.h"
+#include <string>
+#include "Globals.h"
+#include "IM_FileSystem.h"
 #include "MO_Editor.h"
 
 void ShaderImporter::Import(char* buffer, int bSize, ResourceShader* res, const char* assetsPath)

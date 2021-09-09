@@ -390,14 +390,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//App->moduleCamera->editorCamera.msaaFBO.UnbindFrameBuffer();
 	//App->moduleCamera->editorCamera.msaaFBO.ResolveToScreen();
-
 	App->moduleCamera->editorCamera.EndDraw();
-
-
-
-//#ifndef STANDALONE
-//	App->moduleEditor->Draw();
-//#endif // !STANDALONE
 	
 	//TEMPORAL: Delete here so you can call mouse picking from scene window, should not be here in the future
 	ClearAllRenderData();

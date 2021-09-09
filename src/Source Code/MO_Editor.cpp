@@ -2,14 +2,8 @@
 
 #include "Application.h"
 
-//#include "MMGui.h"
+#include "MMGui.h"
 #include "parson/parson.h"
-
-//ImGui Includes
-#include "ImGui/imgui.h"
-#include "ImGui/backends/imgui_impl_sdl.h"
-#include "ImGui/backends/imgui_impl_opengl3.h"
-#include "SDL/include/SDL.h"
 
 #include"DETime.h"
 #include"AssetDir.h"
@@ -20,42 +14,16 @@
 #include "MO_Scene.h"
 #include "MO_ResourceManager.h"
 
-//Window types
-#include "WI_Configuration.h"
-#include "WI_Console.h"
-#include "WI_Hierarchy.h"
-#include "WI_Scene.h"
-#include "WI_Assets.h"
-#include "WI_TextEditor.h"
-
 #include"GameObject.h"
 #include"IM_TextureImporter.h"
 #include"MO_Camera3D.h"
 
-#include "SDL/include/SDL_opengl.h"
-
 //TODO: Do i really need all those includes?
 M_Editor::M_Editor(Application* app, bool start_enabled) : Module(app, start_enabled), displayWindow(false),
-viewportCorSize(0.f), dockspace_id(0)
+viewportCorSize(0.f)
 {
-	//reserve() does not work with [] operator
-	windows = std::vector<Window*>(static_cast<unsigned int>(EditorWindow::MAX), nullptr);
-
-	windows[static_cast<unsigned int>(EditorWindow::ASSETS)] = new W_Assets();
-	windows[static_cast<unsigned int>(EditorWindow::CONSOLE)] = new W_Console();
-	windows[static_cast<unsigned int>(EditorWindow::HIERARCHY)] = new W_Hierarchy(App->moduleScene);
-	//windows[static_cast<unsigned int>(EditorWindow::SCENE)] = new W_Scene(App);
-	//windows[static_cast<unsigned int>(EditorWindow::GAME)] = new W_Game();
-	windows[static_cast<unsigned int>(EditorWindow::TEXTEDITOR)] = new W_TextEditor();
-
-	//TODO: This 2 windows are last on the enum to keep them from drawing on the window
-	//tab on the main menu bar, and are drawed by hand on other tabs, there
-	//must be a better way to do that
-	windows[static_cast<unsigned int>(EditorWindow::CONFIGURATION)] = new W_Configuration();
-
 	//Sould load the last used style on start?
 	UpdateLoadedStylesVector(&styles);
-
 }
 
 M_Editor::~M_Editor()
@@ -186,13 +154,6 @@ bool M_Editor::CleanUp()
 {
 	LOG(LogType::L_NORMAL, "Editor CleanUp");
 
-	for (unsigned int i = 0; i < windows.size(); ++i)
-	{
-		delete windows[i];
-		windows[i] = nullptr;
-	}
-	windows.clear();
-
 #ifndef STANDALONE
 	//Must manual cleanup to avoid leaks and crashed with the resource manager
 	editorIcons.CleanUp(); 
@@ -249,26 +210,9 @@ void M_Editor::DrawMenuBar()
 			ImGui::PopStyleColor(1);
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu("Edit"))
-		{
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 1.f, 1.f));
-			ImGui::MenuItem(windows[static_cast<int>(EditorWindow::CONFIGURATION)]->name.c_str(), nullptr, &windows[static_cast<int>(EditorWindow::CONFIGURATION)]->active);
-			ImGui::PopStyleColor(1);
-			ImGui::EndMenu();
-		}
 		if (ImGui::BeginMenu("GameObject"))
 		{
 			DrawCreateMenu();
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Windows"))
-		{
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 1.f, 1.f));
-			for (unsigned int i = 0; i < windows.size() - 2; i++)
-			{
-				ImGui::MenuItem(windows[i]->name.c_str(), nullptr, &windows[i]->active);
-			}
-			ImGui::PopStyleColor(1);
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
@@ -438,18 +382,6 @@ void M_Editor::DrawCreateMenu()
 	ImGui::PopStyleColor(1);
 }
 
-//Returns nullptr if the window doesn't exist in the editor.
-//Use dynamic_cast to convert from Window* to the type of editor window 
-//pointer you want to use
-Window* M_Editor::GetEditorWindow(EditorWindow type)
-{
-	//TODO: Maybe use templates as enter and return types, like unity GetComponent system?
-	unsigned int vecPosition = static_cast<unsigned int>(type);
-
-	//SDL_assert(vecPosition < windows.size());
-	return (vecPosition < windows.size()) ? windows[vecPosition] : nullptr;
-}
-
 //Save a style to JSON
 void M_Editor::SaveStyle(const char* styleName)
 {
@@ -562,30 +494,4 @@ void M_Editor::UpdateLoadedStylesVector(std::vector<std::string>* _styles)
 	}
 	json_value_free(file);
 }
-
-GameObject* M_Editor::GetDraggingGO()
-{
-	W_Hierarchy* hier = dynamic_cast<W_Hierarchy*>(GetEditorWindow(EditorWindow::HIERARCHY));
-	return hier->dropTarget;
-}
-
-AssetDir* M_Editor::GetSelectedAsset()
-{
-	W_Assets* assets = dynamic_cast<W_Assets*>(GetEditorWindow(EditorWindow::ASSETS));
-	return (assets == nullptr) ? nullptr: assets->selectedFile;
-}
-
-void M_Editor::SetSelectedAsset(AssetDir* _file)
-{
-	dynamic_cast<W_Assets*>(GetEditorWindow(EditorWindow::ASSETS))->selectedFile = _file;
-}
-
-void M_Editor::LogToConsole(const char* msg, LogType _type)
-{
-		//W_Console* consoleWindow = dynamic_cast<W_Console*>(EngineExternal->moduleEditor->GetEditorWindow(EditorWindow::CONSOLE));
-
-		//if (consoleWindow != nullptr)
-		//	consoleWindow->AddLog(msg, _type);
-}
-
 #endif

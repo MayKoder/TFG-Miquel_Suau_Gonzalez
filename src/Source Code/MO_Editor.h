@@ -2,9 +2,9 @@
 #pragma once
 
 #include "Module.h"
-#include "Window.h"
 #include "Globals.h"
 #include "MA_IconSystem.h"
+//#include "Window.h"
 
 #define STYLES_PATH "Settings/styles.json"
 #define MAX_STY_INPUT 15
@@ -14,22 +14,6 @@ enum class LogType;
 class GameObject;
 class ResourceTexture;
 struct AssetDir;
-
-enum class EditorWindow {
-
-	//Windows tab
-	ASSETS,
-	CONSOLE,
-	HIERARCHY,
-	//SCENE,
-	//GAME,
-	TEXTEDITOR,
-
-	//Edit tab
-	CONFIGURATION,
-	
-	MAX
-};
 
 class M_Editor : public Module
 {
@@ -49,24 +33,15 @@ public:
 	bool CleanUp() override;
 
 	void DrawCreateMenu();
-	Window* GetEditorWindow(EditorWindow type);
 
 	void SaveStyle(const char* styleName);
 	void ChangeStyleTo(const char* styleName);
 	void DeleteStyle(const char* styleName);
 	void UpdateLoadedStylesVector(std::vector<std::string>* _styles);
 
-	GameObject* GetDraggingGO();
-
-	AssetDir* GetSelectedAsset();
-	void SetSelectedAsset(AssetDir* _file);
-
-	void LogToConsole(const char* msg, LogType _type = LogType::L_NORMAL);
-
 	IconManager editorIcons;
 
 private:
-	std::vector<Window*> windows;
 	std::vector<std::string> styles;
 
 	//WARNING TODO: This is bad find a better way
@@ -75,9 +50,6 @@ private:
 	bool displayWindow;
 
 	float viewportCorSize;
-	ImGuiID dockspace_id;
-
-	ImVec4 playingTint;
 };
 
 #endif

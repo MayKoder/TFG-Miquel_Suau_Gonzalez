@@ -426,9 +426,6 @@
     <ClInclude Include="Source Code\WI_Hierarchy.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\WI_Console.h">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\WI_Configuration.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
@@ -455,9 +452,6 @@
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\ImTextEditor\TextEditor.h">
       <Filter>Externals\ImTextEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\WI_TextEditor.h">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\External Libraries\PugiXML\pugiconfig.hpp">
       <Filter>Externals\PugiXML</Filter>
@@ -737,9 +731,6 @@
     <ClCompile Include="Source Code\WI_Hierarchy.cpp">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\WI_Console.cpp">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\WI_Configuration.cpp">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClCompile>
@@ -766,9 +757,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\External Libraries\ImTextEditor\TextEditor.cpp">
       <Filter>Externals\ImTextEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\WI_TextEditor.cpp">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\External Libraries\PugiXML\pugixml.cpp">
       <Filter>Externals\PugiXML</Filter>

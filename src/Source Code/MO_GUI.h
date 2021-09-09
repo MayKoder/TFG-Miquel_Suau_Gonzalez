@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "UIElement.h"
+#include "Window.h"
 
 static float uiPlaneData[] = 
 {
@@ -113,4 +114,5 @@ public:
 	Tool* selectedTool;
 
 	Tween<float> test;
+	Window developerWindow;
 };

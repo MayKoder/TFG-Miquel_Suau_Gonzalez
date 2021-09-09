@@ -45,6 +45,8 @@ bool M_GUI::Init()
 {
 	this->uiTools[0] = new ToolAddRemove("Add/Remove node");
 
+	developerWindow.SetTextFromFile("Assets/Shaders/cubeMap.glsl");
+
 	return true;
 }
 
@@ -218,6 +220,10 @@ update_status M_GUI::Update(float dt)
 	{
 		RecursiveUpdateElements(root);
 	}
+	if (App->moduleInput->GetKey(SDL_SCANCODE_P) == KEY_STATE::KEY_DOWN)
+	{
+		developerWindow.active = !developerWindow.active;
+	}
 	return update_status::UPDATE_CONTINUE;
 }
 
@@ -283,6 +289,9 @@ void M_GUI::RenderUIElements()
 			panel->OnToggleClick(p0);
 		}
 	}
+
+	if(developerWindow.active)
+		developerWindow.Draw();
 
 
 	ImGui::Render();
