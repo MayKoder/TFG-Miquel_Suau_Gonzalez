@@ -181,16 +181,23 @@ bool M_GUI::Start()
 				ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
 			for (size_t i = 0; i < UI_TOOLS_MAX; i++)
 			{
-				//ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
+
+				bool colorChanged = false;
+				if (selectedTool == uiTools[i]) {
+					colorChanged = true;
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
+				}
 				//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
 				//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
 
 				if (ImGui::Button(uiTools[i]->GetName(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y))) {
-					this->selectedTool = uiTools[i];
+					
+					(this->selectedTool == uiTools[i]) ? selectedTool = nullptr : this->selectedTool = uiTools[i];
 				}
 				ImGui::SameLine();
 
-				//ImGui::PopStyleColor(1);
+				if (colorChanged == true)
+					ImGui::PopStyleColor(1);
 			}
 		}
 		ImGui::End();

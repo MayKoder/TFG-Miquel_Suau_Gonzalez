@@ -8,6 +8,7 @@
 #include "MO_ResourceManager.h"
 #include "MO_Renderer3D.h"
 #include "MO_Input.h"
+#include "MO_GUI.h"
 
 #include "CO_Camera.h"
 
@@ -25,8 +26,7 @@ typedef std::chrono::high_resolution_clock Clock;
 GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0), hoveredNode(nullptr)
 {
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
-
-
+	memset(cursorGridPos, 0, sizeof(cursorGridPos));
 
 	mapTest[GridManager::CANTOR_MAPPING(0, 0)] = GridNode();
 	mapTest[GridManager::CANTOR_MAPPING(0, 0)].SetGridPosition(0, 0);
@@ -117,10 +117,19 @@ void GridManager::UpdateInput(Tool* selectedTool)
 
 	float3 ret = worldRay.a + (((up.d - nDotA) / nDotBA) * ba);
 	//----
-	hoveredNode = this->GetNodeAt_Slow(static_cast<int>(rint(ret.x)), static_cast<int>(rint(ret.z)));
+	cursorGridPos[0] = static_cast<int>(rint(ret.x));
+	cursorGridPos[1] = static_cast<int>(rint(ret.z));
 
-	if (selectedTool != nullptr && hoveredNode != nullptr && EngineExternal->moduleInput->GetMouseButton(1) == KEY_STATE::KEY_DOWN) {
-		selectedTool->Use();
+	hoveredNode = this->GetNodeAt_Slow(cursorGridPos[0], cursorGridPos[1]);
+
+	if (selectedTool != nullptr && hoveredNode != nullptr) 
+	{
+		//TODO: What a dumb idea, the tool should check the button?
+		for (size_t i = 0; i < MAX_MOUSE_BUTTONS; i++)
+		{
+			if (EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN)
+				selectedTool->Use(i);
+		}
 	}
 
 
@@ -140,6 +149,31 @@ void GridManager::DivideHoveredClick()
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
+}
+
+bool GridManager::DeleteHoveredNode()
+{
+	if (hoveredNode == nullptr)
+		return false;
+
+	for (size_t i = 0; i < NODE_SIDES; i++)
+	{
+		GridNode* target = hoveredNode->children[i];
+		if (target != nullptr) {
+			for (size_t j = 0; j < NODE_SIDES; ++j)
+			{
+				if (target->children[j] == hoveredNode)
+					target->children[j] = nullptr;
+			}
+		}
+	}
+
+	
+	mapTest.erase(hoveredNode->GetID());
+	UpdateRenderData();
+
+
+	return true;
 }
 
 void GridManager::LoadShader(const char* path)
@@ -263,11 +297,13 @@ void GridManager::RenderGridTemporal()
 		it->second.RenderLines(shaderRes);
 	}
 
-	if (hoveredNode != nullptr) {
+	//TODO: Only happen when a creation tool is enabled
+	if (EngineExternal->moduleGUI->selectedTool != nullptr) 
+	{
 		glColor3f(1., 0.f, 0.f);
 		glBegin(GL_LINES);
 
-		float3 position = float3(static_cast<float>(hoveredNode->GetGridPositionX()), 0.0, static_cast<float>(hoveredNode->GetGridPositionY()));
+		float3 position = float3(static_cast<float>(cursorGridPos[0]), 0.0, static_cast<float>(cursorGridPos[1]));
 		float crossSize = 0.03;
 
 		glVertex3f(position.x - crossSize, 0.0, position.z + crossSize);

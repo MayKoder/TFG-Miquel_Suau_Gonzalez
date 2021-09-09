@@ -11,7 +11,7 @@ public:
 
 	}
 
-	virtual void Use() {};
+	virtual void Use(int button_id) {};
 	const char* GetName() {
 		return toolName;
 	}
@@ -33,10 +33,23 @@ public:
 
 	}
 
-	void Use() override 
+	void Use(int button_id) override 
 	{
 		LOG(LogType::L_NORMAL, "Add/Remove node");
-		EngineExternal->moduleRenderer3D->gridInstance.DivideHoveredClick();
+
+		switch (button_id)
+		{
+		case 3:
+			EngineExternal->moduleRenderer3D->gridInstance.DeleteHoveredNode();
+			break;
+
+		case 1:
+			EngineExternal->moduleRenderer3D->gridInstance.DivideHoveredClick();
+			break;
+
+		default:
+			break;
+		}
 	};
 
 private:

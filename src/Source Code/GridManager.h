@@ -58,6 +58,8 @@ public:
 	void UpdateInput(Tool*);
 	void DivideHoveredClick();
 
+	bool DeleteHoveredNode();
+
 	void LoadShader(const char* path);
 	void UpdateRenderData();
 	void ClearMemory();
@@ -90,4 +92,6 @@ private:
 	uint instanceVBO;
 
 	GridNode* hoveredNode;
+
+	int cursorGridPos[2];
 };
