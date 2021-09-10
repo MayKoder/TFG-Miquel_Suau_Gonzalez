@@ -44,7 +44,7 @@ public:
 			break;
 
 		case 1:
-			EngineExternal->moduleRenderer3D->gridInstance.DivideHoveredClick();
+			EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
 			break;
 
 		default:

@@ -21,6 +21,8 @@ struct GridNode
 	};
 
 	GridNode();
+	GridNode(int x, int y);
+
 	void SearchAndFillChildren(GridManager* instance);
 
 	void RenderLines(ResourceShader*);
@@ -28,14 +30,14 @@ struct GridNode
 	bool IsPosition(int x, int y);
 	void SetGridPosition(int x, int y);
 
-	int* GetGridPosition();
 	uint GetID();
+	int* GetGridPosition();
 
 	int GetGridPositionX();
 	int GetGridPositionY();
 
-	GridNode* DivideNode(GridManager* instance, int direction[2]);
 	void DivideNodeCross(GridManager* instance);
+	GridNode* DivideNode(GridManager* instance, int direction[2]);
 	void DivideNodeSquare(GridManager* instance, int squareLength);
 
 	GridNode** GetChildrenMemAddr(int x, int y);
@@ -56,7 +58,10 @@ public:
 	~GridManager();
 
 	void UpdateInput(Tool*);
+
+	void CreateNode();
 	void DivideHoveredClick();
+	GridNode* AddNode(int x, int y);
 
 	bool DeleteHoveredNode();
 
@@ -64,7 +69,6 @@ public:
 	void UpdateRenderData();
 	void ClearMemory();
 
-	//GridNode* GetGridNode(int x, int y);
 	void RenderGridTemporal();
 
 	GridNode* GetNodeAt_Slow(int x, int y);
@@ -79,9 +83,8 @@ public:
 		return  ((_x + _y) * (_x + _y + 1) / 2) + _y;
 	}
 
-	//std::vector<GridNode*> linealNodes;
-	std::map<uint, GridNode> mapTest;
 private:
+	std::map<uint, GridNode> nodeMap;
 
 
 	//GridNode grid[GRID_SIZE_X * GRID_SIZE_Y];
@@ -92,6 +95,5 @@ private:
 	uint instanceVBO;
 
 	GridNode* hoveredNode;
-
 	int cursorGridPos[2];
 };
