@@ -1,8 +1,7 @@
 #pragma once
 
 #include"DEResource.h"
-
-typedef unsigned int uint;
+#include"GL_Object.h"
 
 class ResourceShader;
 class C_Camera;
@@ -25,9 +24,12 @@ public:
 
     //unsigned int vboId;
 
-    uint VBO;
-    uint VAO;
-    uint EBO;
+    //uint VBO;
+    //uint VAO;
+    //uint EBO;
+
+    GL_Object skyboxObject = GL_Object(GL_Object::RENDER_TYPE::RE_INDICES);
+
 };
 
 static const float skyboxVertices[] =

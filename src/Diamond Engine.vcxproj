@@ -276,6 +276,7 @@
     <ClInclude Include="Source Code\External Libraries\parson\parson.h" />
     <ClInclude Include="Source Code\External Libraries\PugiXML\pugiconfig.hpp" />
     <ClInclude Include="Source Code\External Libraries\PugiXML\pugixml.hpp" />
+    <ClInclude Include="Source Code\GL_Object.h" />
     <ClInclude Include="Source Code\IM_FileSystem.h" />
     <ClInclude Include="Source Code\GameObject.h" />
     <ClInclude Include="Source Code\glmath.h" />

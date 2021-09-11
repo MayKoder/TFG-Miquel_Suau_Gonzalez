@@ -525,6 +525,9 @@
     <ClInclude Include="Source Code\alhelpers.h">
       <Filter>Sources\Sound</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\GL_Object.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">

@@ -6,7 +6,7 @@
 #include"Application.h"
 #include"MO_ResourceManager.h"
 
-DE_Cubemap::DE_Cubemap() : shaderRes(nullptr), textureID(0), /*vboId(0),*/ EBO(0), VBO(0), VAO(0)
+DE_Cubemap::DE_Cubemap() : shaderRes(nullptr), textureID(0) /*vboId(0),*//* EBO(0), VBO(0), VAO(0)*/
 {
 }
 
@@ -26,30 +26,38 @@ void DE_Cubemap::CreateGLData()
 
 	//------------------------//
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, (GLuint*)&(VBO));
-	glGenBuffers(1, (GLuint*)&(EBO));
 
-	glBindVertexArray(VAO);
+	//glGenVertexArrays(1, &VAO);
+	//glGenBuffers(1, (GLuint*)&(VBO));
+	//glGenBuffers(1, (GLuint*)&(EBO));
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxIndexVertices), skyboxIndexVertices, GL_STATIC_DRAW);
+	//glBindVertexArray(VAO);
+	skyboxObject.InitBuffers();
+	skyboxObject.Bind();
 
-	//indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(skyboxIndices), skyboxIndices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxIndexVertices), skyboxIndexVertices, GL_STATIC_DRAW);
+	skyboxObject.LoadVBO(skyboxIndexVertices, sizeof(skyboxIndexVertices) / sizeof(float));
+
+	////indices
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(skyboxIndices), skyboxIndices, GL_STATIC_DRAW);
+	skyboxObject.LoadEBO(skyboxIndices, sizeof(skyboxIndices) / sizeof(int));
 
 	//position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)0);
+	//glEnableVertexAttribArray(0);
+	skyboxObject.SetVertexAttrib(0, 3, 6, 0);
 
 	//texcoords attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(GLfloat)));
+	//glEnableVertexAttribArray(1);
+	skyboxObject.SetVertexAttrib(1, 3, 6, 3);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	skyboxObject.UnBind();
+	//glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void DE_Cubemap::ClearMemory()
@@ -64,12 +72,14 @@ void DE_Cubemap::ClearMemory()
 		EngineExternal->moduleResources->UnloadResource(shaderRes->GetUID());
 
 
-	glDeleteVertexArrays(1, &VAO);
-	VAO = 0u;
-	glDeleteBuffers(1, &VBO);
-	VBO = 0u;
-	glDeleteBuffers(1, &EBO);
-	EBO = 0u;
+	//glDeleteVertexArrays(1, &VAO);
+	//VAO = 0u;
+	//glDeleteBuffers(1, &VBO);
+	//VBO = 0u;
+	//glDeleteBuffers(1, &EBO);
+	//EBO = 0u;
+
+	skyboxObject.UnloadData();
 }
 
 void DE_Cubemap::DrawAsSkybox(C_Camera* _camera)
@@ -111,7 +121,7 @@ void DE_Cubemap::DrawAsSkybox(C_Camera* _camera)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);*/
 	//glDrawArrays(GL_TRIANGLES, 0, 36);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(skyboxObject.GetVAO());
 	glDrawElements(GL_TRIANGLES, sizeof(skyboxIndices) / sizeof(int), GL_UNSIGNED_INT, NULL);
 	glBindVertexArray(0);
 
