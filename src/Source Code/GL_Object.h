@@ -30,7 +30,7 @@ public:
 	}
 	~GL_Object() 
 	{
-		UnloadData();
+		UnloadBuffers();
 	}
 
 	void InitBuffers() {
@@ -41,7 +41,7 @@ public:
 			glGenBuffers(1, (GLuint*)&(EBO));
 		}
 	}
-	void UnloadData() 
+	void UnloadBuffers() 
 	{
 		if (VAO != 0)
 		{
@@ -55,10 +55,10 @@ public:
 			EBO = 0u;
 		}
 
-		for (size_t VBO = 0; VBO < VBOs.size(); ++VBO)
+		for (size_t index = 0; index < VBOs.size(); ++index)
 		{
-			glDeleteBuffers(1, &VBO);
-			VBO = 0u;
+			glDeleteBuffers(1, &VBOs[index]);
+			VBOs[index] = 0u;
 		}
 	}
 
@@ -80,19 +80,31 @@ public:
 		usingVAO = false;
 	}
 
-	template <class T>
-	void LoadVBO(T* data, int nElements) 
+	/*Returns the index for the new VBO inside the VBOs' vector*/
+	uint CreateVBO() 
 	{
 		assert(usingVAO == true, "Not using VAO");
 
 		VBOs.push_back(0);
 		glGenBuffers(1, (GLuint*)&(VBOs[VBOs.size() -1]));
 
-		uint VBO = VBOs[VBOs.size() - 1];
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(T) * nElements, data, GL_STATIC_DRAW);
+		return (VBOs.size() - 1);
 	}
+
+	template <class T>
+	void SetVBO(int VBOindex, T* data, int nElements, int drawType = GL_STATIC_DRAW) 
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, VBOs[VBOindex]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(T) * nElements, data, drawType);
+	}
+
+	template <class T>
+	void CreateAndSetVBO(T* data, int nElements, int drawType = GL_STATIC_DRAW) 
+	{
+		SetVBO(CreateVBO(), data, nElements, drawType);
+	}
+
 
 	/*
 	* Index = attrib index

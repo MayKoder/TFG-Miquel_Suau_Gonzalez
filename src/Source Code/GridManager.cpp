@@ -23,7 +23,7 @@ typedef std::chrono::high_resolution_clock Clock;
 #include "CreationTool.h"
 
 
-GridManager::GridManager() : shaderRes(nullptr), VBO(0), instanceVBO(0), VAO(0), hoveredNode(nullptr)
+GridManager::GridManager() : shaderRes(nullptr), /*VBO(0), instanceVBO(0), VAO(0),*/ hoveredNode(nullptr)
 {
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
 	memset(cursorGridPos, 0, sizeof(cursorGridPos));
@@ -123,8 +123,6 @@ void GridManager::DivideHoveredClick()
 		hoveredNode->DivideNodeCross(this);
 
 		UpdateRenderData();
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }
 
@@ -133,6 +131,8 @@ void GridManager::CreateNode()
 	if (hoveredNode == nullptr) 
 	{
 		AddNode(this->cursorGridPos[0], this->cursorGridPos[1]);
+
+		UpdateRenderData();
 	}
 	else {
 		DivideHoveredClick();
@@ -160,8 +160,8 @@ bool GridManager::DeleteHoveredNode()
 	nodeMap.erase(hoveredNode->GetID());
 
 	UpdateRenderData();
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return true;
 }
@@ -203,34 +203,44 @@ void GridManager::LoadShader(const char* path)
 	//}
 
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, (GLuint*)&(VBO));
-	glGenBuffers(1, (GLuint*)&(instanceVBO));
+	//glGenVertexArrays(1, &VAO);
+	//glGenBuffers(1, (GLuint*)&(VBO));
+	//glGenBuffers(1, (GLuint*)&(instanceVBO));
+	gridGLObject.InitBuffers();
 
-	glBindVertexArray(VAO);
+	//glBindVertexArray(VAO);
+	gridGLObject.Bind();
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+	gridGLObject.CreateAndSetVBO(data, 15);
 
 	//position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
+	//glEnableVertexAttribArray(0);
+	gridGLObject.SetVertexAttrib(0, 3, 3, 0);
 
-	UpdateRenderData();
+	gridGLObject.CreateVBO();
+	UpdateRenderData(false);
 
 	//instance data attribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)0);
-	glEnableVertexAttribArray(1);
+	gridGLObject.SetVertexAttrib(1, 2, 2, 0);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)0);
+	//glEnableVertexAttribArray(1);
 	
-	glVertexAttribDivisor(0, 0);
-	glVertexAttribDivisor(1, 1);
+	gridGLObject.SetAttribDivisor(0, 0);
+	gridGLObject.SetAttribDivisor(1, 1);
+	//glVertexAttribDivisor(0, 0);
+	//glVertexAttribDivisor(1, 1);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	gridGLObject.UnBind();
+	//glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void GridManager::UpdateRenderData()
+void GridManager::UpdateRenderData(bool unBindAfter)
 {
 	std::vector<float> instanceData;
 	instanceData.reserve(nodeMap.size() * 2);
@@ -244,23 +254,31 @@ void GridManager::UpdateRenderData()
 	instanceData.shrink_to_fit();
 
 
-	glBindVertexArray(VAO);
+	//glBindVertexArray(VAO);
+	gridGLObject.Bind();
 
-	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-	glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+	//glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+	//glBufferData(GL_ARRAY_BUFFER, instanceData.size() * sizeof(float), instanceData.data(), GL_DYNAMIC_DRAW);
+	gridGLObject.SetVBO(1, instanceData.data(), instanceData.size(), GL_DYNAMIC_DRAW);
+
+	if (unBindAfter == true) {
+		gridGLObject.UnBind();
+	}
 }
 
 void GridManager::ClearMemory()
 {
 	EngineExternal->moduleResources->UnloadResource(shaderRes->GetUID());
 
-	glDeleteVertexArrays(1, &VAO);
-	VAO = 0u;
-	glDeleteBuffers(1, &VBO);
-	VBO = 0u;
+	//glDeleteVertexArrays(1, &VAO);
+	//VAO = 0u;
+	//glDeleteBuffers(1, &VBO);
+	//VBO = 0u;
 
-	glDeleteBuffers(1, &instanceVBO);
-	instanceVBO = 0u;
+	//glDeleteBuffers(1, &instanceVBO);
+	//instanceVBO = 0u;
+
+	gridGLObject.UnloadBuffers();
 }
 
 //GridNode* GridManager::GetGridNode(int x, int y) {
@@ -274,7 +292,7 @@ void GridManager::RenderGridTemporal()
 	shaderRes->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
-	glBindVertexArray(VAO);
+	glBindVertexArray(gridGLObject.GetVAO());
 	glDrawArraysInstanced(
 		GL_LINE_STRIP, 0, 5, nodeMap.size()
 	);
@@ -564,16 +582,21 @@ void GridNode::DivideNodeCross(GridManager* instance)
 			GridNode* ref = instance->GetNodeAt_Slow(position[0], position[1]);
 			if (ref == nullptr)
 			{
-				instance->nodeMap[GridManager::CANTOR_MAPPING(position[0], position[1])] = GridNode();
 
-				this->children[i] = &instance->nodeMap[GridManager::CANTOR_MAPPING(position[0], position[1])];
-				this->children[i]->SetGridPosition(position[0], position[1]);
+				//instance->nodeMap[GridManager::CANTOR_MAPPING(position[0], position[1])] = GridNode();
+				GridNode* added = instance->AddNode(position[0], position[1]);
+
+				//this->children[i] = &instance->nodeMap[GridManager::CANTOR_MAPPING(position[0], position[1])];
+				//this->children[i]->SetGridPosition(position[0], position[1]);
+				this->children[i] = added;
+
 
 				//instance->linealNodes.push_back(this->children[i]);
 
 
-				(*(this->children[i]->GetChildrenMemAddr(x - position[0], y - position[1]))) = this;
-				this->children[i]->SearchAndFillChildren(instance);
+				//(*(this->children[i]->GetChildrenMemAddr(x - position[0], y - position[1]))) = this;
+				//this->children[i]->SearchAndFillChildren(instance);
+
 				//(*(this->children[i]->GetChildrenMemAddr(position[0] - x, position[1] - y)))->SearchAndFillChildren(instance);
 
 			}

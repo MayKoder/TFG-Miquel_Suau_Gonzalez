@@ -37,7 +37,8 @@ void DE_Cubemap::CreateGLData()
 
 	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxIndexVertices), skyboxIndexVertices, GL_STATIC_DRAW);
-	skyboxObject.LoadVBO(skyboxIndexVertices, sizeof(skyboxIndexVertices) / sizeof(float));
+	//skyboxObject.SetVBO(skyboxObject.CreateVBO(), skyboxIndexVertices, sizeof(skyboxIndexVertices) / sizeof(float));
+	skyboxObject.CreateAndSetVBO(skyboxIndexVertices, sizeof(skyboxIndexVertices) / sizeof(float));
 
 	////indices
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -79,7 +80,7 @@ void DE_Cubemap::ClearMemory()
 	//glDeleteBuffers(1, &EBO);
 	//EBO = 0u;
 
-	skyboxObject.UnloadData();
+	skyboxObject.UnloadBuffers();
 }
 
 void DE_Cubemap::DrawAsSkybox(C_Camera* _camera)

@@ -4,13 +4,7 @@
 #include<map>
 class ResourceShader;
 class GridManager;
-
-//#define CANTOR_MAPPING(x, y) { 	\
-//uint _x = (x >= 0) ? 2 * x : (-2* x) -1 ; \
-//uint _y = (y >= 0) ? 2 * y : (-2 * y) - 1; \
-//
-//return  ((_x + _y) * (_x + _y + 1) / 2) + _y;     \
-//}
+#include"GL_Object.h"
 
 #define NODE_SIDES 4
 struct GridNode
@@ -66,7 +60,7 @@ public:
 	bool DeleteHoveredNode();
 
 	void LoadShader(const char* path);
-	void UpdateRenderData();
+	void UpdateRenderData(bool unBindAfter = true);
 	void ClearMemory();
 
 	void RenderGridTemporal();
@@ -90,9 +84,11 @@ private:
 	//GridNode grid[GRID_SIZE_X * GRID_SIZE_Y];
 	ResourceShader* shaderRes;
 
-	uint VAO;
-	uint VBO; //Mesh positions
-	uint instanceVBO;
+	//uint VAO;
+	//uint VBO; //Mesh positions
+	//uint instanceVBO;
+
+	GL_Object gridGLObject = GL_Object(GL_Object::RENDER_TYPE::RE_INSTANCING);
 
 	GridNode* hoveredNode;
 	int cursorGridPos[2];
