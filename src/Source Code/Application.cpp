@@ -100,6 +100,9 @@ bool Application::Init()
 	ms_timer.Start();
 	DETime::realStartTime = ms_timer.GetStartTime();
 
+	//TODO: Move fpscap to display refresh rate
+	//auto test = SDL_GetDisplayMode();
+
 	return ret;
 }
 

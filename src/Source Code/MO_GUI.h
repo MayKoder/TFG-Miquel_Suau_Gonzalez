@@ -113,6 +113,6 @@ public:
 	Tool* uiTools[UI_TOOLS_MAX];
 	Tool* selectedTool;
 
-	Tween<float> test;
+	//Tween<float> test;
 	Window developerWindow;
 };

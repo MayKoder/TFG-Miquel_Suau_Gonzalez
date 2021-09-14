@@ -528,6 +528,9 @@
     <ClInclude Include="Source Code\GL_Object.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\LineRenderer.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -829,6 +832,12 @@
     </ClCompile>
     <ClCompile Include="Source Code\alhelpers.c">
       <Filter>Sources\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GL_Object.cpp">
+      <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\LineRenderer.cpp">
+      <Filter>Sources\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

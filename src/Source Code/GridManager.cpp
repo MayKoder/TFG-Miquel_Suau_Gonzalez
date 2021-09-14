@@ -89,7 +89,7 @@ void GridManager::UpdateInput(Tool* selectedTool)
 	normal.y = -((normal.y - 0.5f) / 0.5f);
 
 	LineSegment worldRay = EngineExternal->moduleRenderer3D->activeRenderCamera->ScreenToWorld(normal.x, normal.y);
-	
+
 
 	//----
 	Plane up = Plane(float3(0, 1, 0), 0.0f);
@@ -100,10 +100,15 @@ void GridManager::UpdateInput(Tool* selectedTool)
 
 	float3 ret = worldRay.a + (((up.d - nDotA) / nDotBA) * ba);
 	//----
+	//if (cursorGridPos[0] != static_cast<int>(rint(ret.x)) || cursorGridPos[1] != static_cast<int>(rint(ret.z)))
+	//{
+	//	this->testRender.AddPoint(float3(static_cast<int>(rint(ret.x)), 0.15f, static_cast<int>(rint(ret.z))));
+	//}
 	cursorGridPos[0] = static_cast<int>(rint(ret.x));
 	cursorGridPos[1] = static_cast<int>(rint(ret.z));
 
 	hoveredNode = this->GetNodeAt_Slow(cursorGridPos[0], cursorGridPos[1]);
+
 
 	if (selectedTool != nullptr) 
 	{
@@ -238,6 +243,8 @@ void GridManager::LoadShader(const char* path)
 	//glBindVertexArray(0);
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	this->testRender.InitLineRenderer();
 }
 
 void GridManager::UpdateRenderData(bool unBindAfter)
@@ -323,6 +330,8 @@ void GridManager::RenderGridTemporal()
 		glEnd();
 		glColor3f(1., 1.f, 1.f);
 	}
+	
+	testRender.Render();
 
 	//auto t2 = Clock::now();
 	//LOG(LogType::L_NORMAL, "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());

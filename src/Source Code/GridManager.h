@@ -6,6 +6,9 @@ class ResourceShader;
 class GridManager;
 #include"GL_Object.h"
 
+//TODO: Temporal
+#include"LineRenderer.h"
+
 #define NODE_SIDES 4
 struct GridNode
 {
@@ -92,4 +95,6 @@ private:
 
 	GridNode* hoveredNode;
 	int cursorGridPos[2];
+
+	LineRenderer testRender;
 };

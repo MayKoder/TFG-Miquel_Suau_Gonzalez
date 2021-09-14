@@ -206,9 +206,9 @@ bool M_GUI::Start()
 	};
 	send->drawCallback = customDrawCalls;
 
-	test.Set(0, 1, 0.1, false);
-	test.isActive = true;
-	test.stepOverride = CustomEasings::easeInOutBounce;
+	//test.Set(0, 1, 0.1, false);
+	//test.isActive = true;
+	//test.stepOverride = CustomEasings::easeInOutBounce;
 
 	return true;
 }
@@ -255,11 +255,11 @@ void M_GUI::RenderUIElements()
 
 	//uiShader->Unbind();
 
-	glPointSize(50);
-	glBegin(GL_POINTS);
-	glVertex3f(0.f, test.GetAndStep(App->GetDT()), 0.0f);
-	glEnd();
-	glPointSize(1.0);
+	//glPointSize(50);
+	//glBegin(GL_POINTS);
+	//glVertex3f(0.f, test.GetAndStep(App->GetDT()), 0.0f);
+	//glEnd();
+	//glPointSize(1.0);
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();

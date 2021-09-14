@@ -502,22 +502,22 @@ void ModuleRenderer3D::OnGUI()
 }
 void ModuleRenderer3D::DrawDebugLines()
 {
-	glBegin(GL_LINES);
-	for (size_t i = 0; i < lines.size(); i++)
-	{
-		glColor3fv(lines[i].color.ptr());
-		glVertex3fv(lines[i].a.ptr());
-		glVertex3fv(lines[i].b.ptr());
+	//glBegin(GL_LINES);
+	//for (size_t i = 0; i < lines.size(); i++)
+	//{
+	//	glColor3fv(lines[i].color.ptr());
+	//	glVertex3fv(lines[i].a.ptr());
+	//	glVertex3fv(lines[i].b.ptr());
 
-		glColor3f(255.f, 255.f, 255.f);
-	}
-	glEnd();
+	//	glColor3f(255.f, 255.f, 255.f);
+	//}
+	//glEnd();
 
-	lines.clear();
+	//lines.clear();
 }
 void ModuleRenderer3D::AddDebugLines(float3& a, float3& b, float3& color)
 {
-	lines.push_back(LineRender(a, b, color));
+	//lines.push_back(LineRender(a, b, color));
 }
 #endif // !STANDALONE
 
@@ -718,5 +718,5 @@ void ModuleRenderer3D::ClearAllRenderData()
 	renderQueueMap.clear();
 	renderQueue.clear();
 	
-	lines.clear();
+	//lines.clear();
 }
