@@ -5,7 +5,7 @@
 #include"CO_Camera.h"
 #include"MO_ResourceManager.h"
 
-LineRenderer::LineRenderer() : shaderRes(nullptr)
+LineRenderer::LineRenderer() : shaderRes(nullptr), lineThickness(1.0)
 {
 }
 
@@ -57,6 +57,8 @@ void LineRenderer::UpdatePoint(int index, float3& value)
 
 void LineRenderer::Render()
 {
+	glLineWidth(lineThickness);
+
 	shaderRes->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
@@ -66,4 +68,6 @@ void LineRenderer::Render()
 	);
 	glBindVertexArray(0);
 	shaderRes->Unbind();
+
+	glLineWidth(1.0);
 }

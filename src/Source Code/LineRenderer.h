@@ -21,8 +21,13 @@ public:
 
 	void Render();
 
+	inline void SetThickness(float value) {
+		lineThickness = value;
+	}
+
 private:
 
+	float lineThickness;
 	std::vector<float> points;
 	GL_Object renderData = GL_Object(GL_Object::RENDER_TYPE::RE_ARRAY);
 	ResourceShader* shaderRes;
