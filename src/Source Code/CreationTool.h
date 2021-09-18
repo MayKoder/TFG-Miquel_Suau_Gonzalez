@@ -11,7 +11,9 @@ public:
 
 	}
 
-	virtual void Use(int button_id) {};
+	virtual void Use(int button_id) = 0;
+	virtual void DrawEditor() = 0;
+
 	const char* GetName() {
 		return toolName;
 	}
@@ -49,6 +51,14 @@ public:
 
 		default:
 			break;
+		}
+	};
+
+	void DrawEditor() override
+	{
+		for (size_t i = 0; i < 150; i++)
+		{
+			ImGui::Text("Holaaa");
 		}
 	};
 

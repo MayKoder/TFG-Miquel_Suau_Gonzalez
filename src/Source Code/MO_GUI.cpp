@@ -141,6 +141,9 @@ bool M_GUI::Start()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 
+	ImGui::GetStyle().WindowRounding = 13.f;
+	ImGui::GetStyle().FrameRounding = 13.f;
+
 	ImGui::StyleColorsDark();
 	ImGui_ImplSDL2_InitForOpenGL(App->moduleWindow->window, App->moduleRenderer3D->context);
 	ImGui_ImplOpenGL3_Init();
@@ -150,20 +153,27 @@ bool M_GUI::Start()
 
 	SetPanelData(App->moduleWindow->s_width, App->moduleWindow->s_height);
 	PanelTemp* send = &imGuiPanels[0];
-	std::function<void(int)> customDrawCalls = [send] (int i)
+	std::function<void(int)> customDrawCalls = [&, send] (int i)
 	{
+		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_Right;
 		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
+		//ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowRounding, ImDrawCornerFlags_Right);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
-
+			if (selectedTool != nullptr) {
+				selectedTool->DrawEditor();
+			}
 		}
 		ImGui::End();
+		//ImGui::PopStyleVar();
+		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_None;
 	};
 	send->drawCallback = customDrawCalls;
 
 	send = &imGuiPanels[1];
 	customDrawCalls = [send](int i)
 	{
+		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_Left;
 		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
@@ -176,6 +186,7 @@ bool M_GUI::Start()
 	send = &imGuiPanels[2];
 	customDrawCalls = [this, send](int i)
 	{
+		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_Top;
 		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_AlwaysHorizontalScrollbar))
 		{

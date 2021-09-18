@@ -188,7 +188,6 @@
     <ClInclude Include="Source Code\CO_Transform.h" />
     <ClInclude Include="Source Code\CreationTool.h" />
     <ClInclude Include="Source Code\DEJsonSupport.h" />
-    <ClInclude Include="Source Code\DERect.h" />
     <ClInclude Include="Source Code\DETime.h" />
     <ClInclude Include="Source Code\DE_Cubemap.h" />
     <ClInclude Include="Source Code\DE_FrameBuffer.h" />
@@ -332,7 +331,6 @@
     <ClCompile Include="Source Code\CO_Script.cpp" />
     <ClCompile Include="Source Code\CO_Transform.cpp" />
     <ClCompile Include="Source Code\DEJsonSupport.cpp" />
-    <ClCompile Include="Source Code\DERect.cpp" />
     <ClCompile Include="Source Code\DEResource.cpp" />
     <ClCompile Include="Source Code\DETime.cpp" />
     <ClCompile Include="Source Code\DE_Cubemap.cpp" />

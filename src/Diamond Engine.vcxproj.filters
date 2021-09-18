@@ -468,9 +468,6 @@
     <ClInclude Include="Source Code\DE_FrameBuffer.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\DERect.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\DE_Cubemap.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
@@ -777,9 +774,6 @@
       <Filter>Sources\Tools\Importers</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\DE_FrameBuffer.cpp">
-      <Filter>Sources\Containers</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\DERect.cpp">
       <Filter>Sources\Containers</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\DE_Cubemap.cpp">
