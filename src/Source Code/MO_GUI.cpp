@@ -22,7 +22,7 @@
 #include "Tween.h"
 #include"CreationTool.h"
 
-#include"OpenAL/include/AL/al.h"
+#include"GameObject.h"
 
 M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr), selectedTool(nullptr)
 {
@@ -172,13 +172,13 @@ bool M_GUI::Start()
 	send->drawCallback = customDrawCalls;
 
 	send = &imGuiPanels[1];
-	customDrawCalls = [send](int i)
+	customDrawCalls = [&, send](int i)
 	{
 		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_Left;
 		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
-
+			DrawGameObjectsTree(App->moduleScene->root, false);
 		}
 		ImGui::End();
 	};
@@ -280,6 +280,12 @@ void M_GUI::RenderUIElements()
 
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 	ImGuiStyle& style = ImGui::GetStyle();
+
+	(ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) ?
+		App->moduleInput->SetMouseLayer(MOUSE_LAYER::HOVERING_UI) :
+		App->moduleInput->SetMouseLayer(MOUSE_LAYER::MOVE_CAMERA);
+
+
 	for (size_t i = 0; i < 3; i++)
 	{
 		PanelTemp* panel = &imGuiPanels[i];
@@ -410,4 +416,79 @@ void M_GUI::SetPanelData(int w, int h)
 		ImVec2(-(w/10)/2, -(h / 4) - h/25));
 	send->animator.Set(send->pos, float2(send->pos.x, send->pos.y + send->size.y), .25f, true);
 	send->animator.Invert();
+}
+
+void M_GUI::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)
+{
+	if (drawAsDisabled == false)
+		drawAsDisabled = !node->isActive();
+
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+
+	if (node->children.size() == 0)
+		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+	//if (node == EngineExternal->moduleEditor->GetSelectedGO())
+	//	flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
+
+
+	if (drawAsDisabled)
+		ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
+
+	bool nodeOpen = ImGui::TreeNodeEx(node, flags, node->name.c_str());
+
+	if (drawAsDisabled)
+		ImGui::PopStyleColor();
+
+	//Only can use if this is not the root node
+	//ASK: Should the root node really be a gameobject? Problems with checks
+	if (!node->IsRoot())
+	{
+		//Start drag for reparent
+		if (ImGui::BeginDragDropSource(/*ImGuiDragDropFlags_SourceNoDisableHover*/))
+		{
+			ImGui::SetDragDropPayload("_GAMEOBJECT", node, sizeof(GameObject*));
+
+			//dropTarget = node;
+
+			ImGui::Text("Change parent to...");
+			ImGui::EndDragDropSource();
+		}
+
+		//if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left))
+		//{
+		//	EngineExternal->moduleEditor->SetSelectedGO(node);
+		//	if (EngineExternal->moduleEditor->GetSelectedAsset() != nullptr)
+		//		EngineExternal->moduleEditor->SetSelectedAsset(nullptr);
+		//}
+	}
+
+	node->showChildren = (node->children.size() == 0) ? false : nodeOpen;
+
+	//All nodes can be a drop target
+	if (ImGui::BeginDragDropTarget())
+	{
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_GAMEOBJECT"))
+		{
+
+			GameObject* dropGO = static_cast<GameObject*>(payload->Data);
+			//memcpy(dropGO, payload->Data, payload->DataSize);
+
+			//dropTarget->ChangeParent(node);
+			//LOG(LogType::L_NORMAL, "%s", dropTarget->name.c_str());
+			//dropTarget = nullptr;
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
+	if (node->showChildren == true)
+	{
+
+		for (unsigned int i = 0; i < node->children.size(); i++)
+		{
+			DrawGameObjectsTree(node->children[i], drawAsDisabled);
+		}
+		ImGui::TreePop();
+	}
 }

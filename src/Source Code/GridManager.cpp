@@ -115,7 +115,7 @@ void GridManager::UpdateInput(Tool* selectedTool)
 		//TODO: What a dumb idea, the tool should check the button?
 		for (size_t i = 0; i < MAX_MOUSE_BUTTONS; i++)
 		{
-			if (EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN)
+			if (EngineExternal->moduleInput->GetMouseLayer() != MOUSE_LAYER::HOVERING_UI && EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN)
 				selectedTool->Use(i);
 		}
 	}

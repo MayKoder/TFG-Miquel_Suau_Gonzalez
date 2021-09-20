@@ -9,7 +9,6 @@
 #include"MO_ResourceManager.h"
 #include"MO_Input.h"
 #include"MO_Editor.h"
-#include"MO_MonoManager.h"
 #include"RE_Texture.h"
 
 W_Assets::W_Assets() : Window(), selectedFile(nullptr)

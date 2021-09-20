@@ -11,6 +11,15 @@ enum KEY_STATE
 	KEY_UP
 };
 
+enum class MOUSE_LAYER 
+{
+
+	MOVE_CAMERA,
+	HOVERING_UI,
+
+
+};
+
 class ModuleInput : public Module
 {
 public:
@@ -98,9 +107,20 @@ public:
 		return SDL_GameControllerGetAxis(controller_player, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
 	}
 
+
+	void SetMouseLayer(MOUSE_LAYER layer) {
+		mouseLayer = layer;
+	}
+
+	MOUSE_LAYER GetMouseLayer() {
+		return mouseLayer;
+	}
+
 private:
 	KEY_STATE* keyboard;
 	KEY_STATE mouse_buttons[MAX_MOUSE_BUTTONS];
+
+	MOUSE_LAYER mouseLayer = MOUSE_LAYER::MOVE_CAMERA;
 
 	//Gamepad control
 	KEY_STATE game_pad[SDL_CONTROLLER_BUTTON_MAX];

@@ -41,22 +41,14 @@
 
   /* InitAL opens a device and sets up a context using default attributes, making
    * the program ready to call OpenAL functions. */
-int InitAL(char*** argv, int* argc)
+int InitAL()
 {
     const ALCchar* name;
     ALCdevice* device;
     ALCcontext* ctx;
 
-    /* Open and initialize a device */
+
     device = NULL;
-    if (argc && argv && *argc > 1 && strcmp((*argv)[0], "-device") == 0)
-    {
-        device = alcOpenDevice((*argv)[1]);
-        if (!device)
-            fprintf(stderr, "Failed to open \"%s\", trying default\n", (*argv)[1]);
-        (*argv) += 2;
-        (*argc) -= 2;
-    }
     if (!device)
         device = alcOpenDevice(NULL);
     if (!device)

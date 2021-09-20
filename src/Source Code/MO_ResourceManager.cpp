@@ -19,7 +19,6 @@
 
 #include"DEJsonSupport.h"
 #include"MO_Window.h"
-#include"MO_MonoManager.h"
 
 M_ResourceManager::M_ResourceManager(Application* app, bool start_enabled) : Module(app, start_enabled), assetsRoot("Assets", "Assets", 0, true),
 fileCheckTime(0.f), fileUpdateDelay(2.f), meshesLibraryRoot("Meshes", "Library/Meshes", 0, true)

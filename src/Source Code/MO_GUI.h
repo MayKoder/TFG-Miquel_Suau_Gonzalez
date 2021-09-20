@@ -11,6 +11,8 @@ static float uiPlaneData[] =
 
 #include"ImGui/imgui.h"
 #include"Tween.h"
+class GameObject;
+
 struct PanelTemp 
 {
 	PanelTemp() : pos(0.f, 0.f), size(0.f, 0.f), pivot(0.f, 0.f), buttonRect(0.f, 0.f), closeOffset(0.f, 0.f) {}
@@ -88,6 +90,9 @@ public:
 	void OnResize(int, int) override;
 
 	void SetPanelData(int, int);
+
+	/*TODO: Temporal, move to another place or som'*/
+	void DrawGameObjectsTree(GameObject* node, bool drawAsDisabled);
 
 	/*template <typename Func, typename... Args>*/
 	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale)

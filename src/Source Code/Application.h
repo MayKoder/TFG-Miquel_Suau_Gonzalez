@@ -12,6 +12,8 @@ class ModuleRenderer3D;
 class ModuleCamera3D;
 class M_Scene;
 //class M_Editor;
+class M_Sound;
+
 class M_ResourceManager;
 //class M_MonoManager;
 class M_GUI;
@@ -27,6 +29,7 @@ public:
 	ModuleRenderer3D* moduleRenderer3D = nullptr;
 	ModuleCamera3D* moduleCamera = nullptr;
 	M_Scene* moduleScene = nullptr;
+	M_Sound* moduleSound = nullptr;
 	//M_Editor* moduleEditor = nullptr;
 	M_ResourceManager* moduleResources = nullptr;
 	//M_MonoManager* moduleMono = nullptr;

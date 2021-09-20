@@ -423,9 +423,6 @@
     <ClInclude Include="Source Code\WI_Scene.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\WI_Hierarchy.h">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\WI_Configuration.h">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClInclude>
@@ -443,9 +440,6 @@
     </ClInclude>
     <ClInclude Include="Source Code\CO_Transform.h">
       <Filter>Sources\Components\Derived</Filter>
-    </ClInclude>
-    <ClInclude Include="Source Code\MO_MonoManager.h">
-      <Filter>Sources\Modules</Filter>
     </ClInclude>
     <ClInclude Include="Source Code\CO_Script.h">
       <Filter>Sources\Components\Derived</Filter>
@@ -527,6 +521,9 @@
     </ClInclude>
     <ClInclude Include="Source Code\LineRenderer.h">
       <Filter>Sources\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\MO_Sound.h">
+      <Filter>Sources\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -731,9 +728,6 @@
     <ClCompile Include="Source Code\WI_Scene.cpp">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\WI_Hierarchy.cpp">
-      <Filter>Sources\UIElements\Windows\Derived</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\WI_Configuration.cpp">
       <Filter>Sources\UIElements\Windows\Derived</Filter>
     </ClCompile>
@@ -751,9 +745,6 @@
     </ClCompile>
     <ClCompile Include="Source Code\CO_Transform.cpp">
       <Filter>Sources\Components\Derived</Filter>
-    </ClCompile>
-    <ClCompile Include="Source Code\MO_MonoManager.cpp">
-      <Filter>Sources\Modules</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\CO_Script.cpp">
       <Filter>Sources\Components\Derived</Filter>
@@ -832,6 +823,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\LineRenderer.cpp">
       <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\MO_Sound.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

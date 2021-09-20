@@ -66,6 +66,7 @@ private:
 
 };
 
+#include"MO_Scene.h"
 class  ToolWall : public Tool
 {
 public:
@@ -79,7 +80,7 @@ public:
 
 	void Use(int button_id) override
 	{
-
+		EngineExternal->moduleScene->CreateGameObject("Test", EngineExternal->moduleScene->root);
 		//Check for nearby walls
 			//If nearby wall and new use breaks the direction of the other wall
 				//Add vertices to created wall

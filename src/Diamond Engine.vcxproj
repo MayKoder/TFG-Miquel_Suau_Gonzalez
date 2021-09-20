@@ -290,7 +290,7 @@
     <ClInclude Include="Source Code\MA_IconSystem.h" />
     <ClInclude Include="Source Code\MM_ProceduralMeshGenerator.h" />
     <ClInclude Include="Source Code\MO_GUI.h" />
-    <ClInclude Include="Source Code\MO_MonoManager.h" />
+    <ClInclude Include="Source Code\MO_Sound.h" />
     <ClInclude Include="Source Code\RE_Material.h" />
     <ClInclude Include="Source Code\RE_Mesh.h" />
     <ClInclude Include="Source Code\IM_MeshLoader.h" />
@@ -315,7 +315,6 @@
     <ClInclude Include="Source Code\Window.h" />
     <ClInclude Include="Source Code\WI_Assets.h" />
     <ClInclude Include="Source Code\WI_Configuration.h" />
-    <ClInclude Include="Source Code\WI_Hierarchy.h" />
     <ClInclude Include="Source Code\WI_Scene.h" />
   </ItemGroup>
   <ItemGroup>
@@ -395,7 +394,7 @@
     <ClCompile Include="Source Code\MMGui.cpp" />
     <ClCompile Include="Source Code\MM_ProceduralMeshGenerator.cpp" />
     <ClCompile Include="Source Code\MO_GUI.cpp" />
-    <ClCompile Include="Source Code\MO_MonoManager.cpp" />
+    <ClCompile Include="Source Code\MO_Sound.cpp" />
     <ClCompile Include="Source Code\RE_Material.cpp" />
     <ClCompile Include="Source Code\RE_Mesh.cpp" />
     <ClCompile Include="Source Code\IM_MeshLoader.cpp" />
@@ -406,7 +405,6 @@
     <ClCompile Include="Source Code\RE_Texture.cpp" />
     <ClCompile Include="Source Code\UIElement.cpp" />
     <ClCompile Include="Source Code\WI_Assets.cpp" />
-    <ClCompile Include="Source Code\WI_Hierarchy.cpp" />
     <ClCompile Include="Source Code\log.cpp" />
     <ClCompile Include="Source Code\Main.cpp" />
     <ClCompile Include="Source Code\MaykMath.cpp" />

@@ -11,7 +11,7 @@ extern "C" {
 	const char* FormatName(ALenum type);
 
 	/* Easy device init/deinit functions. InitAL returns 0 on success. */
-	int InitAL(char*** argv, int* argc);
+	int InitAL();
 	void CloseAL(void);
 
 	/* Cross-platform timeget and sleep functions. */

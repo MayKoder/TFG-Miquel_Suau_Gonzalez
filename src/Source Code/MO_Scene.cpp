@@ -8,9 +8,7 @@
 #include "MO_Camera3D.h"
 #include "MO_Scene.h"
 #include "MO_ResourceManager.h"
-#include"MO_MonoManager.h"
 
-#include "WI_Hierarchy.h"
 #include"MaykMath.h"
 
 #include "IM_FileSystem.h"
@@ -242,22 +240,22 @@ void M_Scene::RecursiveUpdate(GameObject* parent)
 	}
 }
 
-#ifndef STANDALONE
-void M_Scene::OnGUI()
-{
-	if (ImGui::CollapsingHeader("Scene info", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Text("Time since game start: %f", DETime::time);
-		ImGui::SliderFloat("Time scale", &DETime::timeScale, 0.f, 3.f);
-		ImGui::Text("Game delta time: %f", DETime::deltaTime);
-		ImGui::Text("Frame count: %i", DETime::frameCount);
-		ImGui::Text("Time since engine start: %f", DETime::realTimeSinceStartup);
-		ImGui::Text("Engine delta time: %f", DETime::realTimeDeltaTime);
-		ImGui::Text("Engine start time: %f", DETime::realStartTime);
-		ImGui::Text("Game state %s", DETime::GetStateString());
-	}
-}
-#endif // !STANDALONE
+
+//void M_Scene::OnGUI()
+//{
+//	if (ImGui::CollapsingHeader("Scene info", ImGuiTreeNodeFlags_DefaultOpen))
+//	{
+//		ImGui::Text("Time since game start: %f", DETime::time);
+//		ImGui::SliderFloat("Time scale", &DETime::timeScale, 0.f, 3.f);
+//		ImGui::Text("Game delta time: %f", DETime::deltaTime);
+//		ImGui::Text("Frame count: %i", DETime::frameCount);
+//		ImGui::Text("Time since engine start: %f", DETime::realTimeSinceStartup);
+//		ImGui::Text("Engine delta time: %f", DETime::realTimeDeltaTime);
+//		ImGui::Text("Engine start time: %f", DETime::realStartTime);
+//		ImGui::Text("Game state %s", DETime::GetStateString());
+//	}
+//}
+
 
 void M_Scene::SaveScene(const char* name)
 {
