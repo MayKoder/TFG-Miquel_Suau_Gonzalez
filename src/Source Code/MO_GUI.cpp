@@ -43,7 +43,8 @@ M_GUI::~M_GUI()
 
 bool M_GUI::Init()
 {
-	this->uiTools[0] = new ToolAddRemove("Add/Remove node");
+	this->uiTools[0] = new ToolNode("Nodes");
+	this->uiTools[1] = new ToolWall("Walls");
 
 	developerWindow.SetTextFromFile("Assets/Shaders/cubeMap.glsl");
 

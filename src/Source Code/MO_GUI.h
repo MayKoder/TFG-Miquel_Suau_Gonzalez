@@ -65,7 +65,7 @@ public:
 };
 
 //template<typename... Args>
-#define UI_TOOLS_MAX 1
+#define UI_TOOLS_MAX 2
 class Tool;
 class M_GUI : public Module
 {

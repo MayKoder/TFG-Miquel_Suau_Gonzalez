@@ -24,14 +24,14 @@ private:
 };
 
 #include"Globals.h"
-class ToolAddRemove : public Tool
+class ToolNode : public Tool
 {
 public:
-	ToolAddRemove(const char* _tName) : Tool(_tName) 
+	ToolNode(const char* _tName) : Tool(_tName) 
 	{
 
 	}
-	virtual ~ToolAddRemove() {
+	virtual ~ToolNode() {
 
 	}
 
@@ -60,6 +60,42 @@ public:
 		{
 			ImGui::Text("Holaaa");
 		}
+	};
+
+private:
+
+};
+
+class  ToolWall : public Tool
+{
+public:
+	ToolWall(const char* _tName) : Tool(_tName)
+	{
+
+	}
+	virtual ~ToolWall() {
+
+	}
+
+	void Use(int button_id) override
+	{
+
+		//Check for nearby walls
+			//If nearby wall and new use breaks the direction of the other wall
+				//Add vertices to created wall
+		//else 
+			//create wall object with new vertices
+
+
+		//Wall creation
+			//create base points with determinated spacing (for a more advance weared wall)
+
+
+	};
+
+	void DrawEditor() override
+	{
+
 	};
 
 private:
