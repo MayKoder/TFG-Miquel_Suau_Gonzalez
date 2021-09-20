@@ -166,7 +166,7 @@ bool M_GUI::Start()
 		}
 		ImGui::End();
 		//ImGui::PopStyleVar();
-		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_None;
+		//ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_None;
 	};
 	send->drawCallback = customDrawCalls;
 
@@ -278,6 +278,7 @@ void M_GUI::RenderUIElements()
 
 
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
+	ImGuiStyle& style = ImGui::GetStyle();
 	for (size_t i = 0; i < 3; i++)
 	{
 		PanelTemp* panel = &imGuiPanels[i];
@@ -292,8 +293,8 @@ void M_GUI::RenderUIElements()
 		ImVec2 p0 = ImVec2(panel->animator.Get().x + panel->closeOffset.x, panel->animator.Get().y + panel->closeOffset.y);
 		ImVec2 p1 = ImVec2(p0.x + size.x, p0.y + size.y);
 
-		ImU32 col_b = ImGui::GetColorU32(IM_COL32(255, 255, 255, 255));
-		draw_list->AddRectFilled(p0, p1, col_b);
+		ImU32 col_b = ImGui::GetColorU32(IM_COL32(200, 200, 200, 230));
+		draw_list->AddRectFilled(p0, p1, col_b, style.WindowRounding, style.RoundingStyleFlag);
 
 		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) == true) 
 		{
