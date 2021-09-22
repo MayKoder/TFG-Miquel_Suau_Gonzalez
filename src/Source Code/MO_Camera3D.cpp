@@ -25,7 +25,7 @@ ModuleCamera3D::~ModuleCamera3D()
 // -----------------------------------------------------------------
 bool ModuleCamera3D::Start()
 {
-	LOG(LogType::L_NORMAL, "Setting up the camera");
+	LOG(  "Setting up the camera");
 	bool ret = true;
 
 	editorCamera.LookAt(float3(0.f, 0.f, 0.f));
@@ -38,7 +38,7 @@ bool ModuleCamera3D::Start()
 // -----------------------------------------------------------------
 bool ModuleCamera3D::CleanUp()
 {
-	LOG(LogType::L_NORMAL, "Cleaning camera");
+	LOG(  "Cleaning camera");
 
 	return true;
 }

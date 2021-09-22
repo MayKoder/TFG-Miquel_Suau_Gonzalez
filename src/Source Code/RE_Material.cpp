@@ -264,7 +264,7 @@ void ResourceMaterial::DrawEditor()
 					std::string libraryName = EngineExternal->moduleResources->LibraryFromMeta(metaFileDrop->c_str());
 
 					uniforms[i].data.textureValue = dynamic_cast<ResourceTexture*>(EngineExternal->moduleResources->RequestResource(EngineExternal->moduleResources->GetMetaUID(metaFileDrop->c_str()), libraryName.c_str()));
-					LOG(LogType::L_WARNING, "File %s loaded to scene", (*metaFileDrop).c_str());
+					LOG( "File %s loaded to scene", (*metaFileDrop).c_str());
 				}
 				ImGui::EndDragDropTarget();
 			}

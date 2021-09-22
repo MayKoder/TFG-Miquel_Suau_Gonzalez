@@ -26,9 +26,9 @@ void Window::Draw()
 	ImGui::End();
 }
 
-void Window::AddLog(const char* s_msg, LogType _type)
+void Window::AddLog(const char* s_msg)
 {
-	LogMessage message(std::string(s_msg), _type);
+	LogMessage logMsg = LogMessage(std::string(s_msg));
 
 	if (logs.size() >= 1)
 	{
@@ -39,7 +39,7 @@ void Window::AddLog(const char* s_msg, LogType _type)
 		}
 	}
 
-	logs.push_back(message);
+	logs.push_back(logMsg);
 	scrollToBottom = true;
 }
 
@@ -93,7 +93,7 @@ void Window::DrawConsole()
 	ImGui::EndChild();
 }
 
-LogMessage::LogMessage(std::string& s_msg, LogType _type) : prints(1), lType(_type)
+LogMessage::LogMessage(std::string& s_msg) : prints(1)
 {
 	msg = s_msg;
 }

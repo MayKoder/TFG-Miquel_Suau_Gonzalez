@@ -30,7 +30,7 @@ M_FileSystem::~M_FileSystem()
 bool M_FileSystem::Init()
 {
 	//Devil init
-	LOG(LogType::L_NORMAL, "DevIL Init");
+	LOG(  "DevIL Init");
 	ilInit();
 	iluInit();
 	ilutInit();

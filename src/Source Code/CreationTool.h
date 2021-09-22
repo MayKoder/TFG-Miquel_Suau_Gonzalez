@@ -37,7 +37,7 @@ public:
 
 	void Use(int button_id) override 
 	{
-		LOG(LogType::L_NORMAL, "Add/Remove node");
+		LOG(  "Add/Remove node");
 
 		switch (button_id)
 		{

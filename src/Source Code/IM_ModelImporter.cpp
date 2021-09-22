@@ -100,7 +100,7 @@ void ModelImporter::Import(char* buffer, int bSize, Resource* res)
 		aiReleaseImport(scene);
 	}
 	else
-		LOG(LogType::L_ERROR, "Error loading scene"/*, scene->name*/);
+		LOG( "Error loading scene"/*, scene->name*/);
 }
 
 void ModelImporter::SaveModelCustom(GameObject* root, const char* nameWithExtension)

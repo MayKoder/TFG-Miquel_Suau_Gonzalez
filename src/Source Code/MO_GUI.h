@@ -34,9 +34,8 @@ struct PanelTemp
 	//	buttonRect.y += (buttonRect.w * 0.5f) * y;
 	//}
 
-	void OnToggleClick(ImVec2 buttonPos) 
+	bool OnHover(ImVec2 buttonPos) 
 	{
-
 		ImVec2 p0 = buttonPos;
 		ImVec2 size = ImVec2(buttonRect.x, buttonRect.y);
 
@@ -45,9 +44,16 @@ struct PanelTemp
 		if ((point.x <= rect.x + rect.z && point.x >= rect.x) &&
 			point.y <= rect.y + rect.w && point.y >= rect.y)
 		{
-			//isOpen = !isOpen;
-			animator.Invert();
+			return true;
 		}
+		else {
+			return false;
+		}
+	}
+
+	void OnToggleClick(ImVec2 buttonPos) 
+	{
+		animator.Invert();
 	}
 
 public: 

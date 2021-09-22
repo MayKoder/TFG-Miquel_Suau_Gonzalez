@@ -33,7 +33,7 @@ M_Editor::~M_Editor()
 bool M_Editor::Init()
 {
 
-	LOG(LogType::L_NORMAL, "Init: ImGui");
+	LOG(  "Init: ImGui");
 
 	//IMGUI_CHECKVERSION();
 	//ImGui::CreateContext();
@@ -152,7 +152,7 @@ void M_Editor::Draw()
 
 bool M_Editor::CleanUp()
 {
-	LOG(LogType::L_NORMAL, "Editor CleanUp");
+	LOG(  "Editor CleanUp");
 
 #ifndef STANDALONE
 	//Must manual cleanup to avoid leaks and crashed with the resource manager
@@ -160,7 +160,7 @@ bool M_Editor::CleanUp()
 #endif // !STANDALONE
 
 
-	LOG(LogType::L_NORMAL, "ImGui Shutdown");
+	LOG(  "ImGui Shutdown");
 	return true;
 }
 
@@ -386,7 +386,7 @@ void M_Editor::DrawCreateMenu()
 void M_Editor::SaveStyle(const char* styleName)
 {
 	//Maybe learning json alone wasn't a good idea
-	LOG(LogType::L_NORMAL, "Saving %s", styleName);
+	LOG(  "Saving %s", styleName);
 
 	JSON_Value* file = json_parse_file(STYLES_PATH);
 	JSON_Object* root_object = json_value_get_object(file);
@@ -446,14 +446,14 @@ void M_Editor::ChangeStyleTo(const char* styleName)
 	json_value_free(file);
 	//json_value_free(stArray);
 
-	LOG(LogType::L_NORMAL, "Style %s loaded", styleName);
+	LOG(  "Style %s loaded", styleName);
 }
 
 /*Delete a style*/
 void M_Editor::DeleteStyle(const char* styleName)
 {
 	//Maybe learning json alone wasn't a good idea
-	LOG(LogType::L_NORMAL, "Deleting style %s", styleName);
+	LOG(  "Deleting style %s", styleName);
 
 	//Init node
 	JSON_Value* file = json_parse_file(STYLES_PATH);
@@ -473,7 +473,7 @@ void M_Editor::DeleteStyle(const char* styleName)
 /*Update saved styles*/
 void M_Editor::UpdateLoadedStylesVector(std::vector<std::string>* _styles)
 {
-	LOG(LogType::L_NORMAL, "Loading saved styles at default file");
+	LOG(  "Loading saved styles at default file");
 
 	styles.clear();
 	JSON_Value* file = json_parse_file(STYLES_PATH);
@@ -490,7 +490,7 @@ void M_Editor::UpdateLoadedStylesVector(std::vector<std::string>* _styles)
 	}
 	else
 	{
-		LOG(LogType::L_WARNING, "Styles file could not be loaded, loading default style");
+		LOG( "Styles file could not be loaded, loading default style");
 	}
 	json_value_free(file);
 }

@@ -84,7 +84,7 @@ void M_ResourceManager::PopulateFileArray()
 	assetsRoot = AssetDir("Assets", "Assets", App->moduleFileSystem->GetLastModTime("Assets"),true);
 	App->moduleFileSystem->GetAllFilesRecursive(assetsRoot);
 
-	LOG(LogType::L_WARNING, "Took %f seconds to calculate assets", ((float)prof.Read() / 1000.f));
+	LOG( "Took %f seconds to calculate assets", ((float)prof.Read() / 1000.f));
 }
 
 int M_ResourceManager::ExistsOnLibrary(const char* file_in_assets) const
@@ -130,7 +130,7 @@ void M_ResourceManager::NeedsDirsUpdate(AssetDir& dir)
 		//If its a dir, recalculate all the new folders
 		if (dir.isDir) 
 		{
-			LOG(LogType::L_WARNING, "Dir %s updated", dir.importPath.c_str());
+			LOG( "Dir %s updated", dir.importPath.c_str());
 
 			for (size_t i = 0; i < dir.childDirs.size(); i++)
 			{
@@ -154,7 +154,7 @@ void M_ResourceManager::NeedsDirsUpdate(AssetDir& dir)
 					modFile.GenerateMeta();
 					if(!this->ExistsOnLibrary(modFile.importPath.c_str()))
 						this->ImportFile(modFile.importPath.c_str(), this->GetMetaType(modFile.metaFileDir.c_str()));
-					LOG(LogType::L_NORMAL, "Meta generated");
+					LOG(  "Meta generated");
 				}
 				else if(modFile.lastModTime != App->moduleFileSystem->GetLastModTime(modFile.importPath.c_str()))
 				{
@@ -180,7 +180,7 @@ void M_ResourceManager::UpdateMeshesDisplay()
 {
 	meshesLibraryRoot.childDirs.clear();
 	App->moduleFileSystem->GetAllFilesRecursive(meshesLibraryRoot);
-	LOG(LogType::L_WARNING, "Mesh display updated");
+	LOG( "Mesh display updated");
 }
 
 Resource* M_ResourceManager::RequestResource(int uid, Resource::Type type)
@@ -232,10 +232,10 @@ Resource* M_ResourceManager::RequestResource(int uid, const char* libraryPath)
 
 				ret->LoadToMemory();
 			}
-			LOG(LogType::L_NORMAL, "Requested resource loaded as new"); //UNCOMMENT
+			LOG(  "Requested resource loaded as new"); //UNCOMMENT
 		}
 		else
-			LOG(LogType::L_ERROR, "Requested resource does not exist");
+			LOG( "Requested resource does not exist");
 
 		return ret;
 	}
@@ -308,7 +308,7 @@ int M_ResourceManager::ImportFile(const char* assetsFile, Resource::Type type)
 
 int M_ResourceManager::CreateLibraryFromAssets(const char* assetsFile)
 {
-	LOG(LogType::L_WARNING, "File created from assets");
+	LOG( "File created from assets");
 	uint resID = ImportFile(assetsFile, GetTypeFromAssetExtension(assetsFile));
 	return resID;
 }
@@ -334,7 +334,7 @@ Resource* M_ResourceManager::RequestFromAssets(const char* assets_path)
 		}
 	}
 	else
-		LOG(LogType::L_ERROR, "ASSET META OR LIBRARY NOT CREATED");
+		LOG( "ASSET META OR LIBRARY NOT CREATED");
 
 	return ret;
 }
@@ -525,7 +525,7 @@ bool M_ResourceManager::IsResourceLoaded(int uid)
 
 void M_ResourceManager::UpdateFile(AssetDir& modDir)
 {
-	LOG(LogType::L_WARNING, "File %s was modified, reimporting", modDir.dirName.c_str());
+	LOG( "File %s was modified, reimporting", modDir.dirName.c_str());
 	ImportFile(modDir.importPath.c_str(), App->moduleResources->GetMetaType(modDir.metaFileDir.c_str()));
 	modDir.lastModTime = App->moduleFileSystem->GetLastModTime(modDir.importPath.c_str());
 }

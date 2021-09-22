@@ -25,7 +25,7 @@ GLuint TextureImporter::LoadToMemory(char* buffer, int size, int* w, int* h)
 
 	if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, size))
 	{
-		LOG(LogType::L_ERROR, "Image not loaded");
+		LOG( "Image not loaded");
 	}
 
 	if (w)
@@ -60,7 +60,7 @@ void TextureImporter::SaveDDS(char* buffer, int size, const char* fileName)
 
 	if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, size))
 	{
-		LOG(LogType::L_ERROR, "Image not loaded");
+		LOG( "Image not loaded");
 	}
 
 	//TODO: Move this to function
@@ -123,7 +123,7 @@ void TextureImporter::LoadCubeMap(std::vector<std::string>& faces, DE_Cubemap& c
 		ilBindImage(imageID);
 
 		if (!ilLoadL(IL_DDS, buffer, size))
-			LOG(LogType::L_ERROR, "Image not loaded");
+			LOG( "Image not loaded");
 
 		width = ilGetInteger(IL_IMAGE_WIDTH);
 		height = ilGetInteger(IL_IMAGE_HEIGHT);
@@ -144,7 +144,7 @@ void TextureImporter::LoadCubeMap(std::vector<std::string>& faces, DE_Cubemap& c
 		}
 		else
 		{
-			LOG(LogType::L_ERROR, "Cubemap tex failed to load at path: %s", faces[i]);
+			LOG( "Cubemap tex failed to load at path: %s", faces[i]);
 		}
 
 		RELEASE_ARRAY(buffer);

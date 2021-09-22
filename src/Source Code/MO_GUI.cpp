@@ -303,9 +303,12 @@ void M_GUI::RenderUIElements()
 		ImU32 col_b = ImGui::GetColorU32(IM_COL32(200, 200, 200, 230));
 		draw_list->AddRectFilled(p0, p1, col_b, style.WindowRounding, style.RoundingStyleFlag);
 
-		if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) == true) 
-		{
-			panel->OnToggleClick(p0);
+		if (panel->OnHover(p0)) {
+			App->moduleInput->SetMouseLayer(MOUSE_LAYER::HOVERING_UI);
+			if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) == true)
+			{
+				panel->OnToggleClick(p0);
+			}
 		}
 	}
 
@@ -475,7 +478,7 @@ void M_GUI::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)
 			//memcpy(dropGO, payload->Data, payload->DataSize);
 
 			//dropTarget->ChangeParent(node);
-			//LOG(LogType::L_NORMAL, "%s", dropTarget->name.c_str());
+			//LOG(  "%s", dropTarget->name.c_str());
 			//dropTarget = nullptr;
 		}
 		ImGui::EndDragDropTarget();

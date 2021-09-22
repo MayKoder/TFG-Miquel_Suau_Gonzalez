@@ -145,7 +145,7 @@ update_status M_Scene::Update(float dt)
 	//auto t1 = SDL_GetTicks();
 	UpdateGameObjects();
 	//auto t2 = SDL_GetTicks();
-	//LOG(LogType::L_NORMAL, std::to_string(t2-t1).c_str());
+	//LOG(  std::to_string(t2-t1).c_str());
 
 	return update_status::UPDATE_CONTINUE;
 }

@@ -4,7 +4,7 @@
 #include "Application.h"
 #include "MO_GUI.h"
 
-void log(const char file[], int line, LogType _type, const char* format, ...)
+void log(const char file[], int line, const char* format, ...)
 {
 	static char tmp_string[4096];
 	static char tmp_string2[4096];
@@ -19,7 +19,7 @@ void log(const char file[], int line, LogType _type, const char* format, ...)
 
 	if (EngineExternal != nullptr && EngineExternal->moduleGUI != nullptr)
 	{
-		EngineExternal->moduleGUI->developerWindow.AddLog(tmp_string, _type);
+		EngineExternal->moduleGUI->developerWindow.AddLog(tmp_string);
 	}
 
 }

@@ -334,7 +334,7 @@ void GridManager::RenderGridTemporal()
 	testRender.Render();
 
 	//auto t2 = Clock::now();
-	//LOG(LogType::L_NORMAL, "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
+	//LOG(  "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());
 
 	//glLineWidth(1.0f);
 

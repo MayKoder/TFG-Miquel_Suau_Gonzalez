@@ -24,7 +24,7 @@ ResourceMesh::~ResourceMesh()
 
 bool ResourceMesh::LoadToMemory()
 {
-	LOG(LogType::L_WARNING, "Mesh loaded to memory"); //UNCOMMENT
+	LOG( "Mesh loaded to memory"); //UNCOMMENT
 	LoadCustomFormat(GetLibraryPath());
 
 	glGenVertexArrays(1, &VAO);

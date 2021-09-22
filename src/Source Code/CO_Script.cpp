@@ -59,11 +59,11 @@
 //	{
 //		if (strcmp(mono_class_get_name(mono_object_get_class(exec)), "NullReferenceException") == 0) 
 //		{
-//			LOG(LogType::L_ERROR, "Null reference exception detected");
+//			LOG( "Null reference exception detected");
 //		}
 //		else 
 //		{
-//			LOG(LogType::L_ERROR, mono_class_get_name(mono_object_get_class(exec)));
+//			LOG( mono_class_get_name(mono_object_get_class(exec)));
 //		}
 //	}
 //}
@@ -359,7 +359,7 @@
 //
 //	if (klass == nullptr) 
 //	{
-//		LOG(LogType::L_ERROR, "Script %s was deleted and can't be loaded", scriptName);
+//		LOG( "Script %s was deleted and can't be loaded", scriptName);
 //		name = "Missing script reference";
 //		return;
 //	}

@@ -26,8 +26,8 @@ void MaterialImporter::CreateBaseMaterialFile(const char* path)
 
 	json_value_free(file);
 
-	//LOG(LogType::L_NORMAL, "File saved at: %s", material->GetAssetPath());
-	LOG(LogType::L_NORMAL, "File saved at: %s", path);
+	//LOG(  "File saved at: %s", material->GetAssetPath());
+	LOG(  "File saved at: %s", path);
 }
 
 void MaterialImporter::Save(ResourceMaterial* material, char** fileBuffer)
@@ -48,8 +48,8 @@ void MaterialImporter::Save(ResourceMaterial* material, char** fileBuffer)
 
 	json_value_free(file);
 
-	//LOG(LogType::L_NORMAL, "File saved at: %s", material->GetAssetPath());
-	LOG(LogType::L_NORMAL, "File saved at: %s", material->GetAssetPath());
+	//LOG(  "File saved at: %s", material->GetAssetPath());
+	LOG(  "File saved at: %s", material->GetAssetPath());
 }
 
 //void MaterialImporter::Save(uint uid, const char* path)
@@ -74,6 +74,6 @@ void MaterialImporter::Save(ResourceMaterial* material, char** fileBuffer)
 //
 //	json_value_free(file);
 //
-//	//LOG(LogType::L_NORMAL, "File saved at: %s", material->GetAssetPath());
-//	LOG(LogType::L_NORMAL, "File saved at: %s", material->GetLibraryPath());
+//	//LOG(  "File saved at: %s", material->GetAssetPath());
+//	LOG(  "File saved at: %s", material->GetLibraryPath());
 //}

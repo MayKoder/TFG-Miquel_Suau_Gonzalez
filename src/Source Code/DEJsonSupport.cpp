@@ -112,7 +112,7 @@ DEConfig::DEConfig(const char* buffer) : root(nullptr), nObj(nullptr)
 	}
 	else
 	{
-		LOG(LogType::L_WARNING, "Could not parse json file",);
+		LOG( "Could not parse json file",);
 	}
 }
 */

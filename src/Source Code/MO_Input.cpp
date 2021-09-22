@@ -37,13 +37,13 @@ ModuleInput::~ModuleInput()
 // Called before render is available
 bool ModuleInput::Init()
 {
-	LOG(LogType::L_NORMAL, "Init: SDL input event system");
+	LOG(  "Init: SDL input event system");
 	bool ret = true;
 	SDL_Init(0);
 
 	if(SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
 	{
-		LOG(LogType::L_ERROR, "SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
+		LOG( "SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 
@@ -232,7 +232,7 @@ update_status ModuleInput::PreUpdate(float dt)
 // Called before quitting
 bool ModuleInput::CleanUp()
 {
-	LOG(LogType::L_NORMAL, "Quitting SDL input event subsystem");
+	LOG(  "Quitting SDL input event subsystem");
 	SDL_GameControllerClose(controller_player);
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER);

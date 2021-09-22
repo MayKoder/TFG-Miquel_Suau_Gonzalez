@@ -110,6 +110,7 @@ public:
 
 	void SetMouseLayer(MOUSE_LAYER layer) {
 		mouseLayer = layer;
+		LOG("Layer set to %i", mouseLayer);
 	}
 
 	MOUSE_LAYER GetMouseLayer() {

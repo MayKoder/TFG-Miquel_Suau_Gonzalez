@@ -63,7 +63,7 @@ void W_Scene::Draw()
 				std::string libPath = EngineExternal->moduleResources->LibraryFromMeta((*name).c_str());
 				EngineExternal->moduleScene->LoadModelTree(libPath.c_str());
 				
-				LOG(LogType::L_WARNING, "Model %s loaded to resource manager", (*name).c_str());
+				LOG( "Model %s loaded to resource manager", (*name).c_str());
 			}
 
 			if (const ImGuiPayload * payload = ImGui::AcceptDragDropPayload("_TEXTURE"))
@@ -73,7 +73,7 @@ void W_Scene::Draw()
 				
 				//TODO: Change selected mesh texture
 				//EngineExternal->moduleResources->AssetsToScene((*name).c_str());
-				LOG(LogType::L_WARNING, "Texture %s did nothing", (*name).c_str());
+				LOG( "Texture %s did nothing", (*name).c_str());
 			}
 			ImGui::EndDragDropTarget();
 		}

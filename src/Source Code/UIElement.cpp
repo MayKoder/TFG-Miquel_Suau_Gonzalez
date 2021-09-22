@@ -37,7 +37,7 @@ rectOffset(float4::zero)
 
 UIElement::~UIElement()
 {
-	LOG(LogType::L_NORMAL, "Delete element");
+	LOG(  "Delete element");
 	for (size_t i = 0; i < children.size(); i++)
 	{
 		delete children[i];

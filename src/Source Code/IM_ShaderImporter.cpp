@@ -111,7 +111,7 @@ bool ShaderImporter::CheckForErrors(std::string& glslBuffer, TempShader& vertexS
 //
 //	//RELEASE_ARRAY(buffer);
 //	if (pairBuffer == nullptr) {
-//		LOG(LogType::L_ERROR, "One of the shader objects does not exist");
+//		LOG( "One of the shader objects does not exist");
 //	}
 //	else
 //		RELEASE_ARRAY(pairBuffer);
@@ -133,10 +133,10 @@ GLuint ShaderImporter::Compile(char* fileBuffer, ShaderType type, const GLint si
 
 		if (type == ShaderType::SH_Vertex) 
 		{
-			LOG(LogType::L_ERROR, "Error compilating vertex shader: %s", infoLog);
+			LOG( "Error compilating vertex shader: %s", infoLog);
 		}
 		else {
-			LOG(LogType::L_ERROR, "Error compilating fragment shader: %s", infoLog);
+			LOG( "Error compilating fragment shader: %s", infoLog);
 		}
 		glDeleteShader(compileShader);
 
@@ -201,7 +201,7 @@ ShaderType ShaderImporter::GetAssetsObjType(const char* assetsPath, std::string 
 		return ShaderType::SH_Frag;
 	}
 
-	LOG(LogType::L_ERROR, "SHADER EXTENSION NOT FOUND");
+	LOG( "SHADER EXTENSION NOT FOUND");
 	return ShaderType::SH_Max;
 }
 

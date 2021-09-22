@@ -4,15 +4,12 @@
 #include"ImGui/imgui.h"
 #include"ImTextEditor/TextEditor.h"
 
-enum class LogType;
-
 struct LogMessage
 {
-	LogMessage(std::string&, LogType);
+	LogMessage(std::string&);
 	bool EqualsStr(const char*);
 
 	std::string msg;
-	LogType lType;
 	unsigned int prints;
 };
 
@@ -24,7 +21,7 @@ public:
 	virtual ~Window();
 
 	virtual void Draw();
-	void AddLog(const char*, LogType);
+	void AddLog(const char*);
 
 	void SetTextFromFile(const char* path);
 

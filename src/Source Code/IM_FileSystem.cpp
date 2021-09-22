@@ -70,7 +70,7 @@ void FileSystem::FSInit()
 
 	//Setting the working directory as the writing directory
 	if (PHYSFS_setWriteDir(".") == 0)
-		LOG(LogType::L_NORMAL, "File System error while creating write dir: %s\n", PHYSFS_getLastError());
+		LOG(  "File System error while creating write dir: %s\n", PHYSFS_getLastError());
 
 	FileSystem::AddPath("."); //Adding ProjectFolder (working directory)
 	FileSystem::AddPath("Assets");
@@ -90,7 +90,7 @@ void FileSystem::LoadDroppedFile(const char* globalPath)
 	ImportType iType = GetTypeFromPath(globalPath);
 
 	if (iType == ImportType::NOTYPE) {
-		LOG(LogType::L_ERROR, "File extension not supported yet");
+		LOG( "File extension not supported yet");
 		return;
 	}
 
@@ -142,7 +142,7 @@ bool FileSystem::AddPath(const char* path_or_zip)
 
 	if (PHYSFS_mount(path_or_zip, nullptr, 1) == 0)
 	{
-		LOG(LogType::L_ERROR, "File System error while adding a path or zip: %s\n", PHYSFS_getLastError());
+		LOG( "File System error while adding a path or zip: %s\n", PHYSFS_getLastError());
 	}
 	else
 		ret = true;
@@ -264,7 +264,7 @@ uint FileSystem::LoadToBuffer(const char* file, char** buffer) /*const*/
 	if (fs_file != nullptr)
 	{
 		PHYSFS_sint64 size = PHYSFS_fileLength(fs_file);
-		//LOG(LogType::L_ERROR, "[%s]", PHYSFS_getLastError())
+		//LOG( "[%s]", PHYSFS_getLastError())
 
 		if (size > 0)
 		{
@@ -272,7 +272,7 @@ uint FileSystem::LoadToBuffer(const char* file, char** buffer) /*const*/
 			uint readed = (uint)PHYSFS_read(fs_file, *buffer, 1, size);
 			if (readed != size)
 			{
-				LOG(LogType::L_ERROR, "File System error while reading from file %s: %s\n", file, PHYSFS_getLastError());
+				LOG( "File System error while reading from file %s: %s\n", file, PHYSFS_getLastError());
 				RELEASE_ARRAY(buffer);
 			}
 			else
@@ -284,10 +284,10 @@ uint FileSystem::LoadToBuffer(const char* file, char** buffer) /*const*/
 		}
 
 		if (PHYSFS_close(fs_file) == 0)
-			LOG(LogType::L_ERROR, "File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
+			LOG( "File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
 	}
 	else
-		LOG(LogType::L_ERROR, "File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
+		LOG( "File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
 
 	return ret;
 }
@@ -330,19 +330,19 @@ uint FileSystem::Copy(const char* file, const char* dir, std::string& outputFile
 			size = Save(outputFile.data(), buffer, size, false);
 			if (size > 0)
 			{
-				LOG(LogType::L_NORMAL, "FILE SYSTEM: Successfully copied file '%s' in dir '%s'", file, dir);
+				LOG(  "FILE SYSTEM: Successfully copied file '%s' in dir '%s'", file, dir);
 			}
 			else
-				LOG(LogType::L_ERROR, "FILE SYSTEM: Could not copy file '%s' in dir '%s'", file, dir);
+				LOG( "FILE SYSTEM: Could not copy file '%s' in dir '%s'", file, dir);
 		}
 		else
-			LOG(LogType::L_ERROR, "FILE SYSTEM: Could not read from file '%s'", file);
+			LOG( "FILE SYSTEM: Could not read from file '%s'", file);
 
 		RELEASE_ARRAY(buffer);
 		fclose(filehandle);
 	}
 	else
-		LOG(LogType::L_ERROR, "FILE SYSTEM: Could not open file '%s' to read", file);
+		LOG( "FILE SYSTEM: Could not open file '%s' to read", file);
 
 	return size;
 }
@@ -408,22 +408,22 @@ uint FileSystem::Save(const char* file, char* buffer, uint size, bool append)
 			{
 				if (append)
 				{
-					LOG(LogType::L_NORMAL, "FILE SYSTEM: Append %u bytes to file '%s'", objCount, fileName.data());
+					LOG(  "FILE SYSTEM: Append %u bytes to file '%s'", objCount, fileName.data());
 				}
 				else
-					LOG(LogType::L_NORMAL, "FILE SYSTEM: File '%s' overwritten with %u bytes", fileName.data(), objCount);
+					LOG(  "FILE SYSTEM: File '%s' overwritten with %u bytes", fileName.data(), objCount);
 			}
 			else
-				LOG(LogType::L_NORMAL, "FILE SYSTEM: New file '%s' created with %u bytes", fileName.data(), objCount);
+				LOG(  "FILE SYSTEM: New file '%s' created with %u bytes", fileName.data(), objCount);
 		}
 		else
-			LOG(LogType::L_ERROR, "FILE SYSTEM: Could not write to file '%s'. ERROR: %s", fileName.data(), PHYSFS_getLastError());
+			LOG( "FILE SYSTEM: Could not write to file '%s'. ERROR: %s", fileName.data(), PHYSFS_getLastError());
 
 		if (PHYSFS_close(filehandle) == 0)
-			LOG(LogType::L_ERROR, "FILE SYSTEM: Could not close file '%s'. ERROR: %s", fileName.data(), PHYSFS_getLastError());
+			LOG( "FILE SYSTEM: Could not close file '%s'. ERROR: %s", fileName.data(), PHYSFS_getLastError());
 	}
 	else
-		LOG(LogType::L_ERROR, "FILE SYSTEM: Could not open file '%s' to write. ERROR: %s", fileName.data(), PHYSFS_getLastError());
+		LOG( "FILE SYSTEM: Could not open file '%s' to write. ERROR: %s", fileName.data(), PHYSFS_getLastError());
 
 	return objCount;
 }

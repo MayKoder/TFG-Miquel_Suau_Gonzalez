@@ -15,7 +15,7 @@ Resource::~Resource()
 	type = Type::UNKNOWN;
 
 	if (referenceCount != 0)
-		LOG(LogType::L_NORMAL, "DELETING RESOURCE WITH MULTIPLE REFERENCE COUNTS");
+		LOG(  "DELETING RESOURCE WITH MULTIPLE REFERENCE COUNTS");
 
 	referenceCount = 0;
 }

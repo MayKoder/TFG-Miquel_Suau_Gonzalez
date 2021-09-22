@@ -113,7 +113,7 @@ void MeshLoader::NodeToGameObject(aiMesh** meshArray, std::vector<ResourceTextur
 		//WARNING: This could break the code if the gameobject that we are ignoring has some other components
 		if (node->mNumChildren == 1 && node->mParent == nullptr && node->mChildren[0]->mNumChildren == 0) 
 		{
-			LOG(LogType::L_WARNING, "This is a 1 child gameObject, you could ignore the root node parent creation");
+			LOG( "This is a 1 child gameObject, you could ignore the root node parent creation");
 			node->mChildren[0]->mName = holderName;
 		}
 		else
@@ -137,7 +137,7 @@ ResourceMesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 	if (UID == 0)
 		UID = EngineExternal->moduleResources->GenerateNewUID();
 
-	LOG(LogType::L_NORMAL, "%s", importedMesh->mName.C_Str());
+	LOG(  "%s", importedMesh->mName.C_Str());
 	std::string file = MESHES_PATH;
 	file += std::to_string(UID);
 	file += ".mmh";
@@ -182,7 +182,7 @@ ResourceMesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 			_mesh->vertices[i * VERTEX_ATTRIBUTES + 5] = importedMesh->mNormals[i].x;
 			_mesh->vertices[i * VERTEX_ATTRIBUTES + 6] = importedMesh->mNormals[i].y;
 			_mesh->vertices[i * VERTEX_ATTRIBUTES + 7] = importedMesh->mNormals[i].z;
-			//LOG(LogType::L_NORMAL, "New mesh with %d normals", _mesh->normals_count);
+			//LOG(  "New mesh with %d normals", _mesh->normals_count);
 		}
 	}
 
@@ -191,7 +191,7 @@ ResourceMesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 	//TODO: Load vertex colors
 	if (importedMesh->HasVertexColors(0)) 
 	{
-		LOG(LogType::L_ERROR, "ADD VERTEX COLORS");
+		LOG( "ADD VERTEX COLORS");
 	}
 
 
@@ -204,7 +204,7 @@ ResourceMesh* MeshLoader::LoadMesh(aiMesh* importedMesh, uint oldUID)
 		{
 			if (importedMesh->mFaces[j].mNumIndices != 3)
 			{
-				LOG(LogType::L_WARNING, "WARNING, geometry face with != 3 indices!");
+				LOG( "WARNING, geometry face with != 3 indices!");
 			}
 			else
 			{

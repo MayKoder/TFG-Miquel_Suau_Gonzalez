@@ -61,7 +61,7 @@ public:
 	virtual ~UIButton() {
 		delete tupleTest;
 		tupleTest = nullptr;
-		//LOG(LogType::L_NORMAL, "Delete button");
+		//LOG(  "Delete button");
 	}
 
 	virtual void OnClick() override 

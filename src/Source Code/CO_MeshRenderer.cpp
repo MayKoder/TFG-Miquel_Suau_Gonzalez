@@ -153,7 +153,7 @@ bool C_MeshRenderer::OnEditor()
 				//ATOI is C++11 only, maybe not a good idea to use it
 				int UID = std::atoi(stID.c_str());
 				SetRenderMesh(dynamic_cast<ResourceMesh*>(EngineExternal->moduleResources->RequestResource(UID, libraryDrop->c_str())));
-				LOG(LogType::L_WARNING, "Mesh %s changed", (*libraryDrop).c_str());
+				LOG( "Mesh %s changed", (*libraryDrop).c_str());
 			}
 			ImGui::EndDragDropTarget();
 		}

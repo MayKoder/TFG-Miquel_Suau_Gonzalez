@@ -95,7 +95,7 @@ bool Application::Init()
 	}
 
 	// After all Init calls we call Start() in all modules
-	LOG(LogType::L_NORMAL, "-------------- Application Start --------------");
+	LOG(  "-------------- Application Start --------------");
 
 	// Call Init() in all modules
 	for (unsigned int i = 0; i < list_modules.size() && ret == true; i++)

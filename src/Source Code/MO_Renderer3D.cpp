@@ -53,38 +53,38 @@ ModuleRenderer3D::~ModuleRenderer3D()
 // Called before render is available
 bool ModuleRenderer3D::Init()
 {
-	LOG(LogType::L_NORMAL, "Init: 3D Renderer context");
+	LOG(  "Init: 3D Renderer context");
 	bool ret = true;
 	
 	//ASK: Can i do this inside the MM namespace?
 	MaykMath::Init();
-	LOG(LogType::L_NORMAL, "Init: MaykMath");
+	LOG(  "Init: MaykMath");
 
 	//Create context
 	context = SDL_GL_CreateContext(App->moduleWindow->window);
 	SDL_GL_MakeCurrent(App->moduleWindow->window, context);
 	if(context == NULL)
 	{
-		LOG(LogType::L_ERROR, "OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+		LOG( "OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
 
 	GLenum error = glewInit();
 	if (error != GL_NO_ERROR)
 	{
-		LOG(LogType::L_ERROR, "Error initializing glew library! %s", SDL_GetError());
+		LOG( "Error initializing glew library! %s", SDL_GetError());
 		ret = false;
 	}
 	else
 	{
-		LOG(LogType::L_NORMAL, "Init: Glew %s", glewGetString(GLEW_VERSION));
+		LOG(  "Init: Glew %s", glewGetString(GLEW_VERSION));
 	}
 	
 	if(ret == true)
 	{
 		//Use Vsync
 		if(SDL_GL_SetSwapInterval(static_cast<int>(vsync)) < 0)
-			LOG(LogType::L_WARNING, "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+			LOG( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		//Initialize Projection Matrix
 		glMatrixMode(GL_PROJECTION);
@@ -95,7 +95,7 @@ bool ModuleRenderer3D::Init()
 		if(error != GL_NO_ERROR)
 		{
 			//gluErrorString
-			LOG(LogType::L_ERROR, "Error initializing OpenGL! %s\n", glewGetErrorString(error));
+			LOG( "Error initializing OpenGL! %s\n", glewGetErrorString(error));
 			ret = false;
 		}
 
@@ -108,7 +108,7 @@ bool ModuleRenderer3D::Init()
 		if(error != GL_NO_ERROR)
 		{
 			//ASK: Maybe glewGetErrorString is not the same as glutGerErrorString, so errors could be wrong
-			LOG(LogType::L_ERROR, "Error initializing OpenGL! %s\n", glewGetErrorString(error));
+			LOG( "Error initializing OpenGL! %s\n", glewGetErrorString(error));
 			ret = false;
 		}
 		
@@ -124,7 +124,7 @@ bool ModuleRenderer3D::Init()
 		if(error != GL_NO_ERROR)
 		{
 			//ASK: Maybe glewGetErrorString is not the same as glutGerErrorString, so errors could be wrong
-			LOG(LogType::L_ERROR, "Error initializing OpenGL! %s\n", glewGetErrorString(error));
+			LOG( "Error initializing OpenGL! %s\n", glewGetErrorString(error));
 			ret = false;
 		}
 
@@ -403,7 +403,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 // Called before quitting
 bool ModuleRenderer3D::CleanUp()
 {
-	LOG(LogType::L_NORMAL, "Destroying 3D Renderer");
+	LOG(  "Destroying 3D Renderer");
 	skybox.ClearMemory();
 	gridInstance.ClearMemory();
 
@@ -471,7 +471,7 @@ void ModuleRenderer3D::OnGUI()
 		ImGui::Checkbox("Enable V-Sync", &vsync);
 			////Use Vsync
 			//if (SDL_GL_SetSwapInterval(static_cast<int>(vsync)) < 0)
-			//	LOG(LogType::L_WARNING, "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+			//	LOG( "Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
 
 		ImGui::SameLine();
 		ImGui::Checkbox("Wireframe Mode", &wireframe);

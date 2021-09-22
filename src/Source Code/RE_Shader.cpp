@@ -40,7 +40,7 @@ void ResourceShader::LinkToProgram()
 	if (!success)
 	{
 		glGetProgramInfoLog(shaderProgramID, 512, NULL, infoLog);
-		LOG(LogType::L_ERROR, "Error linking shader program: %s", infoLog);
+		LOG( "Error linking shader program: %s", infoLog);
 	}
 
 	for (size_t i = 0; i < static_cast<int>(ShaderType::SH_Max); i++)
