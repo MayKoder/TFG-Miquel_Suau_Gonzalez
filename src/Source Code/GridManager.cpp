@@ -244,7 +244,7 @@ void GridManager::LoadShader(const char* path)
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-	this->testRender.InitLineRenderer();
+	//this->testRender.InitLineRenderer();
 }
 
 void GridManager::UpdateRenderData(bool unBindAfter)
@@ -331,7 +331,37 @@ void GridManager::RenderGridTemporal()
 		glColor3f(1., 1.f, 1.f);
 	}
 	
-	testRender.Render();
+	//testRender.Render();
+
+	float data[] = {
+		-0.5f, 0.0f, -0.5f,
+		-0.5f, 0.0f, +0.5f,
+		+0.5f, 0.0f, +0.5f,
+
+		-0.5f, 0.0f, -0.5f,
+		+0.5f, 0.0f, +0.5f,
+		+0.5f, 0.0f, -0.5f,
+	};
+	std::vector<float> 
+
+
+	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
+	{
+		glBegin(GL_TRIANGLES);
+
+		int* p0 = it->second.GetGridPosition();
+
+		glVertex3f(p0[0] - 0.5f, 0.0, p0[1] - 0.5f);
+		glVertex3f(p0[0] - 0.5f, 0.0, p0[1] + 0.5f);
+		glVertex3f(p0[0] + 0.5f, 0.0, p0[1] + 0.5f);
+
+
+		glVertex3f(p0[0] - 0.5f, 0.0, p0[1] - 0.5f);
+		glVertex3f(p0[0] + 0.5f, 0.0, p0[1] + 0.5f);
+		glVertex3f(p0[0] + 0.5f, 0.0, p0[1] - 0.5f);
+
+		glEnd();
+	}
 
 	//auto t2 = Clock::now();
 	//LOG(  "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());

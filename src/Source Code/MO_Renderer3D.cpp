@@ -382,6 +382,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//glEnable(GL_DEPTH_TEST);
 
+	//TODO: This is bad
+	App->moduleInput->SetMouseLayer(MOUSE_LAYER::MOVE_CAMERA);
 	glDisable(GL_DEPTH_TEST);  //Rendering by call order now
 	App->moduleGUI->RenderUIElements();
 	glEnable(GL_DEPTH_TEST);  

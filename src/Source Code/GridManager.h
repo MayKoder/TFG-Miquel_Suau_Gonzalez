@@ -96,5 +96,5 @@ private:
 	GridNode* hoveredNode;
 	int cursorGridPos[2];
 
-	LineRenderer testRender;
+	//LineRenderer testRender;
 };

@@ -281,9 +281,10 @@ void M_GUI::RenderUIElements()
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 	ImGuiStyle& style = ImGui::GetStyle();
 
-	(ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) ?
-		App->moduleInput->SetMouseLayer(MOUSE_LAYER::HOVERING_UI) :
-		App->moduleInput->SetMouseLayer(MOUSE_LAYER::MOVE_CAMERA);
+	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_::ImGuiHoveredFlags_AnyWindow)) 
+	{
+		App->moduleInput->SetMouseLayer(MOUSE_LAYER::HOVERING_UI);
+	}
 
 
 	for (size_t i = 0; i < 3; i++)

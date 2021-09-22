@@ -72,7 +72,7 @@ uint GL_Object::CreateVBO()
 }
 
 //TODO: Change packElements to input packElements * sizeof() and not doit inside this method
-void GL_Object::SetVertexAttrib(int index, int attribSize, int packElements, int offset, int attribDivisor)
+void GL_Object::SetVertexAttrib(int index, int attribSize, int packElements, int offset)
 {
 	assert(usingVAO == true, "Not using VAO");
 
