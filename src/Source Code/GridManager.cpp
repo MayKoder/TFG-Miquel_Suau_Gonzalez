@@ -342,7 +342,7 @@ void GridManager::RenderGridTemporal()
 		+0.5f, 0.0f, +0.5f,
 		+0.5f, 0.0f, -0.5f,
 	};
-	std::vector<float> 
+	/*std::vector<float> */
 
 
 	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
