@@ -72,12 +72,12 @@ uint GL_Object::CreateVBO()
 }
 
 //TODO: Change packElements to input packElements * sizeof() and not doit inside this method
-void GL_Object::SetVertexAttrib(int index, int attribSize, int packElements, int offset)
+void GL_Object::SetVertexAttrib(int index, int attribSize, int packElementsBytes, int offsetBytes, int type = GL_FLOAT)
 {
 	assert(usingVAO == true, "Not using VAO");
 
 	//TODO: Why only GL_FLOAT? and will never normalize?
-	glVertexAttribPointer(index, attribSize, GL_FLOAT, GL_FALSE, packElements * sizeof(float), (GLvoid*)(offset * sizeof(GLfloat)));
+	glVertexAttribPointer(index, attribSize, type, GL_FALSE, packElementsBytes, (GLvoid*)(offsetBytes));
 	glEnableVertexAttribArray(index);
 
 	//if (type == RENDER_TYPE::RE_INSTANCING || attribDivisor >= 0)

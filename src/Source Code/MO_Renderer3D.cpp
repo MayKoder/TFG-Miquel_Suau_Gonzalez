@@ -136,15 +136,15 @@ bool ModuleRenderer3D::Init()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		//glBlendEquation(GL_FUNC_ADD);
 		
-		GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 0.0f};
-		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
+		//GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 0.0f};
+		//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
 
-		glEnable(GL_LIGHT0);
-		glLightf(GL_LIGHT0, GL_AMBIENT, 0.75f);
-		glLightf(GL_LIGHT0, GL_DIFFUSE, 0.05f);
+		//glEnable(GL_LIGHT0);
+		//glLightf(GL_LIGHT0, GL_AMBIENT, 0.75f);
+		//glLightf(GL_LIGHT0, GL_DIFFUSE, 0.05f);
 
-		float pos[] = { 0, 1, 0, 1.0f };
-		glLightfv(GL_LIGHT0, GL_POSITION, pos);
+		//float pos[] = { 0, 1, 0, 1.0f };
+		//glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -155,7 +155,7 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		glEnable(GL_LIGHTING);
+		//glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
 	}

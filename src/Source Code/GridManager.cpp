@@ -174,6 +174,7 @@ bool GridManager::DeleteHoveredNode()
 void GridManager::LoadShader(const char* path)
 {
 	shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1554189485, path));
+	meshGridShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
 
 
 	float data[] = {
@@ -224,13 +225,13 @@ void GridManager::LoadShader(const char* path)
 	//position attribute
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
 	//glEnableVertexAttribArray(0);
-	gridGLObject.SetVertexAttrib(0, 3, 3, 0);
+	gridGLObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
 
 	gridGLObject.CreateVBO();
 	UpdateRenderData(false);
 
 	//instance data attribute
-	gridGLObject.SetVertexAttrib(1, 2, 2, 0);
+	gridGLObject.SetVertexAttrib(1, 2, 2 * sizeof(int), 0 * sizeof(int), GL_INT);
 	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)0);
 	//glEnableVertexAttribArray(1);
 	
@@ -245,18 +246,38 @@ void GridManager::LoadShader(const char* path)
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//this->testRender.InitLineRenderer();
+
+	//----       Grid mesh object init    ----//
+	gridMeshObject.InitBuffers();
+	gridMeshObject.Bind();
+
+	float initData[] = {
+		-0.5f, 0.0, -0.5f,
+		-0.5f, 0.0, +0.5f,
+		+0.5f, 0.0, +0.5f,
+
+
+		-0.5f, 0.0, -0.5f,
+		+0.5f, 0.0, +0.5f,
+		+0.5f, 0.0, -0.5f,
+	};
+	gridMeshObject.CreateAndSetVBO(initData, sizeof(initData) / sizeof(float));
+	gridMeshObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+
+	gridMeshObject.UnBind();
+	//---- Grid mesh object init finished ----//
 }
 
 void GridManager::UpdateRenderData(bool unBindAfter)
 {
-	std::vector<float> instanceData;
+	std::vector<int> instanceData;
 	instanceData.reserve(nodeMap.size() * 2);
 
 	std::map<uint, GridNode>::iterator it;
 	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
 	{
-		instanceData.push_back(static_cast<float>(it->second.GetGridPositionX()));
-		instanceData.push_back(static_cast<float>(it->second.GetGridPositionY()));
+		instanceData.push_back(it->second.GetGridPositionX());
+		instanceData.push_back(it->second.GetGridPositionY());
 	}
 	instanceData.shrink_to_fit();
 
@@ -306,6 +327,18 @@ void GridManager::RenderGridTemporal()
 	glBindVertexArray(0);
 	shaderRes->Unbind();
 
+
+	//Render grid mesh
+	meshGridShader->Bind();
+	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(meshGridShader->shaderProgramID);
+
+	glBindVertexArray(gridMeshObject.GetVAO());
+	glDrawArrays(GL_TRIANGLES, 0, nodeMap.size() * 6);
+	glBindVertexArray(0);
+	meshGridShader->Unbind();
+
+
+
 	std::map<uint, GridNode>::iterator it;
 	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
 	{
@@ -345,23 +378,36 @@ void GridManager::RenderGridTemporal()
 	/*std::vector<float> */
 
 
-	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
-	{
-		glBegin(GL_TRIANGLES);
+	//std::vector<float3> vertices;
+	//vertices.reserve(nodeMap.size() * 4);
 
-		int* p0 = it->second.GetGridPosition();
+	//glBegin(GL_TRIANGLES);
+	//for (it = nodeMap.begin(); it != nodeMap.end(); it++)
+	//{
 
-		glVertex3f(p0[0] - 0.5f, 0.0, p0[1] - 0.5f);
-		glVertex3f(p0[0] - 0.5f, 0.0, p0[1] + 0.5f);
-		glVertex3f(p0[0] + 0.5f, 0.0, p0[1] + 0.5f);
+	//	int* p0 = it->second.GetGridPosition();
+
+	//	vertices.push_back(float3(p0[0] - 0.5f, 0.0, p0[1] - 0.5f));
+	//	vertices.push_back(float3(p0[0] + 0.5f, 0.0, p0[1] - 0.5f));
+	//	vertices.push_back(float3(p0[0] + 0.5f, 0.0, p0[1] + 0.5f));
+	//	vertices.push_back(float3(p0[0] - 0.5f, 0.0, p0[1] + 0.5f));
+
+	//	glVertex3f(p0[0] - 0.5f, 0.0, p0[1] - 0.5f);
+	//	glVertex3f(p0[0] - 0.5f, 0.0, p0[1] + 0.5f);
+	//	glVertex3f(p0[0] + 0.5f, 0.0, p0[1] + 0.5f);
 
 
-		glVertex3f(p0[0] - 0.5f, 0.0, p0[1] - 0.5f);
-		glVertex3f(p0[0] + 0.5f, 0.0, p0[1] + 0.5f);
-		glVertex3f(p0[0] + 0.5f, 0.0, p0[1] - 0.5f);
+	//	glVertex3f(p0[0] - 0.5f, 0.0, p0[1] - 0.5f);
+	//	glVertex3f(p0[0] + 0.5f, 0.0, p0[1] + 0.5f);
+	//	glVertex3f(p0[0] + 0.5f, 0.0, p0[1] - 0.5f);
 
-		glEnd();
-	}
+	//}
+	//glEnd();
+
+
+	//std::unique(vertices.begin(), vertices.end());
+	//LOG("A");
+
 
 	//auto t2 = Clock::now();
 	//LOG(  "Rendering took: %dms should be like 7 at max", std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count());

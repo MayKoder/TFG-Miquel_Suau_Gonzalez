@@ -20,7 +20,7 @@ void LineRenderer::InitLineRenderer()
 	renderData.Bind();
 
 	renderData.CreateAndSetVBO(points.data(), points.size());
-	renderData.SetVertexAttrib(0, 3, 3, 0);
+	renderData.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
 
 	renderData.UnBind();
 

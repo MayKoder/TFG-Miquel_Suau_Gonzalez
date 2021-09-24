@@ -44,8 +44,8 @@ private:
 	int gridPosition[2];
 };
 
-#define GRID_SIZE_X 5
-#define GRID_SIZE_Y 4
+//#define GRID_SIZE_X 5
+//#define GRID_SIZE_Y 4
 #define GRID_NODE_SIZE 1.8f
 class Tool;
 class GridManager
@@ -86,12 +86,14 @@ private:
 
 	//GridNode grid[GRID_SIZE_X * GRID_SIZE_Y];
 	ResourceShader* shaderRes;
+	ResourceShader* meshGridShader;
 
 	//uint VAO;
 	//uint VBO; //Mesh positions
 	//uint instanceVBO;
 
 	GL_Object gridGLObject = GL_Object(GL_Object::RENDER_TYPE::RE_INSTANCING);
+	GL_Object gridMeshObject = GL_Object(GL_Object::RENDER_TYPE::RE_ARRAY);
 
 	GridNode* hoveredNode;
 	int cursorGridPos[2];

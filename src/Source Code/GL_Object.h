@@ -58,10 +58,10 @@ public:
 	/*
 	* Index = attrib index
 	* attribSize = number of elements (ex: Vec3 = 3 elements)
-	* packElements = in case of packed elements, the total element size (ex: position + color = vec3 + vec4 = 3 + 4)
-	* offset = in case of packed elements, the number of elements to the start of this attrib (ex: position + color, color would be 3, as there is a 3 element offset, 0 to 3 for position, then color starts at 3)
+	* packElements = in case of packed elements, the total element size * sizeof(type of element) (ex: position + color = vec3 + vec4 = 3.f + 4.f * sizeof(float))
+	* offset = in case of packed elements, the number of elements to the start of this attrib in bytes (ex: position + color, color would be 3, as there is a 3 element offset, 0 to 3 for position, then color starts at 3 * sizeof(GLfloat))
 	*/
-	void SetVertexAttrib(int index, int attribSize, int packElements, int offset);
+	void SetVertexAttrib(int index, int attribSize, int packElementsBytes, int offsetBytes, int type);
 
 	void SetAttribDivisor(int index, uint attribDivisor);
 

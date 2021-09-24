@@ -48,12 +48,12 @@ void DE_Cubemap::CreateGLData()
 	//position attribute
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)0);
 	//glEnableVertexAttribArray(0);
-	skyboxObject.SetVertexAttrib(0, 3, 6, 0);
+	skyboxObject.SetVertexAttrib(0, 3, 6 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
 
 	//texcoords attribute
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(GLfloat)));
 	//glEnableVertexAttribArray(1);
-	skyboxObject.SetVertexAttrib(1, 3, 6, 3);
+	skyboxObject.SetVertexAttrib(1, 3, 6 * sizeof(float), 3 * sizeof(float), GL_FLOAT);
 
 	skyboxObject.UnBind();
 	//glBindVertexArray(0);
