@@ -489,6 +489,41 @@ GridNode* GridManager::AddNode(int x, int y)
 
 	val->SearchAndFillChildren(this);
 
+	gridMeshVertices.push_back(-0.5f + x);
+	gridMeshVertices.push_back(0.0f);
+	gridMeshVertices.push_back(-0.5f + y);
+
+	gridMeshVertices.push_back(-0.5f + x);
+	gridMeshVertices.push_back(0.0f);
+	gridMeshVertices.push_back(+0.5f + y);
+
+
+	gridMeshVertices.push_back(+0.5f + x);
+	gridMeshVertices.push_back(0.0f);
+	gridMeshVertices.push_back(+0.5f + y);
+
+	gridMeshVertices.push_back(-0.5f + x);
+	gridMeshVertices.push_back(0.0f);
+	gridMeshVertices.push_back(-0.5f + y);
+
+	gridMeshVertices.push_back(+0.5f + x);
+	gridMeshVertices.push_back(0.0f);
+	gridMeshVertices.push_back(+0.5f + y);
+
+	gridMeshVertices.push_back(+0.5f + x);
+	gridMeshVertices.push_back(0.0f);
+	gridMeshVertices.push_back(-0.5f + y);
+
+	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, -0.5f + y));
+	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, +0.5f + y));
+	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, +0.5f + y));
+	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, -0.5f + y));
+	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, +0.5f + y));
+	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, -0.5f + y));
+
+
+	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+
 	return val;
 }
 

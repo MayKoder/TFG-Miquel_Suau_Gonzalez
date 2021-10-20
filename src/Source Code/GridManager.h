@@ -95,6 +95,8 @@ private:
 	GL_Object gridGLObject = GL_Object(GL_Object::RENDER_TYPE::RE_INSTANCING);
 	GL_Object gridMeshObject = GL_Object(GL_Object::RENDER_TYPE::RE_ARRAY);
 
+	std::vector<float> gridMeshVertices;
+
 	GridNode* hoveredNode;
 	int cursorGridPos[2];
 
