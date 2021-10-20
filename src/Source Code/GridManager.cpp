@@ -28,7 +28,7 @@ GridManager::GridManager() : shaderRes(nullptr), /*VBO(0), instanceVBO(0), VAO(0
 	//shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(EngineExternal->GetRandomInt(), "Library/Shaders/1554189485.shdr"));
 	memset(cursorGridPos, 0, sizeof(cursorGridPos));
 
-	nodeMap[GridManager::CANTOR_MAPPING(0, 0)] = GridNode(0, 0);
+	//nodeMap[GridManager::CANTOR_MAPPING(0, 0)] = GridNode(0, 0);
 	//linealNodes.push_back(&baseNode);
 
 	//nodeMap[GridManager::CANTOR_MAPPING(0, 0)].DivideNodeSquare(this, 50);
@@ -163,6 +163,17 @@ bool GridManager::DeleteHoveredNode()
 
 	
 	nodeMap.erase(hoveredNode->GetID());
+	//std::vector<float>::iterator it = gridMeshVertices.begin();
+	//it = std::next(it, hoveredNode->meshIndexTmp);
+
+	//for (size_t i = hoveredNode->meshIndexTmp; i < hoveredNode->meshIndexTmp+18; i = i)
+	//{
+	//	it = gridMeshVertices.erase(it);
+	//}
+
+	//gridMeshObject.Bind();
+	//gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+	//gridMeshObject.UnBind();
 
 	UpdateRenderData();
 	//glBindVertexArray(0);
@@ -175,6 +186,30 @@ void GridManager::LoadShader(const char* path)
 {
 	shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1554189485, path));
 	meshGridShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
+
+	//----       Grid mesh object init    ----//
+	gridMeshObject.InitBuffers();
+	gridMeshObject.Bind();
+
+	//float initData[] = {
+	//	-0.5f, 0.0, -0.5f,
+	//	-0.5f, 0.0, +0.5f,
+	//	+0.5f, 0.0, +0.5f,
+
+
+	//	-0.5f, 0.0, -0.5f,
+	//	+0.5f, 0.0, +0.5f,
+	//	+0.5f, 0.0, -0.5f,
+	//};
+	//gridMeshObject.CreateAndSetVBO(initData, sizeof(initData) / sizeof(float));
+
+	gridMeshObject.CreateVBO();
+	AddNode(0, 0, false);
+	gridMeshObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+
+	gridMeshObject.UnBind();
+
+	//---- Grid mesh object init finished ----//
 
 
 	float data[] = {
@@ -246,26 +281,6 @@ void GridManager::LoadShader(const char* path)
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//this->testRender.InitLineRenderer();
-
-	//----       Grid mesh object init    ----//
-	gridMeshObject.InitBuffers();
-	gridMeshObject.Bind();
-
-	float initData[] = {
-		-0.5f, 0.0, -0.5f,
-		-0.5f, 0.0, +0.5f,
-		+0.5f, 0.0, +0.5f,
-
-
-		-0.5f, 0.0, -0.5f,
-		+0.5f, 0.0, +0.5f,
-		+0.5f, 0.0, -0.5f,
-	};
-	gridMeshObject.CreateAndSetVBO(initData, sizeof(initData) / sizeof(float));
-	gridMeshObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
-
-	gridMeshObject.UnBind();
-	//---- Grid mesh object init finished ----//
 }
 
 void GridManager::UpdateRenderData(bool unBindAfter)
@@ -320,11 +335,12 @@ void GridManager::RenderGridTemporal()
 	shaderRes->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
-	glBindVertexArray(gridGLObject.GetVAO());
+	gridGLObject.Bind();
 	glDrawArraysInstanced(
 		GL_LINE_STRIP, 0, 5, nodeMap.size()
 	);
-	glBindVertexArray(0);
+	gridGLObject.UnBind();
+
 	shaderRes->Unbind();
 
 
@@ -332,9 +348,11 @@ void GridManager::RenderGridTemporal()
 	meshGridShader->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(meshGridShader->shaderProgramID);
 
-	glBindVertexArray(gridMeshObject.GetVAO());
-	glDrawArrays(GL_TRIANGLES, 0, nodeMap.size() * 6);
-	glBindVertexArray(0);
+	gridMeshObject.Bind();
+	//glDrawArrays(GL_TRIANGLES, 0, nodeMap.size() * 6);
+	glDrawArrays(GL_TRIANGLES, 0, (gridMeshVertices.size() / 18) * 6);
+	gridMeshObject.UnBind();
+
 	meshGridShader->Unbind();
 
 
@@ -480,7 +498,7 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 	//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanoseconds" << std::endl;
 }
 
-GridNode* GridManager::AddNode(int x, int y)
+GridNode* GridManager::AddNode(int x, int y, bool unBind)
 {
 	uint cantor = CANTOR_MAPPING(x, y);
 	nodeMap[cantor] = GridNode(x, y);
@@ -488,6 +506,12 @@ GridNode* GridManager::AddNode(int x, int y)
 	GridNode* val = &nodeMap[cantor];
 
 	val->SearchAndFillChildren(this);
+
+	val->meshIndexTmp = gridMeshVertices.size();
+	if (val->meshIndexTmp != 0) 
+	{
+		val->meshIndexTmp--;
+	}
 
 	gridMeshVertices.push_back(-0.5f + x);
 	gridMeshVertices.push_back(0.0f);
@@ -521,19 +545,23 @@ GridNode* GridManager::AddNode(int x, int y)
 	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, +0.5f + y));
 	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, -0.5f + y));
 
-
+	gridMeshObject.Bind();
 	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+
+	if (unBind == true) {
+		gridMeshObject.UnBind();
+	}
 
 	return val;
 }
 
-GridNode::GridNode()
+GridNode::GridNode() : meshIndexTmp(0)
 {
 	memset(children, NULL, sizeof(children));
 	memset(gridPosition, 0.0, sizeof(gridPosition));
 }
 
-GridNode::GridNode(int x, int y)
+GridNode::GridNode(int x, int y) : meshIndexTmp(0)
 {
 	memset(children, NULL, sizeof(children));
 

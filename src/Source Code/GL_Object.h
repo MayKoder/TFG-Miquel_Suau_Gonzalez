@@ -33,6 +33,7 @@ public:
 	template <class T>
 	void SetVBO(int VBOindex, T* data, int nElements, int drawType = GL_STATIC_DRAW) 
 	{
+		assert(usingVAO == true, "Not using VAO");
 		lastElementSize = nElements;
 		glBindBuffer(GL_ARRAY_BUFFER, VBOs[VBOindex]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(T) * nElements, data, drawType);

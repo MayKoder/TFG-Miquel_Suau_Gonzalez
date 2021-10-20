@@ -40,8 +40,10 @@ struct GridNode
 	GridNode** GetChildrenMemAddr(int x, int y);
 	
 	GridNode* children[NODE_SIDES];
+	uint meshIndexTmp;
 private:
 	int gridPosition[2];
+
 };
 
 //#define GRID_SIZE_X 5
@@ -58,7 +60,7 @@ public:
 
 	void CreateNode();
 	void DivideHoveredClick();
-	GridNode* AddNode(int x, int y);
+	GridNode* AddNode(int x, int y, bool unBind = true);
 
 	bool DeleteHoveredNode();
 
