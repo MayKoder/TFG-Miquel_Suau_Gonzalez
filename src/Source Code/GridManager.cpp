@@ -339,11 +339,25 @@ void GridManager::RenderGridTemporal()
 
 
 
-	std::map<uint, GridNode>::iterator it;
-	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
-	{
-		it->second.RenderLines(shaderRes);
-	}
+
+
+	//std::map<uint, GridNode>::iterator it;
+	LineRenderer lRender;
+	lRender.InitLineRenderer();
+	//for (it = nodeMap.begin(); it != nodeMap.end(); it++)
+	//{
+	//	lRender.AddPoint(float3(it->second.GetGridPositionX(), 0, it->second.GetGridPositionY()));
+	//	//it->second.RenderLines(shaderRes);
+	//}
+
+	lRender.AddPoint(float3(0, 0, 0));
+	lRender.AddPoint(float3(1, 0, 0));
+	lRender.AddPoint(float3(0, 0, 0));
+	lRender.AddPoint(float3(0, 1, 0));
+	lRender.AddPoint(float3(0, 0, 0));
+	lRender.AddPoint(float3(0, 0, 1));
+
+	lRender.Render();
 
 	//TODO: Only happen when a creation tool is enabled
 	if (EngineExternal->moduleGUI->selectedTool != nullptr) 
