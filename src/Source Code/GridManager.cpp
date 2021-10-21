@@ -836,6 +836,62 @@ void GridNode::DivideNodeSquare(GridManager* instance, int squareLength)
 	}
 }
 
+uint GridNode::GetUniqueVertices()
+{
+	int x = this->GetGridPositionX();
+	int y = this->GetGridPositionY();
+
+	float3 vertices[4] = 
+	{
+		float3(-0.5f + x, 0.0, -0.5f + y),
+		float3(-0.5f + x, 0.0, +0.5f + y),
+		float3(+0.5f + x, 0.0, +0.5f + y),
+		float3(+0.5f + x, 0.0, -0.5f + y),
+	};
+
+
+	int indicators[4] = { 0, 0, 0, 0 };
+
+
+	if (children[UP] != nullptr) {
+		indicators[1] = -1;
+		indicators[2] = -1;
+	}
+
+
+	if (children[DOWN] != nullptr) {
+		indicators[0] = -1;
+		indicators[3] = -1;
+	}
+
+
+
+	if (children[RIGHT] != nullptr) {
+		indicators[2] = -1;
+		indicators[3] = -1;
+	}
+
+
+
+	if (children[LEFT] != nullptr) {
+		indicators[1] = -1;
+		indicators[0] = -1;
+	}
+
+
+	std::vector<float3> verticesRet;
+	for (size_t i = 0; i < 4; i++)
+	{
+		if (indicators == 0) {
+			verticesRet.push_back(vertices[i]);
+		}
+	}
+	
+
+
+	return 0;
+}
+
 GridNode** GridNode::GetChildrenMemAddr(int x, int y)
 {
 	GridNode** ret = nullptr;

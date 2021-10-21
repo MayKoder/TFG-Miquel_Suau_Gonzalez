@@ -37,6 +37,8 @@ struct GridNode
 	GridNode* DivideNode(GridManager* instance, int direction[2]);
 	void DivideNodeSquare(GridManager* instance, int squareLength);
 
+	uint GetUniqueVertices();
+
 	GridNode** GetChildrenMemAddr(int x, int y);
 	
 	GridNode* children[NODE_SIDES];
