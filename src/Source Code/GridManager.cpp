@@ -162,22 +162,51 @@ bool GridManager::DeleteHoveredNode()
 	}
 
 	
-	nodeMap.erase(hoveredNode->GetID());
-	//std::vector<float>::iterator it = gridMeshVertices.begin();
-	//it = std::next(it, hoveredNode->meshIndexTmp);
 
-	//for (size_t i = hoveredNode->meshIndexTmp; i < hoveredNode->meshIndexTmp+18; i = i)
+
+
+	//std::vector<float>::iterator it = gridMeshVertices.begin() + hoveredNode->meshIndexTmp;
+	//for (size_t i = hoveredNode->meshIndexTmp; i < hoveredNode->meshIndexTmp+18; i++)
 	//{
 	//	it = gridMeshVertices.erase(it);
 	//}
 
-	//gridMeshObject.Bind();
-	//gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
-	//gridMeshObject.UnBind();
+	//Iterate node map
+	// 	   Move every node with indicesIndexTmp > hoveredNode->indicesIndexTmp -4 as value [DONE]
+	// 	   Remove vertices using indices iterator  [DONE?]
+	// 	   Move indices values back 6 positions from the deleted one
+	// 	   Remove indices from index list
 
+	std::map<uint, GridNode>::iterator it;
+	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
+	{
+		if (it->second.indicesIndexTmp > hoveredNode->indicesIndexTmp) {
+			it->second.indicesIndexTmp -= 6;
+		}
+	}
+
+	auto first = gridMeshVertices.cbegin() + (gridMeshIndices[hoveredNode->indicesIndexTmp] * 3);
+	auto last = gridMeshVertices.cbegin() + ((gridMeshIndices[hoveredNode->indicesIndexTmp]  * 3) + 12);
+	gridMeshVertices.erase(first, last);
+
+
+	auto indFirts = gridMeshIndices.cbegin() + hoveredNode->indicesIndexTmp;
+	auto indLast = gridMeshIndices.cbegin() + (hoveredNode->indicesIndexTmp + 6);
+	gridMeshIndices.erase(indFirts, indLast);
+
+	for (size_t i = hoveredNode->indicesIndexTmp; i < gridMeshIndices.size(); ++i)
+	{
+		gridMeshIndices[i] -= 4;
+	}
+	
+
+	gridMeshObject.Bind();
+	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+	gridMeshObject.LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
+	gridMeshObject.UnBind();
+
+	nodeMap.erase(hoveredNode->GetID());
 	UpdateRenderData();
-	//glBindVertexArray(0);
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return true;
 }
@@ -350,7 +379,8 @@ void GridManager::RenderGridTemporal()
 
 	gridMeshObject.Bind();
 	//glDrawArrays(GL_TRIANGLES, 0, nodeMap.size() * 6);
-	glDrawArrays(GL_TRIANGLES, 0, (gridMeshVertices.size() / 18) * 6);
+	//glDrawArrays(GL_TRIANGLES, 0, (gridMeshVertices.size() / 18) * 6);
+	glDrawElements(GL_TRIANGLES, gridMeshIndices.size(), GL_UNSIGNED_INT, NULL);
 	gridMeshObject.UnBind();
 
 	meshGridShader->Unbind();
@@ -507,11 +537,7 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 
 	val->SearchAndFillChildren(this);
 
-	val->meshIndexTmp = gridMeshVertices.size();
-	if (val->meshIndexTmp != 0) 
-	{
-		val->meshIndexTmp--;
-	}
+	int indexIter = gridMeshVertices.size() / 3;
 
 	gridMeshVertices.push_back(-0.5f + x);
 	gridMeshVertices.push_back(0.0f);
@@ -526,17 +552,18 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	gridMeshVertices.push_back(0.0f);
 	gridMeshVertices.push_back(+0.5f + y);
 
-	gridMeshVertices.push_back(-0.5f + x);
-	gridMeshVertices.push_back(0.0f);
-	gridMeshVertices.push_back(-0.5f + y);
-
-	gridMeshVertices.push_back(+0.5f + x);
-	gridMeshVertices.push_back(0.0f);
-	gridMeshVertices.push_back(+0.5f + y);
-
 	gridMeshVertices.push_back(+0.5f + x);
 	gridMeshVertices.push_back(0.0f);
 	gridMeshVertices.push_back(-0.5f + y);
+
+	val->indicesIndexTmp = gridMeshIndices.size();
+	gridMeshIndices.push_back(indexIter);
+	gridMeshIndices.push_back(indexIter+1);
+	gridMeshIndices.push_back(indexIter+2);
+	gridMeshIndices.push_back(indexIter);
+	gridMeshIndices.push_back(indexIter+2);
+	gridMeshIndices.push_back(indexIter+3);
+
 
 	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, -0.5f + y));
 	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, +0.5f + y));
@@ -547,6 +574,7 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 
 	gridMeshObject.Bind();
 	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+	gridMeshObject.LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
 
 	if (unBind == true) {
 		gridMeshObject.UnBind();
@@ -555,13 +583,13 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	return val;
 }
 
-GridNode::GridNode() : meshIndexTmp(0)
+GridNode::GridNode() : indicesIndexTmp(0)
 {
 	memset(children, NULL, sizeof(children));
 	memset(gridPosition, 0.0, sizeof(gridPosition));
 }
 
-GridNode::GridNode(int x, int y) : meshIndexTmp(0)
+GridNode::GridNode(int x, int y) : indicesIndexTmp(0)
 {
 	memset(children, NULL, sizeof(children));
 

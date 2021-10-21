@@ -40,7 +40,7 @@ struct GridNode
 	GridNode** GetChildrenMemAddr(int x, int y);
 	
 	GridNode* children[NODE_SIDES];
-	uint meshIndexTmp;
+	uint indicesIndexTmp;
 private:
 	int gridPosition[2];
 
@@ -95,9 +95,10 @@ private:
 	//uint instanceVBO;
 
 	GL_Object gridGLObject = GL_Object(GL_Object::RENDER_TYPE::RE_INSTANCING);
-	GL_Object gridMeshObject = GL_Object(GL_Object::RENDER_TYPE::RE_ARRAY);
+	GL_Object gridMeshObject = GL_Object(GL_Object::RENDER_TYPE::RE_INDICES);
 
 	std::vector<float> gridMeshVertices;
+	std::vector<int> gridMeshIndices;
 
 	GridNode* hoveredNode;
 	int cursorGridPos[2];
