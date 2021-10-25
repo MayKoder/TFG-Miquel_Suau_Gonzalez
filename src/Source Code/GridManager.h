@@ -37,7 +37,7 @@ struct GridNode
 	GridNode* DivideNode(GridManager* instance, int direction[2]);
 	void DivideNodeSquare(GridManager* instance, int squareLength);
 
-	uint GetUniqueVertices();
+	std::vector<float> GetUniqueVertices();
 
 	GridNode** GetChildrenMemAddr(int x, int y);
 	
@@ -73,6 +73,8 @@ public:
 	void RenderGridTemporal();
 
 	GridNode* GetNodeAt_Slow(int x, int y);
+
+	int GetVertexIndex(float3 value);
 
 
 

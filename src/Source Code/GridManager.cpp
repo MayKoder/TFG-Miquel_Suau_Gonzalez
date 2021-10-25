@@ -177,6 +177,7 @@ bool GridManager::DeleteHoveredNode()
 	// 	   Move indices values back 6 positions from the deleted one
 	// 	   Remove indices from index list
 
+	//Move indices indicator back 6 positions, this should be valid with the new system//
 	std::map<uint, GridNode>::iterator it;
 	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
 	{
@@ -185,19 +186,57 @@ bool GridManager::DeleteHoveredNode()
 		}
 	}
 
-	auto first = gridMeshVertices.cbegin() + (gridMeshIndices[hoveredNode->indicesIndexTmp] * 3);
-	auto last = gridMeshVertices.cbegin() + ((gridMeshIndices[hoveredNode->indicesIndexTmp]  * 3) + 12);
-	gridMeshVertices.erase(first, last);
+	//Remove unique vertices from vertex vector, not valid with new system [TESTING NEW VERSION]//
+	auto uniqueVertices = hoveredNode->GetUniqueVertices();
+	std::vector<int> deletedVerticesID;
+	for (size_t i = 0; i < uniqueVertices.size(); i += 3)
+	{
+		int indicator = GetVertexIndex(float3(uniqueVertices[i], uniqueVertices[i + 1], uniqueVertices[i + 2]));
+		deletedVerticesID.push_back(indicator);
+	}
+	for (size_t i = 0; i < uniqueVertices.size(); i += 3)
+	{
+		int indicator = GetVertexIndex(float3(uniqueVertices[i], uniqueVertices[i+1], uniqueVertices[i + 2]));
 
+		auto first = gridMeshVertices.cbegin() + (indicator * 3);
+		auto last = gridMeshVertices.cbegin() + ((indicator * 3) + 3);
+		gridMeshVertices.erase(first, last);
+	}
 
+	//Delete indices from index vector, this is still valid//
 	auto indFirts = gridMeshIndices.cbegin() + hoveredNode->indicesIndexTmp;
 	auto indLast = gridMeshIndices.cbegin() + (hoveredNode->indicesIndexTmp + 6);
 	gridMeshIndices.erase(indFirts, indLast);
 
-	for (size_t i = hoveredNode->indicesIndexTmp; i < gridMeshIndices.size(); ++i)
+	//Change index value to adapt to deleted vertices, this is not valid with the new system
+	//for (size_t i = hoveredNode->indicesIndexTmp; i < gridMeshIndices.size(); ++i)
+	//{
+	//	gridMeshIndices[i] -= 4;
+	//}
+
+	std::sort(deletedVerticesID.begin(), deletedVerticesID.end());
+	for (size_t i = 0; i < deletedVerticesID.size(); ++i)
 	{
-		gridMeshIndices[i] -= 4;
+
+		for (size_t j = 0; j < gridMeshIndices.size(); ++j)
+		{
+			if (gridMeshIndices[j] >= deletedVerticesID[i])
+			{
+				gridMeshIndices[j]--;
+
+			}
+		}
+		for (size_t k = 0; k < deletedVerticesID.size(); ++k)
+		{
+			deletedVerticesID[k]--;
+		}
+
+
 	}
+
+
+
+	LOG("Unique vertices %d", gridMeshVertices.size() / 3);
 	
 
 	gridMeshObject.Bind();
@@ -528,6 +567,23 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 	//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanoseconds" << std::endl;
 }
 
+int GridManager::GetVertexIndex(float3 value)
+{
+	int ret = -1;
+
+	//TODO: Would iterator be faster?
+	for (size_t i = 0; i < gridMeshVertices.size(); i += 3)
+	{
+		if (gridMeshVertices[i] == value.x && gridMeshVertices[i + 1] == value.y && gridMeshVertices[i + 2] == value.z) 
+		{
+			ret = i / 3;
+			break;
+		}
+	}
+
+	return ret;
+}
+
 GridNode* GridManager::AddNode(int x, int y, bool unBind)
 {
 	uint cantor = CANTOR_MAPPING(x, y);
@@ -537,32 +593,32 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 
 	val->SearchAndFillChildren(this);
 
-	int indexIter = gridMeshVertices.size() / 3;
 
-	gridMeshVertices.push_back(-0.5f + x);
-	gridMeshVertices.push_back(0.0f);
-	gridMeshVertices.push_back(-0.5f + y);
+	auto uniqueVector = val->GetUniqueVertices();
+	gridMeshVertices.insert(gridMeshVertices.end(), uniqueVector.begin(), uniqueVector.end());
 
-	gridMeshVertices.push_back(-0.5f + x);
-	gridMeshVertices.push_back(0.0f);
-	gridMeshVertices.push_back(+0.5f + y);
-
-
-	gridMeshVertices.push_back(+0.5f + x);
-	gridMeshVertices.push_back(0.0f);
-	gridMeshVertices.push_back(+0.5f + y);
-
-	gridMeshVertices.push_back(+0.5f + x);
-	gridMeshVertices.push_back(0.0f);
-	gridMeshVertices.push_back(-0.5f + y);
 
 	val->indicesIndexTmp = gridMeshIndices.size();
-	gridMeshIndices.push_back(indexIter);
-	gridMeshIndices.push_back(indexIter+1);
-	gridMeshIndices.push_back(indexIter+2);
-	gridMeshIndices.push_back(indexIter);
-	gridMeshIndices.push_back(indexIter+2);
-	gridMeshIndices.push_back(indexIter+3);
+
+
+
+
+
+	int indices[4] = {
+		GetVertexIndex(float3(-0.5+x, 0.0, -0.5+y)), 
+		GetVertexIndex(float3(-0.5 + x, 0.0, +0.5 + y)),
+		GetVertexIndex(float3(+0.5 + x, 0.0, +0.5 + y)),
+		GetVertexIndex(float3(+0.5 + x, 0.0, -0.5 + y)),
+	};
+
+	gridMeshIndices.push_back(indices[0]);
+	gridMeshIndices.push_back(indices[1]);
+	gridMeshIndices.push_back(indices[2]);
+	gridMeshIndices.push_back(indices[0]);
+	gridMeshIndices.push_back(indices[2]);
+	gridMeshIndices.push_back(indices[3]);
+
+	LOG("Unique vertices %d", gridMeshVertices.size() / 3);
 
 
 	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, -0.5f + y));
@@ -836,7 +892,9 @@ void GridNode::DivideNodeSquare(GridManager* instance, int squareLength)
 	}
 }
 
-uint GridNode::GetUniqueVertices()
+
+//TODO: Not optimal, at all
+std::vector<float> GridNode::GetUniqueVertices()
 {
 	int x = this->GetGridPositionX();
 	int y = this->GetGridPositionY();
@@ -879,17 +937,19 @@ uint GridNode::GetUniqueVertices()
 	}
 
 
-	std::vector<float3> verticesRet;
+	std::vector<float> verticesRet;
 	for (size_t i = 0; i < 4; i++)
 	{
-		if (indicators == 0) {
-			verticesRet.push_back(vertices[i]);
+		if (indicators[i] == 0) {
+			verticesRet.push_back(vertices[i].x);
+			verticesRet.push_back(vertices[i].y);
+			verticesRet.push_back(vertices[i].z);
 		}
 	}
 	
 
 
-	return 0;
+	return verticesRet;
 }
 
 GridNode** GridNode::GetChildrenMemAddr(int x, int y)
