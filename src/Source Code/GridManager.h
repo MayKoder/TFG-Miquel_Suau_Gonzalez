@@ -67,7 +67,7 @@ public:
 	bool DeleteHoveredNode();
 
 	void LoadShader(const char* path);
-	void UpdateRenderData(bool unBindAfter = true);
+	//void UpdateRenderData(bool unBindAfter = true);
 	void ClearMemory();
 
 	void RenderGridTemporal();
@@ -98,7 +98,7 @@ private:
 	//uint VBO; //Mesh positions
 	//uint instanceVBO;
 
-	GL_Object gridGLObject = GL_Object(GL_Object::RENDER_TYPE::RE_INSTANCING);
+	GL_Object gridGLObject = GL_Object(GL_Object::RENDER_TYPE::RE_ARRAY);
 	GL_Object gridMeshObject = GL_Object(GL_Object::RENDER_TYPE::RE_INDICES);
 
 	std::vector<float> gridMeshVertices;

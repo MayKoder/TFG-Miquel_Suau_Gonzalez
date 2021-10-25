@@ -55,6 +55,10 @@ public:
 		SetVBO(CreateVBO(), data, nElements, drawType);
 	}
 
+	void RenderAsArray(GLenum mode, GLsizei firstElementPosition, GLenum numberOfIndices);
+	void RenderAsIndices(GLenum mode, GLsizei elementCount, GLenum type);
+	void RenderAsInstancing(int renderType, int first, int indicesToRender, int instancecount);
+
 
 	/*
 	* Index = attrib index

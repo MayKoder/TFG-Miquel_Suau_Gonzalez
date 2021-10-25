@@ -1,7 +1,7 @@
 #include "GL_Object.h"
 
 GL_Object::GL_Object(RENDER_TYPE _type) : resShader(nullptr), type(_type), VAO(0),
-EBO(0)
+EBO(0), usingVAO(false), lastElementSize(0)
 {
 }
 
@@ -69,6 +69,29 @@ uint GL_Object::CreateVBO()
 
 
 	return (VBOs.size() - 1);
+}
+
+void GL_Object::RenderAsArray(GLenum mode, GLsizei firstElementPosition, GLenum numberOfIndices)
+{
+	Bind();
+	glDrawArrays(mode, firstElementPosition, numberOfIndices);
+	UnBind();
+}
+
+void GL_Object::RenderAsIndices(GLenum mode, GLsizei elementCount, GLenum type)
+{
+	Bind();
+	glDrawElements(mode, elementCount, type, NULL);
+	UnBind();
+}
+
+void GL_Object::RenderAsInstancing(int renderType, int first, int indicesToRender, int instancecount)
+{
+	Bind();
+	glDrawArraysInstanced(
+		renderType, first, indicesToRender, instancecount
+	);
+	UnBind();
 }
 
 //TODO: Change packElements to input packElements * sizeof() and not doit inside this method
