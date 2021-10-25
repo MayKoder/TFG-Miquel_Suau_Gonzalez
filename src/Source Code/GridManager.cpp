@@ -273,6 +273,7 @@ void GridManager::LoadShader(const char* path)
 
 	gridMeshObject.CreateVBO();
 	AddNode(0, 0, false);
+
 	gridMeshObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
 
 	gridMeshObject.UnBind();
@@ -400,7 +401,7 @@ void GridManager::RenderGridTemporal()
 {
 	//auto t1 = Clock::now();
 
-	shaderRes->Bind();
+	/*shaderRes->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shaderRes->shaderProgramID);
 
 	gridGLObject.Bind();
@@ -409,7 +410,7 @@ void GridManager::RenderGridTemporal()
 	);
 	gridGLObject.UnBind();
 
-	shaderRes->Unbind();
+	shaderRes->Unbind();*/
 
 
 	//Render grid mesh
@@ -584,6 +585,8 @@ int GridManager::GetVertexIndex(float3 value)
 	return ret;
 }
 
+/*TODO: If we want to add a lot of nodes at once (ex: loading a scene) we should wait until the last node is created to upload the data to the GPU
+to avoid useless calls*/
 GridNode* GridManager::AddNode(int x, int y, bool unBind)
 {
 	uint cantor = CANTOR_MAPPING(x, y);
@@ -936,6 +939,23 @@ std::vector<float> GridNode::GetUniqueVertices()
 		indicators[0] = -1;
 	}
 
+
+	if(EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(x-1, y+1))
+	{
+		indicators[1] = -1;
+	}
+	if(EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(x+1, y+1))
+	{
+		indicators[2] = -1;
+	}
+	if(EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(x-1, y-1))
+	{
+		indicators[0] = -1;
+	}
+	if (EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(x + 1, y - 1)) 
+	{
+		indicators[3] = -1;
+	}
 
 	std::vector<float> verticesRet;
 	for (size_t i = 0; i < 4; i++)
