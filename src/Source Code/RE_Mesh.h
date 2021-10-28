@@ -6,6 +6,7 @@
 
 #include"MathGeoLib/include/Geometry/AABB.h"
 #include"DEResource.h"
+#include"GL_Object.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int uint;
@@ -49,9 +50,7 @@ public:
 	bool* generalWireframe;
 	// ----------- ------------------------------- ---------------//
 
-	uint VBO;
-	uint VAO;
-	uint EBO;
+	GL_Object renderObject = GL_Object(GL_Object::RENDER_TYPE::RE_INDICES);
 
 	//TODO: Move this to file system
 	const char* SaveCustomFormat(uint& retSize);

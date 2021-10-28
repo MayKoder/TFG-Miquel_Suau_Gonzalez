@@ -10,7 +10,7 @@
 #include"DE_Cubemap.h"
 #include"GridManager.h"
 
-#include"MM_ProceduralMeshGenerator.h"
+//#include"MM_ProceduralMeshGenerator.h"
 
 #include<map>
 
@@ -94,5 +94,5 @@ private:
 	LineSegment pickingDebug;
 
 
-	MMP_Plane plane;
+	//MMP_Plane plane;
 };

@@ -67,6 +67,7 @@ private:
 };
 
 #include"MO_Scene.h"
+#include"GameObject.h"
 class  ToolWall : public Tool
 {
 public:
@@ -80,7 +81,11 @@ public:
 
 	void Use(int button_id) override
 	{
-		EngineExternal->moduleScene->CreateGameObject("Test", EngineExternal->moduleScene->root);
+		if (EngineExternal->moduleRenderer3D->gridInstance.CanBuildOnMouseNode() == false)
+			return;
+
+		GameObject* wall = EngineExternal->moduleScene->CreateGameObject("Wall", EngineExternal->moduleScene->root);
+		wall->AddComponent(Component::Type::MeshRenderer);
 		//Check for nearby walls
 			//If nearby wall and new use breaks the direction of the other wall
 				//Add vertices to created wall

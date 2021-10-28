@@ -73,6 +73,7 @@ public:
 	void RenderGridTemporal();
 
 	GridNode* GetNodeAt_Slow(int x, int y);
+	bool CanBuildOnMouseNode();
 
 	int GetVertexIndex(float3 value);
 

@@ -175,9 +175,9 @@ bool C_MeshRenderer::OnEditor()
 				_mesh = nullptr;
 			}
 
-			LCG randomizer;
-			_mesh = new ResourceMesh(randomizer.Int());
-			MMP_Plane::GenerateDataTo(_mesh);
+			//LCG randomizer;
+			//_mesh = new ResourceMesh(randomizer.Int());
+			//MMP_Plane::GenerateDataTo(_mesh);
 		}
 
 		return true;

@@ -13,8 +13,7 @@
 #include "GameObject.h"
 #include"CO_DirectionalLight.h"
 
-ResourceMesh::ResourceMesh(unsigned int _uid) : Resource(_uid, Resource::Type::MESH), indices_id(0), vertices_id(0), generalWireframe(nullptr),
-EBO(0), VAO(0), VBO(0)
+ResourceMesh::ResourceMesh(unsigned int _uid) : Resource(_uid, Resource::Type::MESH), indices_id(0), vertices_id(0), generalWireframe(nullptr)
 {
 
 }
@@ -27,50 +26,37 @@ bool ResourceMesh::LoadToMemory()
 	LOG( "Mesh loaded to memory"); //UNCOMMENT
 	LoadCustomFormat(GetLibraryPath());
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, (GLuint*)&(VBO));
-	glGenBuffers(1, (GLuint*)&(EBO));
+	renderObject.InitBuffers();
 
-	glBindVertexArray(VAO);
+	renderObject.Bind();
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * VERTEX_ATTRIBUTES * vertices_count, vertices, GL_STATIC_DRAW);
+
+	renderObject.CreateAndSetVBO(vertices, VERTEX_ATTRIBUTES * vertices_count, GL_STATIC_DRAW);
 
 	//indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices_count, indices, GL_STATIC_DRAW);
+	renderObject.LoadEBO(indices, indices_count);
 
 	//position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_ATTRIBUTES * sizeof(float), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+	renderObject.SetVertexAttrib(0, 3, VERTEX_ATTRIBUTES * sizeof(float), 0, GL_FLOAT);
 
 	//texcoords attribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, VERTEX_ATTRIBUTES * sizeof(float), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
+	renderObject.SetVertexAttrib(1, 2, VERTEX_ATTRIBUTES * sizeof(float), 3 * sizeof(GLfloat), GL_FLOAT);
 
 	//normals attribute
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTEX_ATTRIBUTES * sizeof(float), (GLvoid*)(5 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
+	renderObject.SetVertexAttrib(2, 3, VERTEX_ATTRIBUTES * sizeof(float), 5 * sizeof(GLfloat), GL_FLOAT);
 
 	//tangents attribute
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, VERTEX_ATTRIBUTES * sizeof(float), (GLvoid*)(8 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(3);
+	renderObject.SetVertexAttrib(3, 3, VERTEX_ATTRIBUTES * sizeof(float), 8 * sizeof(GLfloat), GL_FLOAT);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	renderObject.UnBind();
 
 	return true;
 }
 
 bool ResourceMesh::UnloadFromMemory()
 {
-	glDeleteVertexArrays(1, &VAO);
-	VAO = 0u;
-	glDeleteBuffers(1, &VBO);
-	VBO = 0u;
-	glDeleteBuffers(1, &EBO);
-	EBO = 0u;
+
+	renderObject.UnloadBuffers();
 
 	//Clear buffers
 	if (indices != nullptr)
@@ -147,9 +133,7 @@ void ResourceMesh::RenderMesh(GLuint textureID, float3 color, bool renderTexture
 void ResourceMesh::OGL_GPU_Render()
 {
 	//vertices
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT, NULL);
-	glBindVertexArray(0);
+	renderObject.RenderAsIndices(GL_TRIANGLES, indices_count, GL_UNSIGNED_INT);
 }
 
 void ResourceMesh::RenderMeshDebug(bool* vertexNormals, bool* faceNormals, const float* globalTransform)

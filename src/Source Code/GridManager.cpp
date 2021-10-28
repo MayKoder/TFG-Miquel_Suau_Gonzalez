@@ -511,6 +511,11 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 	//std::cout << "Delta t2-t1: " << std::chrono::duration_cast<std::chrono::nanoseconds>(t2 - t1).count() << " nanoseconds" << std::endl;
 }
 
+bool GridManager::CanBuildOnMouseNode()
+{
+	return GetNodeAt_Slow(this->cursorGridPos[0], this->cursorGridPos[1]) != nullptr;
+}
+
 int GridManager::GetVertexIndex(float3 value)
 {
 	int ret = -1;
