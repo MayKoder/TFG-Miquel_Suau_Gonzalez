@@ -354,8 +354,51 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	
 	gridInstance.RenderGridTemporal();
 
-	//C_Transform trans;
-	//plane._mesh->RenderMesh(0, float3::one, false, EngineExternal->moduleScene->defaultMaterial, &trans);
+	glPointSize(5);
+	glBegin(GL_POINTS);
+
+	int subDivisions = 10;
+	float maxH = 1;
+	float hIncrement = maxH / (subDivisions - 1);
+	float k = 0.0f;
+
+	std::vector<vec3> vertices;
+	//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
+	for (size_t j = 0; j < subDivisions; ++j)
+	{
+		int angle = 45;
+		for (size_t i = 0; i < 4; i++)
+		{
+			vec3 dir = vec3(0.4, k, 0);
+			dir = rotate(dir, angle, vec3(0, 1, 0));
+			angle += 90;
+
+			vertices.push_back(dir);
+			glVertex3fv(&dir.x);
+		}
+		k += hIncrement;
+	}
+	
+	//glBegin(GL_TRIANGLES);
+	//for (size_t j = 0; j < subDivisions; ++j)
+	//{
+	//	for (size_t i = 0; i < 4; i++)
+	//	{
+	//		glVertex3fv(&vertices[(i+4) * j].x);
+	//		glVertex3fv(&vertices[ (i == 3) ? 4*j :  (i + 4 * j) + 1].x);
+	//		glVertex3fv(&vertices[((i+4) * (j + 1))+1].x);
+	//		
+	//		LOG("%d, %d, %d", (i + 4) * j, (i == 3) ? 4 * j : (i + 4 * j) + 1, ((i + 4) * (j + 1)) + 1);
+	//		//glVertex3fv(vertices[(j*i)]);
+	//		//glVertex3fv(vertices[(j*i)]);
+	//		//glVertex3fv(vertices[(j*i)]);
+	//	}
+	//}
+	//glEnd();
+
+
+	glEnd();
+	glPointSize(1);
 
 	//TODO: This should not be here
 	if (!renderQueue.empty()) 
