@@ -351,6 +351,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //	glColor3f(1.f, 1.f, 1.f);
 //
 //#pragma endregion
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	gridInstance.RenderGridTemporal();
 
@@ -360,45 +362,67 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	int subDivisions = 10;
 	float maxH = 1;
 	float hIncrement = maxH / (subDivisions - 1);
-	float k = 0.0f;
 
 	std::vector<vec3> vertices;
-	//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
-	for (size_t j = 0; j < subDivisions; ++j)
-	{
-		int angle = 45;
-		for (size_t i = 0; i < 4; i++)
-		{
-			vec3 dir = vec3(0.4, k, 0);
-			dir = rotate(dir, angle, vec3(0, 1, 0));
-			angle += 90;
 
-			vertices.push_back(dir);
-			glVertex3fv(&dir.x);
+	int angle = 45;
+	for (size_t i = 0; i < 4; i++)
+	{
+		//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
+		float k = 0.0f;
+		vec3 dir = vec3(0.4, k, 0);
+		dir = rotate(dir, angle, vec3(0, 1, 0));
+
+		for (size_t j = 0; j < subDivisions; ++j)
+		{
+
+			vec3 ret = dir;
+			ret.y = k;
+			vertices.push_back(ret);
+			glVertex3fv(&ret.x);
+
+			k += hIncrement;
 		}
-		k += hIncrement;
+		angle += 90;
 	}
 	
-	//glBegin(GL_TRIANGLES);
-	//for (size_t j = 0; j < subDivisions; ++j)
-	//{
-	//	for (size_t i = 0; i < 4; i++)
-	//	{
-	//		glVertex3fv(&vertices[(i+4) * j].x);
-	//		glVertex3fv(&vertices[ (i == 3) ? 4*j :  (i + 4 * j) + 1].x);
-	//		glVertex3fv(&vertices[((i+4) * (j + 1))+1].x);
-	//		
-	//		LOG("%d, %d, %d", (i + 4) * j, (i == 3) ? 4 * j : (i + 4 * j) + 1, ((i + 4) * (j + 1)) + 1);
-	//		//glVertex3fv(vertices[(j*i)]);
-	//		//glVertex3fv(vertices[(j*i)]);
-	//		//glVertex3fv(vertices[(j*i)]);
-	//	}
-	//}
-	//glEnd();
 
 
 	glEnd();
 	glPointSize(1);
+
+	glBegin(GL_TRIANGLES);
+	for (size_t h = 0; h < subDivisions - 1; h++)
+	{
+		for (size_t s = 0; s < 4; s++)
+		{
+			int safe = s;
+			if (safe >= 3) {
+				safe = -1;
+			}
+			glVertex3fv(&vertices[h+0 + (subDivisions * s)].x);
+			glVertex3fv(&vertices[subDivisions + h + (subDivisions * safe)].x);
+			glVertex3fv(&vertices[subDivisions+1 + h + (subDivisions * safe)].x);
+
+			glVertex3fv(&vertices[0 + h + (subDivisions * s)].x);
+			glVertex3fv(&vertices[subDivisions+1 + h + (subDivisions * safe)].x);
+			glVertex3fv(&vertices[1 + h + (subDivisions * s)].x);
+		}
+	}
+
+	int top = subDivisions - 1;
+	glVertex3fv(&vertices[top].x);
+	glVertex3fv(&vertices[top*2+1].x);
+	glVertex3fv(&vertices[top*3+2].x);
+
+	glVertex3fv(&vertices[top].x);
+	glVertex3fv(&vertices[top * 3 + 2].x);
+	glVertex3fv(&vertices[top*4+3].x);
+
+	glEnd();
+	vertices.clear();
+
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//TODO: This should not be here
 	if (!renderQueue.empty()) 

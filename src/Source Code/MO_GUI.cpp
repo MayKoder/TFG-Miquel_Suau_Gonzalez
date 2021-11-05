@@ -408,7 +408,7 @@ void M_GUI::SetPanelData(int w, int h)
 		ImVec2(w / 7, h / 1.4), 
 		ImVec2(w / 50, h / 8),
 		ImVec2(-(w / 7) - (w/50), -(h/8)/2));
-	send->animator.Set(send->pos, float2(App->moduleWindow->s_width + send->size.x, send->pos.y), .25f, true);
+	send->animator.Set(send->pos, float2(w + send->size.x, send->pos.y), .25f, true);
 	send->animator.Invert();
 
 	send = &imGuiPanels[2];
