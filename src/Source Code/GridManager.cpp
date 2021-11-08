@@ -115,8 +115,10 @@ void GridManager::UpdateInput(Tool* selectedTool)
 		//TODO: What a dumb idea, the tool should check the button?
 		for (size_t i = 0; i < MAX_MOUSE_BUTTONS; i++)
 		{
-			if (EngineExternal->moduleInput->GetMouseLayer() != MOUSE_LAYER::HOVERING_UI && EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN)
+			if (EngineExternal->moduleInput->GetMouseLayer() != MOUSE_LAYER::HOVERING_UI && EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN || EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_REPEAT) {
 				selectedTool->Use(i);
+				EngineExternal->moduleInput->SetMouseLayer(MOUSE_LAYER::USING_TOOL);
+			}
 		}
 	}
 }
@@ -133,15 +135,39 @@ void GridManager::DivideHoveredClick()
 
 void GridManager::CreateNode()
 {
-	if (hoveredNode == nullptr) 
-	{
-		AddNode(this->cursorGridPos[0], this->cursorGridPos[1]);
+	//if (hoveredNode == nullptr) 
+	//{
+	//	AddNode(this->cursorGridPos[0], this->cursorGridPos[1]);
 
-		//UpdateRenderData();
+	//	//UpdateRenderData();
+	//}
+	//else {
+	//	DivideHoveredClick();
+	//}
+
+	int cx = this->cursorGridPos[0];
+	int cy = this->cursorGridPos[1];
+	int radius = 3;
+
+	float radChk = (float)radius * (float)radius;
+
+	for (int i = (cx - radius); i <= (cx + radius); ++i)
+	{
+		for (int j = (cy - radius); j <= (cy + radius); ++j)
+		{
+			if (pow(i - cx, 2) + pow(j - cy, 2) < radChk) 
+			{
+				int cantID = CANTOR_MAPPING(i, j);
+				if (nodeMap.count(cantID) == 0) 
+				{
+					AddNode(i, j);
+				}
+			}
+		}
 	}
-	else {
-		DivideHoveredClick();
-	}
+
+
+
 }
 
 bool GridManager::DeleteHoveredNode()
@@ -510,7 +536,8 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 
 bool GridManager::CanBuildOnMouseNode()
 {
-	return GetNodeAt_Slow(this->cursorGridPos[0], this->cursorGridPos[1]) != nullptr;
+	GridNode* gn = GetNodeAt_Slow(this->cursorGridPos[0], this->cursorGridPos[1]);
+	return gn != nullptr && gn->go == nullptr;
 }
 
 int GridManager::GetVertexIndex(float3 value)
@@ -587,13 +614,13 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	return val;
 }
 
-GridNode::GridNode() : indicesIndexTmp(0)
+GridNode::GridNode() : indicesIndexTmp(0), go(nullptr)
 {
 	memset(children, NULL, sizeof(children));
 	memset(gridPosition, 0.0, sizeof(gridPosition));
 }
 
-GridNode::GridNode(int x, int y) : indicesIndexTmp(0)
+GridNode::GridNode(int x, int y) : indicesIndexTmp(0), go(nullptr)
 {
 	memset(children, NULL, sizeof(children));
 

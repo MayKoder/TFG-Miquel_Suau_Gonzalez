@@ -85,9 +85,12 @@ public:
 		if (EngineExternal->moduleRenderer3D->gridInstance.CanBuildOnMouseNode() == false)
 			return;
 
+
 		GameObject* wall = EngineExternal->moduleScene->CreateGameObject("Wall", EngineExternal->moduleScene->root);
 		wall->transform->SetTransformMatrix(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()), Quat::identity, float3::one);
 		wall->AddComponent(Component::Type::MeshRenderer);
+
+		EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z())->go = wall;
 		//Check for nearby walls
 			//If nearby wall and new use breaks the direction of the other wall
 				//Add vertices to created wall

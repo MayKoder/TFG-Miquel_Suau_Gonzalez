@@ -26,6 +26,73 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 {
 	name = "Mesh Renderer";
 	alternColor = float3::one;
+
+
+
+	//int subDivisions = 10;
+	//float maxH = 1;
+	//float hIncrement = maxH / (subDivisions - 1);
+
+	//std::vector<vec3> vertices;
+
+	//float3 position = this->GetGO()->transform->position;
+
+	//int angle = 45;
+	//for (size_t i = 0; i < 4; i++)
+	//{
+	//	//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
+	//	float k = 0.0f;
+	//	vec3 dir = vec3(0.4, k, 0);
+	//	dir = rotate(dir, angle, vec3(0, 1, 0));
+
+	//	for (size_t j = 0; j < subDivisions; ++j)
+	//	{
+
+	//		vec3 ret = dir;
+	//		ret.y = k;
+	//		vertices.push_back(ret + vec3(position.x, position.y, position.z));
+	//		//glVertex3fv(&ret.x);
+
+	//		k += hIncrement;
+	//	}
+	//	angle += 90;
+	//}
+
+
+
+
+	//for (size_t h = 0; h < subDivisions - 1; h++)
+	//{
+	//	for (size_t s = 0; s < 4; s++)
+	//	{
+	//		int safe = s;
+	//		if (safe >= 3) {
+	//			safe = -1;
+	//		}
+	//		glVertex3fv(&vertices[h + 0 + (subDivisions * s)].x);
+	//		glVertex3fv(&vertices[subDivisions + h + (subDivisions * safe)].x);
+	//		glVertex3fv(&vertices[subDivisions + 1 + h + (subDivisions * safe)].x);
+
+	//		glVertex3fv(&vertices[0 + h + (subDivisions * s)].x);
+	//		glVertex3fv(&vertices[subDivisions + 1 + h + (subDivisions * safe)].x);
+	//		glVertex3fv(&vertices[1 + h + (subDivisions * s)].x);
+	//	}
+	//}
+
+	//int top = subDivisions - 1;
+	//glVertex3fv(&vertices[top].x);
+	//glVertex3fv(&vertices[top * 2 + 1].x);
+	//glVertex3fv(&vertices[top * 3 + 2].x);
+
+	//glVertex3fv(&vertices[top].x);
+	//glVertex3fv(&vertices[top * 3 + 2].x);
+	//glVertex3fv(&vertices[top * 4 + 3].x);
+
+
+	//vertices.clear();
+
+
+
 }
 
 C_MeshRenderer::~C_MeshRenderer()
@@ -66,78 +133,6 @@ void C_MeshRenderer::Update()
 
 void C_MeshRenderer::RenderMesh(bool rTex)
 {
-
-
-
-	{
-		//glPointSize(5);
-		//glBegin(GL_POINTS);
-
-		int subDivisions = 10;
-		float maxH = 1;
-		float hIncrement = maxH / (subDivisions - 1);
-
-		std::vector<vec3> vertices;
-
-		float3 position = this->GetGO()->transform->position;
-
-		int angle = 45;
-		for (size_t i = 0; i < 4; i++)
-		{
-			//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
-			float k = 0.0f;
-			vec3 dir = vec3(0.4, k, 0);
-			dir = rotate(dir, angle, vec3(0, 1, 0));
-
-			for (size_t j = 0; j < subDivisions; ++j)
-			{
-
-				vec3 ret = dir;
-				ret.y = k;
-				vertices.push_back(ret + vec3(position.x, position.y, position.z));
-				//glVertex3fv(&ret.x);
-
-				k += hIncrement;
-			}
-			angle += 90;
-		}
-
-
-
-		//glEnd();
-		//glPointSize(1);
-
-		glBegin(GL_TRIANGLES);
-		for (size_t h = 0; h < subDivisions - 1; h++)
-		{
-			for (size_t s = 0; s < 4; s++)
-			{
-				int safe = s;
-				if (safe >= 3) {
-					safe = -1;
-				}
-				glVertex3fv(&vertices[h + 0 + (subDivisions * s)].x);
-				glVertex3fv(&vertices[subDivisions + h + (subDivisions * safe)].x);
-				glVertex3fv(&vertices[subDivisions + 1 + h + (subDivisions * safe)].x);
-
-				glVertex3fv(&vertices[0 + h + (subDivisions * s)].x);
-				glVertex3fv(&vertices[subDivisions + 1 + h + (subDivisions * safe)].x);
-				glVertex3fv(&vertices[1 + h + (subDivisions * s)].x);
-			}
-		}
-
-		int top = subDivisions - 1;
-		glVertex3fv(&vertices[top].x);
-		glVertex3fv(&vertices[top * 2 + 1].x);
-		glVertex3fv(&vertices[top * 3 + 2].x);
-
-		glVertex3fv(&vertices[top].x);
-		glVertex3fv(&vertices[top * 3 + 2].x);
-		glVertex3fv(&vertices[top * 4 + 3].x);
-
-		glEnd();
-		vertices.clear();
-	}
 
 
 	//if (_mesh == nullptr)

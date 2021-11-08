@@ -16,6 +16,7 @@ enum class MOUSE_LAYER
 
 	MOVE_CAMERA,
 	HOVERING_UI,
+	USING_TOOL,
 
 
 };

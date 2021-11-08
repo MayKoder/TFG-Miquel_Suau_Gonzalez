@@ -58,7 +58,9 @@ void ModuleCamera3D::OnGUI()
 update_status ModuleCamera3D::Update(float dt)
 {
 
-	ProcessSceneKeyboard();
+	if (App->moduleInput->GetMouseLayer() == MOUSE_LAYER::MOVE_CAMERA) {
+		ProcessSceneKeyboard();
+	}
 
 	//ASK: This should be here to move camera with code but idk its expensive
 	editorCamera.Move(cameraMovement);
