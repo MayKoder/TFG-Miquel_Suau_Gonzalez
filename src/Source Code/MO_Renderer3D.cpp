@@ -218,17 +218,18 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//DirectionalShadowPass();
 
 	//-------- CAMERA CULLING PROCESS -----------//
-	if (GetGameRenderTarget() != nullptr && GetGameRenderTarget()->cullingState == true)
-	{
-		std::vector<C_MeshRenderer*> copy = renderQueue;
-		renderQueue.clear();
-		for (size_t i = 0; i < copy.size(); i++)
-		{
-			if (GetGameRenderTarget()->IsInsideFrustum(copy[i]->globalAABB))
-				renderQueue.push_back(copy[i]);
-		}
-		copy.clear();
-	}
+	// 	   TODO: Disable now, as meshes do not have AABB or OBB
+	//if (GetGameRenderTarget() != nullptr && GetGameRenderTarget()->cullingState == true)
+	//{
+	//	std::vector<C_MeshRenderer*> copy = renderQueue;
+	//	renderQueue.clear();
+	//	for (size_t i = 0; i < copy.size(); i++)
+	//	{
+	//		if (GetGameRenderTarget()->IsInsideFrustum(copy[i]->globalAABB))
+	//			renderQueue.push_back(copy[i]);
+	//	}
+	//	copy.clear();
+	//}
 	
 	//
 	App->moduleCamera->editorCamera.StartDraw();
@@ -352,77 +353,10 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //
 //#pragma endregion
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
 	gridInstance.RenderGridTemporal();
 
-	glPointSize(5);
-	glBegin(GL_POINTS);
 
-	int subDivisions = 10;
-	float maxH = 1;
-	float hIncrement = maxH / (subDivisions - 1);
-
-	std::vector<vec3> vertices;
-
-	int angle = 45;
-	for (size_t i = 0; i < 4; i++)
-	{
-		//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
-		float k = 0.0f;
-		vec3 dir = vec3(0.4, k, 0);
-		dir = rotate(dir, angle, vec3(0, 1, 0));
-
-		for (size_t j = 0; j < subDivisions; ++j)
-		{
-
-			vec3 ret = dir;
-			ret.y = k;
-			vertices.push_back(ret);
-			glVertex3fv(&ret.x);
-
-			k += hIncrement;
-		}
-		angle += 90;
-	}
-	
-
-
-	glEnd();
-	glPointSize(1);
-
-	glBegin(GL_TRIANGLES);
-	for (size_t h = 0; h < subDivisions - 1; h++)
-	{
-		for (size_t s = 0; s < 4; s++)
-		{
-			int safe = s;
-			if (safe >= 3) {
-				safe = -1;
-			}
-			glVertex3fv(&vertices[h+0 + (subDivisions * s)].x);
-			glVertex3fv(&vertices[subDivisions + h + (subDivisions * safe)].x);
-			glVertex3fv(&vertices[subDivisions+1 + h + (subDivisions * safe)].x);
-
-			glVertex3fv(&vertices[0 + h + (subDivisions * s)].x);
-			glVertex3fv(&vertices[subDivisions+1 + h + (subDivisions * safe)].x);
-			glVertex3fv(&vertices[1 + h + (subDivisions * s)].x);
-		}
-	}
-
-	int top = subDivisions - 1;
-	glVertex3fv(&vertices[top].x);
-	glVertex3fv(&vertices[top*2+1].x);
-	glVertex3fv(&vertices[top*3+2].x);
-
-	glVertex3fv(&vertices[top].x);
-	glVertex3fv(&vertices[top * 3 + 2].x);
-	glVertex3fv(&vertices[top*4+3].x);
-
-	glEnd();
-	vertices.clear();
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//TODO: This should not be here
 	if (!renderQueue.empty()) 
@@ -765,7 +699,7 @@ void ModuleRenderer3D::GetCAPS(std::string& caps)
 C_Camera* ModuleRenderer3D::GetGameRenderTarget() const
 {
 	//return gameCamera;
-	return nullptr;
+	return this->activeRenderCamera;
 }
 
 void ModuleRenderer3D::SetGameRenderTarget(C_Camera* cam)

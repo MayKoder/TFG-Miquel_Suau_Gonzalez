@@ -68,6 +68,7 @@ private:
 
 #include"MO_Scene.h"
 #include"GameObject.h"
+#include"CO_Transform.h"
 class  ToolWall : public Tool
 {
 public:
@@ -85,6 +86,7 @@ public:
 			return;
 
 		GameObject* wall = EngineExternal->moduleScene->CreateGameObject("Wall", EngineExternal->moduleScene->root);
+		wall->transform->SetTransformMatrix(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()), Quat::identity, float3::one);
 		wall->AddComponent(Component::Type::MeshRenderer);
 		//Check for nearby walls
 			//If nearby wall and new use breaks the direction of the other wall

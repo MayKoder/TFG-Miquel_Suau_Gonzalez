@@ -364,31 +364,28 @@ void GridManager::RenderGridTemporal()
 	meshGridShader->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(meshGridShader->shaderProgramID);
 
+	modelLoc = glGetUniformLocation(meshGridShader->shaderProgramID, "position");
+	glUniform3f(modelLoc, 0.0f, 0.0f, 0.0f);
+
 	gridMeshObject.RenderAsIndices(GL_TRIANGLES, gridMeshIndices.size(), GL_UNSIGNED_INT);
 
 	meshGridShader->Unbind();
 
 
 
+	//LineRenderer lRender;
+	// 
+	///*ERROR: Loading a shader every frame? Lmao u dumb*/
+	//lRender.InitLineRenderer();
 
+	//lRender.AddPoint(float3(0, 0, 0));
+	//lRender.AddPoint(float3(1, 0, 0));
+	//lRender.AddPoint(float3(0, 0, 0));
+	//lRender.AddPoint(float3(0, 1, 0));
+	//lRender.AddPoint(float3(0, 0, 0));
+	//lRender.AddPoint(float3(0, 0, 1));
 
-	//std::map<uint, GridNode>::iterator it;
-	LineRenderer lRender;
-	lRender.InitLineRenderer();
-	//for (it = nodeMap.begin(); it != nodeMap.end(); it++)
-	//{
-	//	lRender.AddPoint(float3(it->second.GetGridPositionX(), 0, it->second.GetGridPositionY()));
-	//	//it->second.RenderLines(shaderRes);
-	//}
-
-	lRender.AddPoint(float3(0, 0, 0));
-	lRender.AddPoint(float3(1, 0, 0));
-	lRender.AddPoint(float3(0, 0, 0));
-	lRender.AddPoint(float3(0, 1, 0));
-	lRender.AddPoint(float3(0, 0, 0));
-	lRender.AddPoint(float3(0, 0, 1));
-
-	lRender.Render();
+	//lRender.Render();
 
 	//TODO: Only happen when a creation tool is enabled
 	if (EngineExternal->moduleGUI->selectedTool != nullptr) 

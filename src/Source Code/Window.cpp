@@ -22,6 +22,13 @@ void Window::Draw()
 	{
 		DrawConsole();
 		DrawShaderEditor();
+
+		for (size_t i = 0; i < EngineExternal->list_modules.size(); ++i)
+		{
+			EngineExternal->list_modules[i]->OnGUI();
+		}
+
+
 	}
 	ImGui::End();
 }

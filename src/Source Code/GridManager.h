@@ -77,6 +77,13 @@ public:
 
 	int GetVertexIndex(float3 value);
 
+	int GetMouseGridPos_X() {
+		return this->cursorGridPos[0];
+	}
+	int GetMouseGridPos_Z() {
+		return this->cursorGridPos[1];
+	}
+
 
 
 	static inline uint CANTOR_MAPPING(int x, int y) 
