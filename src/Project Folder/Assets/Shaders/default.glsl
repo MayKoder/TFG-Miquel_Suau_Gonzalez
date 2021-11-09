@@ -22,9 +22,12 @@ void main()
 #ifdef fragment
 #version 330 core
 
+uniform vec4 color;
+
+
 void main()
 {
-	gl_FragColor = vec4(0.8, 0.8, 0.8, 1.0);
+	gl_FragColor = color;
 }
 #endif
 

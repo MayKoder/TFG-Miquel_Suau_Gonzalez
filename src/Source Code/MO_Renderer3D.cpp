@@ -357,7 +357,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	gridInstance.RenderGridTemporal();
 
 
-
+	//Uint32 start = SDL_GetTicks();
 	//TODO: This should not be here
 	if (!renderQueue.empty()) 
 	{
@@ -372,6 +372,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		RenderWithOrdering();
 		(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+	//LOG("Time to render %d", SDL_GetTicks() - start);
 
 
 	skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);

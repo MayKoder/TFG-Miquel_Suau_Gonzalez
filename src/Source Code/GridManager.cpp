@@ -115,7 +115,7 @@ void GridManager::UpdateInput(Tool* selectedTool)
 		//TODO: What a dumb idea, the tool should check the button?
 		for (size_t i = 0; i < MAX_MOUSE_BUTTONS; i++)
 		{
-			if (EngineExternal->moduleInput->GetMouseLayer() != MOUSE_LAYER::HOVERING_UI && EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN || EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_REPEAT) {
+			if (EngineExternal->moduleInput->GetMouseLayer() != MOUSE_LAYER::HOVERING_UI && (EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_DOWN || EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_REPEAT)) {
 				selectedTool->Use(i);
 				EngineExternal->moduleInput->SetMouseLayer(MOUSE_LAYER::USING_TOOL);
 			}
@@ -392,6 +392,9 @@ void GridManager::RenderGridTemporal()
 
 	modelLoc = glGetUniformLocation(meshGridShader->shaderProgramID, "position");
 	glUniform3f(modelLoc, 0.0f, 0.0f, 0.0f);
+
+	modelLoc = glGetUniformLocation(meshGridShader->shaderProgramID, "color");
+	glUniform4f(modelLoc, 0.8, 0.8, 0.8, 1);
 
 	gridMeshObject.RenderAsIndices(GL_TRIANGLES, gridMeshIndices.size(), GL_UNSIGNED_INT);
 

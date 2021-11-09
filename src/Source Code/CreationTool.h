@@ -27,7 +27,7 @@ private:
 class ToolNode : public Tool
 {
 public:
-	ToolNode(const char* _tName) : Tool(_tName) 
+	ToolNode(const char* _tName) : Tool(_tName), typeIndex(0)
 	{
 
 	}
@@ -56,13 +56,16 @@ public:
 
 	void DrawEditor() override
 	{
-		for (size_t i = 0; i < 150; i++)
-		{
-			ImGui::Text("Holaaa");
-		}
+		ImGui::Text("Type: ");
+		ImGui::SameLine();
+		ImGui::Combo("##tooltype", &typeIndex, data, 3);
 	};
 
 private:
+
+	int typeIndex;
+	const char* data[3] = { "Single", "Drag", "Line" };
+	
 
 };
 
