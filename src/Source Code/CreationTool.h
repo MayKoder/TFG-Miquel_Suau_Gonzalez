@@ -46,7 +46,8 @@ public:
 			break;
 
 		case 1:
-			EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
+			//EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
+			EngineExternal->moduleRenderer3D->gridInstance.CreateNodesCircular(10);
 			break;
 
 		default:

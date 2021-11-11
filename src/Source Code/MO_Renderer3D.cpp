@@ -363,15 +363,16 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	{
 		for (size_t i = 0; i < renderQueue.size(); i++)
 		{
-			float distance = App->moduleCamera->editorCamera.camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
-			renderQueueMap.emplace(distance, renderQueue[i]);
+			//float distance = App->moduleCamera->editorCamera.camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
+			//renderQueueMap.emplace(distance, renderQueue[i]);
+			renderQueue[i]->RenderMesh();
 		}
 
-		//TODO: Make wireframe only affect scene window
-		(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		RenderWithOrdering();
-		(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//RenderWithOrdering();
+		//(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
 	//LOG("Time to render %d", SDL_GetTicks() - start);
 
 

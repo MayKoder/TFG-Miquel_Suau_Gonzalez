@@ -135,19 +135,21 @@ void GridManager::DivideHoveredClick()
 
 void GridManager::CreateNode()
 {
-	//if (hoveredNode == nullptr) 
-	//{
-	//	AddNode(this->cursorGridPos[0], this->cursorGridPos[1]);
+	if (hoveredNode == nullptr)
+	{
+		AddNode(this->cursorGridPos[0], this->cursorGridPos[1]);
 
-	//	//UpdateRenderData();
-	//}
-	//else {
-	//	DivideHoveredClick();
-	//}
+		//UpdateRenderData();
+	}
+	else {
+		DivideHoveredClick();
+	}
+}
 
+void GridManager::CreateNodesCircular(int radius)
+{
 	int cx = this->cursorGridPos[0];
 	int cy = this->cursorGridPos[1];
-	int radius = 3;
 
 	float radChk = (float)radius * (float)radius;
 
@@ -155,19 +157,16 @@ void GridManager::CreateNode()
 	{
 		for (int j = (cy - radius); j <= (cy + radius); ++j)
 		{
-			if (pow(i - cx, 2) + pow(j - cy, 2) < radChk) 
+			if (pow(i - cx, 2) + pow(j - cy, 2) < radChk)
 			{
 				int cantID = CANTOR_MAPPING(i, j);
-				if (nodeMap.count(cantID) == 0) 
+				if (nodeMap.count(cantID) == 0)
 				{
 					AddNode(i, j);
 				}
 			}
 		}
 	}
-
-
-
 }
 
 bool GridManager::DeleteHoveredNode()
@@ -578,10 +577,6 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 
 	val->indicesIndexTmp = gridMeshIndices.size();
 
-
-
-
-
 	int indices[4] = {
 		GetVertexIndex(float3(-0.5+x, 0.0, -0.5+y)), 
 		GetVertexIndex(float3(-0.5 + x, 0.0, +0.5 + y)),
@@ -597,14 +592,6 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	gridMeshIndices.push_back(indices[3]);
 
 	LOG("Unique vertices %d", gridMeshVertices.size() / 3);
-
-
-	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, -0.5f + y));
-	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, +0.5f + y));
-	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, +0.5f + y));
-	//gridMeshVertices.push_back(float3(-0.5f + x, 0.0, -0.5f + y));
-	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, +0.5f + y));
-	//gridMeshVertices.push_back(float3(+0.5f + x, 0.0, -0.5f + y));
 
 	gridMeshObject.Bind();
 	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);

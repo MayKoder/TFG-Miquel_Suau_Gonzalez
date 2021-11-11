@@ -64,6 +64,9 @@ public:
 
 	void CreateNode();
 	void DivideHoveredClick();
+	void CreateNodesCircular(int radius);
+
+
 	GridNode* AddNode(int x, int y, bool unBind = true);
 
 	bool DeleteHoveredNode();
