@@ -12,6 +12,8 @@ public:
 	}
 
 	virtual void Use(int button_id) = 0;
+	virtual void UseRepeat(int button_id) = 0;
+
 	virtual void DrawEditor() = 0;
 
 	const char* GetName() {
@@ -46,14 +48,33 @@ public:
 			break;
 
 		case 1:
-			//EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
-			EngineExternal->moduleRenderer3D->gridInstance.CreateNodesCircular(10);
+			switch (typeIndex)
+			{
+
+				case 0:
+					EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
+					break;
+
+				case 1:
+					EngineExternal->moduleRenderer3D->gridInstance.CreateNodesCircular(10);
+					break;
+
+				case 2:
+					break;
+
+				default:
+					break;
+			}
 			break;
 
 		default:
 			break;
 		}
 	};
+
+	void UseRepeat(int button_id) override {
+
+	}
 
 	void DrawEditor() override
 	{
@@ -107,6 +128,11 @@ public:
 
 
 	};
+
+	void UseRepeat(int button_id) override {
+
+	}
+
 
 	void DrawEditor() override
 	{
