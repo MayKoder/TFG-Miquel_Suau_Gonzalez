@@ -80,8 +80,6 @@ public:
 	GridNode* GetNodeAt_Slow(int x, int y);
 	bool CanBuildOnMouseNode();
 
-	int GetVertexIndex(float3 value);
-
 	int GetMouseGridPos_X() {
 		return this->cursorGridPos[0];
 	}
@@ -90,7 +88,7 @@ public:
 	}
 
 
-
+	//TODO: We should do this from 3D to 2D and then 2D to 1D to add vertical nodes
 	static inline uint CANTOR_MAPPING(int x, int y) 
 	{
 		uint _x = (x >= 0) ? 2 * x : (-2 * x) - 1;

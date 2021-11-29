@@ -1,4 +1,5 @@
 #include "GL_Object.h"
+#include <algorithm>
 
 GL_Object::GL_Object(RENDER_TYPE _type) : resShader(nullptr), type(_type), VAO(0),
 EBO(0), usingVAO(false), lastElementSize(0)
@@ -69,6 +70,72 @@ uint GL_Object::CreateVBO()
 
 
 	return (VBOs.size() - 1);
+}
+
+void GL_Object::RemoveVertices(std::vector<float>& gridMeshVertices, std::vector<int>& gridMeshIndices, std::vector<float>& uniqueVertices, int localFirstIndex)
+{
+	//Remove unique vertices from vertex vector, not valid with new system [TESTING NEW VERSION]//
+	std::vector<int> deletedVerticesID;
+	for (size_t i = 0; i < uniqueVertices.size(); i += 3)
+	{
+		int indicator = FloatArrayToIndex(gridMeshVertices, float3(uniqueVertices[i], uniqueVertices[i + 1], uniqueVertices[i + 2]));
+		deletedVerticesID.push_back(indicator);
+	}
+	for (size_t i = 0; i < uniqueVertices.size(); i += 3)
+	{
+		int indicator = FloatArrayToIndex(gridMeshVertices, float3(uniqueVertices[i], uniqueVertices[i + 1], uniqueVertices[i + 2]));
+
+		auto first = gridMeshVertices.cbegin() + (indicator * 3);
+		auto last = gridMeshVertices.cbegin() + ((indicator * 3) + 3);
+		gridMeshVertices.erase(first, last);
+	}
+
+	//Delete indices from index vector, this is still valid//
+	auto indFirts = gridMeshIndices.cbegin() + localFirstIndex;
+	auto indLast = gridMeshIndices.cbegin() + (localFirstIndex + 6);
+	gridMeshIndices.erase(indFirts, indLast);
+
+	std::sort(deletedVerticesID.begin(), deletedVerticesID.end());
+	for (size_t i = 0; i < deletedVerticesID.size(); ++i)
+	{
+
+		for (size_t j = 0; j < gridMeshIndices.size(); ++j)
+		{
+			if (gridMeshIndices[j] >= deletedVerticesID[i])
+			{
+				gridMeshIndices[j]--;
+
+			}
+		}
+		for (size_t k = 0; k < deletedVerticesID.size(); ++k)
+		{
+			deletedVerticesID[k]--;
+		}
+
+
+	}
+
+	Bind();
+	SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+	LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
+	UnBind();
+}
+
+int GL_Object::FloatArrayToIndex(std::vector<float>& vector, float3 value)
+{
+	int ret = -1;
+
+	//TODO: Would iterator be faster?
+	for (size_t i = 0; i < vector.size(); i += 3)
+	{
+		if (vector[i] == value.x && vector[i + 1] == value.y && vector[i + 2] == value.z)
+		{
+			ret = i / 3;
+			break;
+		}
+	}
+
+	return ret;
 }
 
 void GL_Object::RenderAsArray(GLenum mode, GLsizei firstElementPosition, GLenum numberOfIndices)

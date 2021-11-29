@@ -13,8 +13,8 @@
 #include "CO_Camera.h"
 
 #include <iostream>
-#include <chrono>
-typedef std::chrono::high_resolution_clock Clock;
+//#include <chrono>
+//typedef std::chrono::high_resolution_clock Clock;
 
 #include"MathGeoLib/include/Geometry/Plane.h"
 #include"MathGeoLib/include/Math/float4x4.h"
@@ -120,7 +120,7 @@ void GridManager::UpdateInput(Tool* selectedTool)
 				EngineExternal->moduleInput->SetMouseLayer(MOUSE_LAYER::USING_TOOL);
 			}
 			if (EngineExternal->moduleInput->GetMouseLayer() != MOUSE_LAYER::HOVERING_UI && EngineExternal->moduleInput->GetMouseButton(i) == KEY_STATE::KEY_REPEAT) {
-				selectedTool->UseRepeat();
+				selectedTool->UseRepeat(i);
 				EngineExternal->moduleInput->SetMouseLayer(MOUSE_LAYER::USING_TOOL);
 			}
 		}
@@ -190,6 +190,13 @@ bool GridManager::DeleteHoveredNode()
 		}
 	}
 
+	std::map<uint, GridNode>::iterator it;
+	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
+	{
+		if (it->second.indicesIndexTmp > hoveredNode->indicesIndexTmp) {
+			it->second.indicesIndexTmp -= 6;
+		}
+	}
 	
 
 
@@ -206,72 +213,75 @@ bool GridManager::DeleteHoveredNode()
 	// 	   Move indices values back 6 positions from the deleted one
 	// 	   Remove indices from index list
 
-	//Move indices indicator back 6 positions, this should be valid with the new system//
-	std::map<uint, GridNode>::iterator it;
-	for (it = nodeMap.begin(); it != nodeMap.end(); it++)
-	{
-		if (it->second.indicesIndexTmp > hoveredNode->indicesIndexTmp) {
-			it->second.indicesIndexTmp -= 6;
-		}
-	}
-
-	//Remove unique vertices from vertex vector, not valid with new system [TESTING NEW VERSION]//
 	auto uniqueVertices = hoveredNode->GetUniqueVertices();
-	std::vector<int> deletedVerticesID;
-	for (size_t i = 0; i < uniqueVertices.size(); i += 3)
-	{
-		int indicator = GetVertexIndex(float3(uniqueVertices[i], uniqueVertices[i + 1], uniqueVertices[i + 2]));
-		deletedVerticesID.push_back(indicator);
-	}
-	for (size_t i = 0; i < uniqueVertices.size(); i += 3)
-	{
-		int indicator = GetVertexIndex(float3(uniqueVertices[i], uniqueVertices[i+1], uniqueVertices[i + 2]));
+	gridMeshObject.RemoveVertices(gridMeshVertices, gridMeshIndices, uniqueVertices, hoveredNode->indicesIndexTmp);
 
-		auto first = gridMeshVertices.cbegin() + (indicator * 3);
-		auto last = gridMeshVertices.cbegin() + ((indicator * 3) + 3);
-		gridMeshVertices.erase(first, last);
-	}
-
-	//Delete indices from index vector, this is still valid//
-	auto indFirts = gridMeshIndices.cbegin() + hoveredNode->indicesIndexTmp;
-	auto indLast = gridMeshIndices.cbegin() + (hoveredNode->indicesIndexTmp + 6);
-	gridMeshIndices.erase(indFirts, indLast);
-
-	//Change index value to adapt to deleted vertices, this is not valid with the new system
-	//for (size_t i = hoveredNode->indicesIndexTmp; i < gridMeshIndices.size(); ++i)
+	//Move indices indicator back 6 positions, this should be valid with the new system//
+	//std::map<uint, GridNode>::iterator it;
+	//for (it = nodeMap.begin(); it != nodeMap.end(); it++)
 	//{
-	//	gridMeshIndices[i] -= 4;
+	//	if (it->second.indicesIndexTmp > hoveredNode->indicesIndexTmp) {
+	//		it->second.indicesIndexTmp -= 6;
+	//	}
 	//}
 
-	std::sort(deletedVerticesID.begin(), deletedVerticesID.end());
-	for (size_t i = 0; i < deletedVerticesID.size(); ++i)
-	{
+	////Remove unique vertices from vertex vector, not valid with new system [TESTING NEW VERSION]//
+	//auto uniqueVertices = hoveredNode->GetUniqueVertices();
+	//std::vector<int> deletedVerticesID;
+	//for (size_t i = 0; i < uniqueVertices.size(); i += 3)
+	//{
+	//	int indicator = GetVertexIndex(float3(uniqueVertices[i], uniqueVertices[i + 1], uniqueVertices[i + 2]));
+	//	deletedVerticesID.push_back(indicator);
+	//}
+	//for (size_t i = 0; i < uniqueVertices.size(); i += 3)
+	//{
+	//	int indicator = GetVertexIndex(float3(uniqueVertices[i], uniqueVertices[i+1], uniqueVertices[i + 2]));
 
-		for (size_t j = 0; j < gridMeshIndices.size(); ++j)
-		{
-			if (gridMeshIndices[j] >= deletedVerticesID[i])
-			{
-				gridMeshIndices[j]--;
+	//	auto first = gridMeshVertices.cbegin() + (indicator * 3);
+	//	auto last = gridMeshVertices.cbegin() + ((indicator * 3) + 3);
+	//	gridMeshVertices.erase(first, last);
+	//}
 
-			}
-		}
-		for (size_t k = 0; k < deletedVerticesID.size(); ++k)
-		{
-			deletedVerticesID[k]--;
-		}
+	////Delete indices from index vector, this is still valid//
+	//auto indFirts = gridMeshIndices.cbegin() + hoveredNode->indicesIndexTmp;
+	//auto indLast = gridMeshIndices.cbegin() + (hoveredNode->indicesIndexTmp + 6);
+	//gridMeshIndices.erase(indFirts, indLast);
+
+	////Change index value to adapt to deleted vertices, this is not valid with the new system
+	////for (size_t i = hoveredNode->indicesIndexTmp; i < gridMeshIndices.size(); ++i)
+	////{
+	////	gridMeshIndices[i] -= 4;
+	////}
+
+	//std::sort(deletedVerticesID.begin(), deletedVerticesID.end());
+	//for (size_t i = 0; i < deletedVerticesID.size(); ++i)
+	//{
+
+	//	for (size_t j = 0; j < gridMeshIndices.size(); ++j)
+	//	{
+	//		if (gridMeshIndices[j] >= deletedVerticesID[i])
+	//		{
+	//			gridMeshIndices[j]--;
+
+	//		}
+	//	}
+	//	for (size_t k = 0; k < deletedVerticesID.size(); ++k)
+	//	{
+	//		deletedVerticesID[k]--;
+	//	}
 
 
-	}
+	//}
 
 
 
-	LOG("Unique vertices %d", gridMeshVertices.size() / 3);
-	
+	//LOG("Unique vertices %d", gridMeshVertices.size() / 3);
+	//
 
-	gridMeshObject.Bind();
-	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
-	gridMeshObject.LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
-	gridMeshObject.UnBind();
+	//gridMeshObject.Bind();
+	//gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+	//gridMeshObject.LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
+	//gridMeshObject.UnBind();
 
 	nodeMap.erase(hoveredNode->GetID());
 	//UpdateRenderData();
@@ -546,23 +556,6 @@ bool GridManager::CanBuildOnMouseNode()
 	return gn != nullptr && gn->go == nullptr;
 }
 
-int GridManager::GetVertexIndex(float3 value)
-{
-	int ret = -1;
-
-	//TODO: Would iterator be faster?
-	for (size_t i = 0; i < gridMeshVertices.size(); i += 3)
-	{
-		if (gridMeshVertices[i] == value.x && gridMeshVertices[i + 1] == value.y && gridMeshVertices[i + 2] == value.z) 
-		{
-			ret = i / 3;
-			break;
-		}
-	}
-
-	return ret;
-}
-
 /*TODO: If we want to add a lot of nodes at once (ex: loading a scene) we should wait until the last node is created to upload the data to the GPU
 to avoid useless calls*/
 GridNode* GridManager::AddNode(int x, int y, bool unBind)
@@ -582,10 +575,10 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	val->indicesIndexTmp = gridMeshIndices.size();
 
 	int indices[4] = {
-		GetVertexIndex(float3(-0.5+x, 0.0, -0.5+y)), 
-		GetVertexIndex(float3(-0.5 + x, 0.0, +0.5 + y)),
-		GetVertexIndex(float3(+0.5 + x, 0.0, +0.5 + y)),
-		GetVertexIndex(float3(+0.5 + x, 0.0, -0.5 + y)),
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(-0.5+x, 0.0, -0.5+y)), 
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(-0.5 + x, 0.0, +0.5 + y)),
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(+0.5 + x, 0.0, +0.5 + y)),
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(+0.5 + x, 0.0, -0.5 + y)),
 	};
 
 	gridMeshIndices.push_back(indices[0]);

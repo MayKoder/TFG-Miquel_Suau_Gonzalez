@@ -29,7 +29,7 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 
 
-	int subDivisions = 10;
+	int subDivisions = 2;
 	float maxH = 1;
 	float hIncrement = maxH / (subDivisions - 1);
 
@@ -102,6 +102,11 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 	_mesh->renderObject.UnBind();
 
+	//We won't delete vertices here, we play with indices
+	//std::vector<float> test({ vertices[0], vertices[1], vertices[2], vertices[3], vertices[4], vertices[5], vertices[8], vertices[9], vertices[10]});
+	//_mesh->renderObject.RemoveVertices(vertices, indices,test, 0);
+
+
 	indices.clear();
 	vertices.clear();
 
@@ -150,7 +155,7 @@ void C_MeshRenderer::Update()
 
 void C_MeshRenderer::RenderMesh(bool rTex)
 {
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	ResourceShader*  meshGridShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
 
 	meshGridShader->Bind();

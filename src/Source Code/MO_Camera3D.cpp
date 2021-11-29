@@ -16,7 +16,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	editorCamera.camFrustrum.farPlaneDistance = 5000;
 	editorCamera.camFrustrum.pos = float3(7.0f, 9.0f, 7.0f);
 	App->moduleRenderer3D->activeRenderCamera = &editorCamera;
-	//Reference = float3(0.0f, 0.0f, 0.0f);
+	Reference = float3(0.0f, 0.0f, 0.0f);
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -63,6 +63,7 @@ update_status ModuleCamera3D::Update(float dt)
 	}
 
 	//ASK: This should be here to move camera with code but idk its expensive
+	Reference += cameraMovement;
 	editorCamera.Move(cameraMovement);
 	cameraMovement = float3::zero;
 
@@ -120,13 +121,13 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	//Maybe we could use quaternions?
 	if (/*App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && */App->moduleInput->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT) 
 	{
-		float3 target(0.f, 0.f, 0.f);
+		/*float3 target(0.f, 0.f, 0.f);*/
 		//if (App->moduleEditor->GetSelectedGO() != nullptr)
 		//{
 		//	float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
 		//	target.Set(maTogl.x, maTogl.y, maTogl.z);
 		//}
-		OrbitalRotation(target, dt);
+		OrbitalRotation(Reference, dt);
 	}
 
 
@@ -232,6 +233,8 @@ void ModuleCamera3D::FreeRotation(float dt)
 	float4x4 mat = editorCamera.camFrustrum.WorldMatrix();
 	mat.SetRotatePart(direction.Normalized());
 	editorCamera.camFrustrum.SetWorldMatrix(mat.Float3x4Part());
+
+	//Reference = editorCamera.GetGO()->transform->GetForward() * editorCamera.GetPosition() - 
 }
 
 void ModuleCamera3D::FocusCamera(float3 center, float offset)
@@ -250,6 +253,6 @@ void ModuleCamera3D::PanCamera(float dt)
 	if (dx != 0 || dy != 0) 
 	{
 		float3 movVector((editorCamera.camFrustrum.WorldRight() * dx) + (-editorCamera.camFrustrum.up * dy));
-		editorCamera.camFrustrum.pos += movVector * dt;
+		cameraMovement += movVector * dt;
 	}
 }

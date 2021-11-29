@@ -32,6 +32,8 @@ public:
 	
 	//float3 X, Y, Z, Reference;
 
+	float3 Reference;
+
 	float mouseSensitivity;
 	float cameraSpeed;
 

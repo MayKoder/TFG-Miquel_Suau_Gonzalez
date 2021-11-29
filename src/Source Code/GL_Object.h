@@ -3,6 +3,8 @@
 #include<vector>
 #include"OpenGL.h"
 #include<cassert>
+#include <MathGeoLib/include/Math/float3.h>
+
 class ResourceShader;
 typedef unsigned int uint;
 
@@ -29,6 +31,9 @@ public:
 
 	/*Returns the index for the new VBO inside the VBOs' vector*/
 	uint CreateVBO();
+
+	void RemoveVertices(std::vector<float>& gridMeshVertices, std::vector<int>& gridMeshIndices, std::vector<float>& uniqueVertices, int localFirstIndex);
+	int FloatArrayToIndex(std::vector<float>& vector, float3 value);
 
 	template <class T>
 	void SetVBO(int VBOindex, T* data, int nElements, int drawType = GL_STATIC_DRAW) 
