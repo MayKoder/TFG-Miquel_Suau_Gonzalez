@@ -29,7 +29,7 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 
 
-	int subDivisions = 2;
+	int subDivisions = 3;
 	float maxH = 1;
 	float hIncrement = maxH / (subDivisions - 1);
 
@@ -62,21 +62,56 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 
 
-	for (size_t h = 0; h < subDivisions - 1; h++)
-	{
-		for (size_t s = 0; s < 4; s++)
-		{
-			int safe = s;
-			if (safe >= 3) {
-				safe = -1;
-			}
-			indices.push_back(h + 0 + (subDivisions * s));
-			indices.push_back(subDivisions + h + (subDivisions * safe));
-			indices.push_back(subDivisions + 1 + h + (subDivisions * safe));
+	//for (size_t h = 0; h < subDivisions - 1; h++)
+	//{
+	//	for (size_t s = 0; s < 4; s++)
+	//	{
+	//		int safe = s;
+	//		if (safe >= 3) {
+	//			safe = -1;
+	//		}
+	//		indices.push_back(h + 0 + (subDivisions * s));
+	//		indices.push_back(subDivisions + h + (subDivisions * safe));
+	//		indices.push_back(subDivisions + 1 + h + (subDivisions * safe));
 
-			indices.push_back(0 + h + (subDivisions * s));
-			indices.push_back(subDivisions + 1 + h + (subDivisions * safe));
-			indices.push_back(1 + h + (subDivisions * s));
+	//		indices.push_back(0 + h + (subDivisions * s));
+	//		indices.push_back(subDivisions + 1 + h + (subDivisions * safe));
+	//		indices.push_back(1 + h + (subDivisions * s));
+	//	}
+	//}
+
+	for (size_t i = 0; i < 4; i++)
+	{
+
+		for (size_t h = 0; h < subDivisions-1; h++)
+		{
+			int a, b, c, d;
+
+			a = (i * subDivisions) + h;
+			b = a + 1;
+			c = ((i == 3) ? 0+h : a + subDivisions);
+			d = c+1;
+
+
+			LOG("Quad indices %i, %i, %i, %i", a, b, c, d);
+
+
+			//indices.push_back(a);
+			//indices.push_back(c);
+			//indices.push_back(d);
+			//				  
+			//indices.push_back(a);
+			//indices.push_back(d);
+			//indices.push_back(b);
+
+			indices.push_back(a);
+			indices.push_back(c);
+			indices.push_back(b);
+							  
+			indices.push_back(c);
+			indices.push_back(d);
+			indices.push_back(b);
+
 		}
 	}
 
@@ -102,18 +137,8 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 	_mesh->renderObject.UnBind();
 
-	//We won't delete vertices here, we play with indices
-	//std::vector<float> test({ vertices[0], vertices[1], vertices[2], vertices[3], vertices[4], vertices[5], vertices[8], vertices[9], vertices[10]});
-	//_mesh->renderObject.RemoveVertices(vertices, indices,test, 0);
-
-
 	indices.clear();
 	vertices.clear();
-
-
-
-
-
 }
 
 C_MeshRenderer::~C_MeshRenderer()
@@ -155,7 +180,7 @@ void C_MeshRenderer::Update()
 
 void C_MeshRenderer::RenderMesh(bool rTex)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	ResourceShader*  meshGridShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
 
 	meshGridShader->Bind();

@@ -135,19 +135,19 @@ bool M_Sound::Init()
 		return false;
 
 	/* Load the sound into a buffer. */
-	buffer = LoadSound("test.wav");
-	if (!buffer)
-	{
-		CloseAL();
-		return false;
-	}
+	//buffer = LoadSound("test.wav");
+	//if (!buffer)
+	//{
+	//	CloseAL();
+	//	return false;
+	//}
 
-	/* Create the source to play the sound with. */
-	alGenSources(1, &source);
-	alSourcei(source, AL_BUFFER, (ALint)buffer);
-	assert(alGetError() == AL_NO_ERROR && "Failed to setup sound source");
+	///* Create the source to play the sound with. */
+	//alGenSources(1, &source);
+	//alSourcei(source, AL_BUFFER, (ALint)buffer);
+	//assert(alGetError() == AL_NO_ERROR && "Failed to setup sound source");
 
-	alSourcePlay(source);
+	//alSourcePlay(source);
 
 	return true;
 }

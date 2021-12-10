@@ -121,6 +121,31 @@ void GL_Object::RemoveVertices(std::vector<float>& gridMeshVertices, std::vector
 	UnBind();
 }
 
+void GL_Object::RemoveTriangles(std::vector<int>& gridMeshIndices, std::vector<int>& triangleIndex)
+{
+	//TODO: Let's cluster the delete method
+	for (std::vector<int>::iterator it = triangleIndex.begin(); it != triangleIndex.end(); ++it)
+	{
+		//When we delete, we move the index of the following triangles, so this does not work
+		int startIndicator = (*it) * 3;
+		auto indFirts = gridMeshIndices.cbegin() + startIndicator;
+		auto indLast = gridMeshIndices.cbegin() + (startIndicator + 3);
+		gridMeshIndices.erase(indFirts, indLast);
+
+		for (size_t i = 0; i < triangleIndex.size(); i++)
+		{
+			if (triangleIndex[i] > (*it)) {
+				triangleIndex[i] -= 1;
+			}
+		}
+	}
+
+
+	Bind();
+	LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
+	UnBind();
+}
+
 int GL_Object::FloatArrayToIndex(std::vector<float>& vector, float3 value)
 {
 	int ret = -1;

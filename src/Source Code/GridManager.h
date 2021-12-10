@@ -8,7 +8,7 @@ class GridManager;
 
 //TODO: Temporal
 #include"LineRenderer.h"
-#include "GameObject.h"
+//#include "GameObject.h"
 
 #define NODE_SIDES 4
 struct GridNode
@@ -44,7 +44,7 @@ struct GridNode
 	
 	GridNode* children[NODE_SIDES];
 	uint indicesIndexTmp;
-	GameObject* go;
+	//GameObject* go;
 private:
 	int gridPosition[2];
 
