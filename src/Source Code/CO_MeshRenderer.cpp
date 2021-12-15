@@ -137,6 +137,9 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 	_mesh->renderObject.UnBind();
 
+
+	_mesh->renderObject.RemoveTriangles(indices, {});
+
 	indices.clear();
 	vertices.clear();
 }

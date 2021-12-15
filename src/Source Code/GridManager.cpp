@@ -422,12 +422,11 @@ void GridManager::RenderGridTemporal()
 
 	//lRender.AddPoint(float3(0, 0, 0));
 	//lRender.AddPoint(float3(1, 0, 0));
-	//lRender.AddPoint(float3(0, 0, 0));
-	//lRender.AddPoint(float3(0, 1, 0));
-	//lRender.AddPoint(float3(0, 0, 0));
-	//lRender.AddPoint(float3(0, 0, 1));
 
 	//lRender.Render();
+
+	if(hoveredNode != nullptr)
+		LOG("%i, %i", hoveredNode->GetGridPositionX(), hoveredNode->GetGridPositionY());
 
 	//TODO: Only happen when a creation tool is enabled
 	if (EngineExternal->moduleGUI->selectedTool != nullptr) 
@@ -620,32 +619,32 @@ void GridNode::SearchAndFillChildren(GridManager* instance)
 	int x = this->GetGridPositionX();
 	int y = this->GetGridPositionY();
 
-	if (children[0] == nullptr) {
-		children[0] = instance->GetNodeAt_Slow(x, y + 1);
+	if (children[RIGHT] == nullptr) {
+		children[RIGHT] = instance->GetNodeAt_Slow(x + 1, y);
 
-		if (children[0]) {
-			children[0]->SearchAndFillChildren(instance);
+		if (children[RIGHT]) {
+			children[RIGHT]->SearchAndFillChildren(instance);
 		}
 	}
 
-	if (children[1] == nullptr) {
-		children[1] = instance->GetNodeAt_Slow(x, y - 1);
-		if (children[1]) {
-			children[1]->SearchAndFillChildren(instance);
+	if (children[DOWN] == nullptr) {
+		children[DOWN] = instance->GetNodeAt_Slow(x, y - 1);
+		if (children[DOWN]) {
+			children[DOWN]->SearchAndFillChildren(instance);
 		}
 	}
 
-	if (children[2] == nullptr) {
-		children[2] = instance->GetNodeAt_Slow(x + 1, y);
-		if (children[2]) {
-			children[2]->SearchAndFillChildren(instance);
+	if (children[LEFT] == nullptr) {
+		children[LEFT] = instance->GetNodeAt_Slow(x - 1, y);
+		if (children[LEFT]) {
+			children[LEFT]->SearchAndFillChildren(instance);
 		}
 	}
 
-	if (children[3] == nullptr) {
-		children[3] = instance->GetNodeAt_Slow(x - 1, y);
-		if (children[3]) {
-			children[3]->SearchAndFillChildren(instance);
+	if (children[UP] == nullptr) {
+		children[UP] = instance->GetNodeAt_Slow(x, y + 1);
+		if (children[UP]) {
+			children[UP]->SearchAndFillChildren(instance);
 		}
 	}
 
@@ -763,22 +762,22 @@ void GridNode::DivideNodeCross(GridManager* instance)
 
 			switch (i)
 			{
-			case 0:
+			case UP:
 				position[0] = x;
 				position[1] = y+1;
 				break;
 
-			case 1:
+			case DOWN:
 				position[0] = x;
 				position[1] = y - 1;
 				break;
 
-			case 2:
+			case RIGHT:
 				position[0] = x + 1;
 				position[1] = y;
 				break;
 
-			case 3:
+			case LEFT:
 				position[0] = x - 1;
 				position[1] = y;
 				break;
@@ -936,19 +935,19 @@ GridNode** GridNode::GetChildrenMemAddr(int x, int y)
 	GridNode** ret = nullptr;
 	if (x > 0) 
 	{
-		ret = &children[2];
+		ret = &children[RIGHT];
 	}
 	else if (x < 0) 
 	{
-		ret = &children[3];
+		ret = &children[LEFT];
 	}
 	else if (y > 0) 
 	{
-		ret = &children[0];
+		ret = &children[UP];
 	}
 	else if (y < 0) 
 	{
-		ret = &children[1];
+		ret = &children[DOWN];
 	}
 
 	return ret;

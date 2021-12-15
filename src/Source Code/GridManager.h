@@ -13,9 +13,15 @@ class GridManager;
 #define NODE_SIDES 4
 struct GridNode
 {
-	enum Direction
+	//enum Direction
+	//{
+	//	UP, DOWN, RIGHT, LEFT
+	//};
+
+	enum class Direction
 	{
-		UP, DOWN, RIGHT, LEFT
+		//UP, DOWN, RIGHT, LEFT,
+		RIGHT, DOWN, LEFT, UP,
 	};
 
 	GridNode();
@@ -36,6 +42,8 @@ struct GridNode
 
 	void DivideNodeCross(GridManager* instance);
 	GridNode* DivideNode(GridManager* instance, int direction[2]);
+
+	/*DEPRECATED*/
 	void DivideNodeSquare(GridManager* instance, int squareLength);
 
 	std::vector<float> GetUniqueVertices();
@@ -95,6 +103,20 @@ public:
 		uint _y = (y >= 0) ? 2 * y : (-2 * y) - 1;
 
 		return  ((_x + _y) * (_x + _y + 1) / 2) + _y;
+	}
+
+	static inline uint OPPOSITE_CHILDREN(GridNode::Direction direction) 
+	{
+		uint nodeOffset = NODE_SIDES / 2;
+
+		uint ret = static_cast<uint>(direction) + nodeOffset;
+
+		if (ret >= NODE_SIDES) 
+		{
+			ret -= NODE_SIDES;
+		}
+
+		return ret;
 	}
 
 private:
