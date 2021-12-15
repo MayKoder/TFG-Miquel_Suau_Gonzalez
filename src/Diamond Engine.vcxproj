@@ -329,6 +329,7 @@
     <ClCompile Include="Source Code\CO_MeshRenderer.cpp" />
     <ClCompile Include="Source Code\CO_Script.cpp" />
     <ClCompile Include="Source Code\CO_Transform.cpp" />
+    <ClCompile Include="Source Code\CreationTool.cpp" />
     <ClCompile Include="Source Code\DEJsonSupport.cpp" />
     <ClCompile Include="Source Code\DEResource.cpp" />
     <ClCompile Include="Source Code\DETime.cpp" />

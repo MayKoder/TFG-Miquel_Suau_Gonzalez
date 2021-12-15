@@ -33,7 +33,7 @@ public:
 	uint CreateVBO();
 
 	void RemoveVertices(std::vector<float>& gridMeshVertices, std::vector<int>& gridMeshIndices, std::vector<float>& uniqueVertices, int localFirstIndex);
-	void RemoveTriangles(std::vector<int>& gridMeshIndices, std::vector<int>& toDeleteIndices);
+	void RemoveTriangles(std::vector<int>& gridMeshIndices, std::vector<int>& triangleIndex);
 	int FloatArrayToIndex(std::vector<float>& vector, float3 value);
 
 	template <class T>

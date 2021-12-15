@@ -827,6 +827,9 @@
     <ClCompile Include="Source Code\MO_Sound.cpp">
       <Filter>Sources\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Source Code\CreationTool.cpp">
+      <Filter>Sources\Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source Code\External Libraries\MathGeoLib\include\Math\Matrix.inl">

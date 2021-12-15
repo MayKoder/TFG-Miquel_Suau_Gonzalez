@@ -425,8 +425,8 @@ void GridManager::RenderGridTemporal()
 
 	//lRender.Render();
 
-	if(hoveredNode != nullptr)
-		LOG("%i, %i", hoveredNode->GetGridPositionX(), hoveredNode->GetGridPositionY());
+	//if(hoveredNode != nullptr)
+	//	LOG("%i, %i", hoveredNode->GetGridPositionX(), hoveredNode->GetGridPositionY());
 
 	//TODO: Only happen when a creation tool is enabled
 	if (EngineExternal->moduleGUI->selectedTool != nullptr) 
@@ -600,13 +600,13 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	return val;
 }
 
-GridNode::GridNode() : indicesIndexTmp(0)/*, go(nullptr)*/
+GridNode::GridNode() : indicesIndexTmp(0), go(nullptr)
 {
 	memset(children, NULL, sizeof(children));
 	memset(gridPosition, 0.0, sizeof(gridPosition));
 }
 
-GridNode::GridNode(int x, int y) : indicesIndexTmp(0)/*, go(nullptr)*/
+GridNode::GridNode(int x, int y) : indicesIndexTmp(0), go(nullptr)
 {
 	memset(children, NULL, sizeof(children));
 

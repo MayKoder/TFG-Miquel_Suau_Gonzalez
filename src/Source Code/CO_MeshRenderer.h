@@ -32,7 +32,10 @@ public:
 	AABB globalAABB;
 	bool faceNormals, vertexNormals, showAABB, showOBB;
 
-private:
+	std::vector<float> vertices;
+	std::vector<int> indices;
+
 	ResourceMesh* _mesh;
+private:
 	float3 alternColor;
 };

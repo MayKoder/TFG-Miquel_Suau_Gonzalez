@@ -33,10 +33,7 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 	float maxH = 1;
 	float hIncrement = maxH / (subDivisions - 1);
 
-	std::vector<float> vertices;
-	std::vector<int> indices;
-
-	int angle = 45;
+	int angle = -45;
 	for (size_t i = 0; i < 4; i++)
 	{
 		//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
@@ -59,27 +56,6 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 		angle += 90;
 	}
 
-
-
-
-	//for (size_t h = 0; h < subDivisions - 1; h++)
-	//{
-	//	for (size_t s = 0; s < 4; s++)
-	//	{
-	//		int safe = s;
-	//		if (safe >= 3) {
-	//			safe = -1;
-	//		}
-	//		indices.push_back(h + 0 + (subDivisions * s));
-	//		indices.push_back(subDivisions + h + (subDivisions * safe));
-	//		indices.push_back(subDivisions + 1 + h + (subDivisions * safe));
-
-	//		indices.push_back(0 + h + (subDivisions * s));
-	//		indices.push_back(subDivisions + 1 + h + (subDivisions * safe));
-	//		indices.push_back(1 + h + (subDivisions * s));
-	//	}
-	//}
-
 	for (size_t i = 0; i < 4; i++)
 	{
 
@@ -94,15 +70,6 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 
 
 			LOG("Quad indices %i, %i, %i, %i", a, b, c, d);
-
-
-			//indices.push_back(a);
-			//indices.push_back(c);
-			//indices.push_back(d);
-			//				  
-			//indices.push_back(a);
-			//indices.push_back(d);
-			//indices.push_back(b);
 
 			indices.push_back(a);
 			indices.push_back(c);
@@ -136,16 +103,13 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 	_mesh->renderObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
 
 	_mesh->renderObject.UnBind();
-
-
-	_mesh->renderObject.RemoveTriangles(indices, {});
-
-	indices.clear();
-	vertices.clear();
 }
 
 C_MeshRenderer::~C_MeshRenderer()
 {
+	indices.clear();
+	vertices.clear();
+
 	if (_mesh != nullptr) 
 	{
 		//EngineExternal->moduleResources->UnloadResource(_mesh->GetUID());

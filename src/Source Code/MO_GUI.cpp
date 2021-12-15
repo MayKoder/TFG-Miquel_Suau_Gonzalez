@@ -3,6 +3,7 @@
 #include "MO_ResourceManager.h"
 #include "MO_Renderer3D.h"
 #include "MO_Input.h"
+#include "MO_Scene.h"
 
 #include "CO_Camera.h"
 

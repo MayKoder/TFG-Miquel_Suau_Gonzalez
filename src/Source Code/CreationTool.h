@@ -25,7 +25,6 @@ private:
 
 };
 
-#include"Globals.h"
 class ToolNode : public Tool
 {
 public:
@@ -37,51 +36,13 @@ public:
 
 	}
 
-	void Use(int button_id) override 
-	{
-		LOG(  "Add/Remove node");
-
-		switch (button_id)
-		{
-		case 3:
-			EngineExternal->moduleRenderer3D->gridInstance.DeleteHoveredNode();
-			break;
-
-		case 1:
-			switch (typeIndex)
-			{
-
-				case 0:
-					EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
-					break;
-
-				case 1:
-					EngineExternal->moduleRenderer3D->gridInstance.CreateNodesCircular(10);
-					break;
-
-				case 2:
-					break;
-
-				default:
-					break;
-			}
-			break;
-
-		default:
-			break;
-		}
-	};
+	void Use(int button_id) override;
 
 	void UseRepeat(int button_id) override {
 		//EngineExternal->moduleRenderer3D->gridInstance.CreateNode();
 	}
 
-	void DrawEditor() override
-	{
-		ImGui::Text("Type: ");
-		ImGui::SameLine();
-		ImGui::Combo("##tooltype", &typeIndex, data, 3);
-	};
+	void DrawEditor() override;
 
 private:
 
@@ -91,9 +52,6 @@ private:
 
 };
 
-#include"MO_Scene.h"
-#include"GameObject.h"
-#include"CO_Transform.h"
 class  ToolWall : public Tool
 {
 public:
@@ -105,54 +63,10 @@ public:
 
 	}
 
-	void Use(int button_id) override
-	{
-		if (EngineExternal->moduleRenderer3D->gridInstance.CanBuildOnMouseNode() == false)
-			return;
+	void Use(int button_id) override;
 
-
-		GameObject* wall = EngineExternal->moduleScene->CreateGameObject("Wall", EngineExternal->moduleScene->root);
-		wall->transform->SetTransformMatrix(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()), Quat::identity, float3::one);
-		wall->AddComponent(Component::Type::MeshRenderer);
-
-
-
-
-
-
-
-		//GridNode* thisNode = EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z());
-		//thisNode->go = wall;
-
-		//for (size_t i = 0; i < 4; i++)
-		//{
-		//	if (thisNode->children[i]->go != nullptr) {
-		//		//wall.
-		//	}
-		//}
-
-		//Check for nearby walls
-			//If nearby wall and new use breaks the direction of the other wall
-				//Add vertices to created wall
-		//else 
-			//create wall object with new vertices
-
-
-		//Wall creation
-			//create base points with determinated spacing (for a more advance weared wall)
-
-
-	};
-
-	void UseRepeat(int button_id) override {
-
-	}
-
-
-	void DrawEditor() override
-	{
-
-	};
+	void UseRepeat(int button_id) override {};
+	void DrawEditor() override {};
 
 private:
 
