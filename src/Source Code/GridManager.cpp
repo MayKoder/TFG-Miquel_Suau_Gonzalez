@@ -552,7 +552,7 @@ GridNode* GridManager::GetNodeAt_Slow(int x, int y)
 bool GridManager::CanBuildOnMouseNode()
 {
 	GridNode* gn = GetNodeAt_Slow(this->cursorGridPos[0], this->cursorGridPos[1]);
-	return gn != nullptr /*&& gn->go == nullptr*/;
+	return gn != nullptr && gn->go == nullptr;
 }
 
 /*TODO: If we want to add a lot of nodes at once (ex: loading a scene) we should wait until the last node is created to upload the data to the GPU

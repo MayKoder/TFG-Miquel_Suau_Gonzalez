@@ -26,9 +26,40 @@ void GO_Wall::InitWall(float3 wallPosition)
 
 	transform->SetTransformMatrix(wallPosition, Quat::identity, float3::one);
 	C_MeshRenderer* render = dynamic_cast<C_MeshRenderer*>(AddComponent(Component::Type::MeshRenderer));
+	this->subDivisions = 3;
 
+	GO_Wall::GenerateWall(this->subDivisions, render->vertices, render->indices, NULL);
 
-	int subDivisions = 3;
+	
+	render->_mesh = new ResourceMesh(EngineExternal->GetRandomInt());
+
+	render->_mesh->renderObject.InitBuffers();
+	render->_mesh->renderObject.Bind();
+
+	render->_mesh->renderObject.CreateAndSetVBO(render->vertices.data(), render->vertices.size());
+	render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size());
+	render->_mesh->indices_count = render->indices.size();
+
+	render->_mesh->renderObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+
+	render->_mesh->renderObject.UnBind();
+
+}
+
+void GO_Wall::UpdateWallGL()
+{
+	C_MeshRenderer* render = dynamic_cast<C_MeshRenderer*>(AddComponent(Component::Type::MeshRenderer));
+	render->_mesh->renderObject.Bind();
+
+	render->_mesh->renderObject.SetVBO(0, render->vertices.data(), render->vertices.size());
+	render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size());
+	render->_mesh->indices_count = render->indices.size();
+
+	render->_mesh->renderObject.UnBind();
+}
+
+void GO_Wall::GenerateWall(uint subDivisions, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore)
+{
 	float maxH = 1;
 	float hIncrement = maxH / (subDivisions - 1);
 
@@ -45,9 +76,9 @@ void GO_Wall::InitWall(float3 wallPosition)
 
 			vec3 ret = dir;
 			ret.y = k;
-			render->vertices.push_back(ret.x);
-			render->vertices.push_back(ret.y);
-			render->vertices.push_back(ret.z);
+			vertices.push_back(ret.x);
+			vertices.push_back(ret.y);
+			vertices.push_back(ret.z);
 			//glVertex3fv(&ret.x);
 
 			k += hIncrement;
@@ -57,6 +88,10 @@ void GO_Wall::InitWall(float3 wallPosition)
 
 	for (size_t i = 0; i < 4; i++)
 	{
+
+		if (std::find(sidesToIgnore->begin(), sidesToIgnore->end(), i) != sidesToIgnore->end()) {
+			continue;
+		}
 
 		for (size_t h = 0; h < subDivisions - 1; h++)
 		{
@@ -70,37 +105,23 @@ void GO_Wall::InitWall(float3 wallPosition)
 
 			LOG("Quad indices %i, %i, %i, %i", a, b, c, d);
 
-			render->indices.push_back(a);
-			render->indices.push_back(c);
-			render->indices.push_back(b);
+			indices.push_back(a);
+			indices.push_back(c);
+			indices.push_back(b);
 
-			render->indices.push_back(c);
-			render->indices.push_back(d);
-			render->indices.push_back(b);
+			indices.push_back(c);
+			indices.push_back(d);
+			indices.push_back(b);
 
 		}
 	}
 
 	int top = subDivisions - 1;
-	render->indices.push_back(top);
-	render->indices.push_back(top * 2 + 1);
-	render->indices.push_back(top * 3 + 2);
+	indices.push_back(top);
+	indices.push_back(top * 2 + 1);
+	indices.push_back(top * 3 + 2);
 
-	render->indices.push_back(top);
-	render->indices.push_back(top * 3 + 2);
-	render->indices.push_back(top * 4 + 3);
-
-	render->_mesh = new ResourceMesh(EngineExternal->GetRandomInt());
-
-	render->_mesh->renderObject.InitBuffers();
-	render->_mesh->renderObject.Bind();
-
-	render->_mesh->renderObject.CreateAndSetVBO(render->vertices.data(), render->vertices.size());
-	render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size());
-	render->_mesh->indices_count = render->indices.size();
-
-	render->_mesh->renderObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
-
-	render->_mesh->renderObject.UnBind();
-
+	indices.push_back(top);
+	indices.push_back(top * 3 + 2);
+	indices.push_back(top * 4 + 3);
 }

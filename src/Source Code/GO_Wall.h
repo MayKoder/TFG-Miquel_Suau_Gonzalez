@@ -16,6 +16,8 @@ public:
 	}
 
 	void InitWall(float3 wallPosition);
+	void UpdateWallGL();
+	static void GenerateWall(uint, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore);
 
 
 public:
