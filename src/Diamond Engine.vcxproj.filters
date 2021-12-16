@@ -441,9 +441,6 @@
     <ClInclude Include="Source Code\CO_Transform.h">
       <Filter>Sources\Components\Derived</Filter>
     </ClInclude>
-    <ClInclude Include="Source Code\CO_Script.h">
-      <Filter>Sources\Components\Derived</Filter>
-    </ClInclude>
     <ClInclude Include="Source Code\External Libraries\ImTextEditor\TextEditor.h">
       <Filter>Externals\ImTextEditor</Filter>
     </ClInclude>
@@ -524,6 +521,9 @@
     </ClInclude>
     <ClInclude Include="Source Code\MO_Sound.h">
       <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Source Code\GO_Wall.h">
+      <Filter>Sources\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -746,9 +746,6 @@
     <ClCompile Include="Source Code\CO_Transform.cpp">
       <Filter>Sources\Components\Derived</Filter>
     </ClCompile>
-    <ClCompile Include="Source Code\CO_Script.cpp">
-      <Filter>Sources\Components\Derived</Filter>
-    </ClCompile>
     <ClCompile Include="Source Code\External Libraries\ImTextEditor\TextEditor.cpp">
       <Filter>Externals\ImTextEditor</Filter>
     </ClCompile>
@@ -829,6 +826,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\CreationTool.cpp">
       <Filter>Sources\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GO_Wall.cpp">
+      <Filter>Sources\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,8 @@
 #include"CO_MeshRenderer.h"
 #include"RE_Mesh.h"
 
+#include"GO_Wall.h"
+
 void ToolNode::Use(int button_id)
 {
 	LOG("Add/Remove node");
@@ -59,13 +61,8 @@ void ToolWall::Use(int button_id)
 
 	GridNode* thisNode = EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z());
 
-	GameObject* wall = EngineExternal->moduleScene->CreateGameObject("Wall", EngineExternal->moduleScene->root);
-	wall->transform->SetTransformMatrix(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()), Quat::identity, float3::one);
-	wall->AddComponent(Component::Type::MeshRenderer);
-
-
-
-
+	GO_Wall* wall = new GO_Wall("Wall", EngineExternal->moduleScene->root);
+	wall->InitWall(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()));
 
 
 
@@ -77,7 +74,7 @@ void ToolWall::Use(int button_id)
 			LOG("Side %i has a wall", i);
 
 			//std::vector<int>
-			C_MeshRenderer* childRend = dynamic_cast<C_MeshRenderer*>(thisNode->children[i]->go->GetComponent(Component::Type::MeshRenderer));
+			C_MeshRenderer* childRend = thisNode->children[i]->go->GetComponent<C_MeshRenderer>();
 
 
 			std::vector<int> test;

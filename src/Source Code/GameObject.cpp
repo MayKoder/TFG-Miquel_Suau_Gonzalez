@@ -5,7 +5,6 @@
 #include "CO_MeshRenderer.h"
 #include "CO_Material.h"
 #include "CO_Camera.h"
-#include "CO_Script.h"
 #include "CO_DirectionalLight.h"
 
 #include"MO_Scene.h"

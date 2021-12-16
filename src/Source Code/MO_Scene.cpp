@@ -16,7 +16,6 @@
 #include"DEJsonSupport.h"
 #include"CO_Transform.h"
 #include"CO_Camera.h"
-#include"CO_Script.h"
 
 #include"RE_Texture.h"
 #include"DETime.h"
