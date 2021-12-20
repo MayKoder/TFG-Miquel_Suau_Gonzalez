@@ -15,15 +15,16 @@ public:
 
 	}
 
-	void InitWall(float3 wallPosition);
+	int InitWall(float3 wallPosition);
 	void UpdateWallGL();
-	static void GenerateWall(uint, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore);
+	static int GenerateWall(uint, float3, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore);
 
 
 public:
 
-	std::vector<GridNode*> trailNodes;
+	std::vector<std::pair<int, GridNode*>> trailNodes;
 	uint subDivisions;
+	int currentIndices;
 
 
 };

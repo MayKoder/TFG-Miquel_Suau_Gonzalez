@@ -705,6 +705,11 @@ int* GridNode::GetGridPosition()
 	return gridPosition;
 }
 
+float3 GridNode::GetGridPositionF3()
+{
+	return float3(gridPosition[0], 0, gridPosition[1]);
+}
+
 uint GridNode::GetID()
 {
 	return GridManager::CANTOR_MAPPING(gridPosition[0], gridPosition[1]);

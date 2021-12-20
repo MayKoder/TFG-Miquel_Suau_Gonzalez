@@ -78,11 +78,11 @@ public:
 
 	//TODO: Uint is a custom define and not portable, is this a bad idea?
 	template <class T>
-	void LoadEBO(T* data, int nElements) 
+	void LoadEBO(T* data, int nElements, int drawType = GL_STATIC_DRAW)
 	{
 		assert(usingVAO == true, "Not using VAO");
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(T) * nElements, data, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(T) * nElements, data, drawType);
 	}
 
 	uint GetVAO() 

@@ -36,6 +36,7 @@ struct GridNode
 
 	uint GetID();
 	int* GetGridPosition();
+	float3 GetGridPositionF3();
 
 	int GetGridPositionX();
 	int GetGridPositionY();
