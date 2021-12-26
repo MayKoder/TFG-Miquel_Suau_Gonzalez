@@ -61,73 +61,75 @@ void ToolWall::Use(int button_id)
 
 
 
-	GridNode* thisNode = EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z());
+	GridNode* mouseNode = EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z());
 	
-	std::vector<GO_Wall*> storedSideIndex;
+	std::vector<GO_Wall*> wallGoAround;
 	std::vector<int> sideToIgnore; 
 	for (size_t i = 0; i < NODE_SIDES; i++)
 	{
-		if (thisNode->children[i] != nullptr && thisNode->children[i]->go != nullptr)
+		if (mouseNode->children[i] != nullptr && mouseNode->children[i]->go != nullptr)
 		{
-			storedSideIndex.push_back(dynamic_cast<GO_Wall*>(thisNode->children[i]->go));
+			wallGoAround.push_back(dynamic_cast<GO_Wall*>(mouseNode->children[i]->go));
 			sideToIgnore.push_back(i);
 		}
 	}
 
 
-	if (storedSideIndex.size() == 0)
+	if (wallGoAround.size() == 0)
 	{
 		GO_Wall* wall = new GO_Wall("Wall", EngineExternal->moduleScene->root);
-		int ret = wall->InitWall(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()));
-		thisNode->go = wall;
-		wall->trailNodes.push_back({ ret, thisNode });
+		WallNode ret = wall->InitWall(float3(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), 0, EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z()));
+		mouseNode->go = wall;
+		wall->trailNodes.push_back({ ret, mouseNode });
 
 		LOG("New wall created");
 	}
-	else if (storedSideIndex.size() == 1) {
+	else if (wallGoAround.size() == 1) {
 		//Add node to existing wall
 
-		GO_Wall* originalWall = storedSideIndex[0];
+		GO_Wall* originalWall = wallGoAround[0];
 		C_MeshRenderer* render = originalWall->GetComponent<C_MeshRenderer>();
 
 
 
 		
-		int retIndices= GO_Wall::GenerateWall(originalWall->subDivisions, thisNode->GetGridPositionF3() - originalWall->transform->position, render->vertices, render->indices, &sideToIgnore);
-		originalWall->trailNodes.push_back({retIndices, thisNode });
+		WallNode retIndices= GO_Wall::GenerateWall(originalWall->subDivisions, mouseNode->GetGridPositionF3() - originalWall->transform->position, render->vertices, render->indices, &sideToIgnore);
+		originalWall->trailNodes.push_back({retIndices, mouseNode });
 
-		thisNode->go = originalWall;
+		mouseNode->go = originalWall;
 
 
-		for (size_t k = 0; k < sideToIgnore.size(); k++)
-		{
 
-			std::vector<int> trianglesToRemove;
-			int trioffset = 0;
-			int removedFromTrailIndex = 0;
-			for (size_t j = 0; j < originalWall->trailNodes.size(); j++)
-			{
-				if (originalWall->trailNodes[j].second == thisNode->children[sideToIgnore[k]]) {
-					removedFromTrailIndex = j;
-					break;
-				}
-				else {
-					trioffset += originalWall->trailNodes[j].first;
-				}
-			}
+		//for (size_t k = 0; k < sideToIgnore.size(); k++)
+		//{
 
-			int firstTri = (trioffset / 3);
+		//	std::vector<int> trianglesToRemove;
+		//	int trioffset = 0;
+		//	int removedFromTrailIndex = 0;
+		//	for (size_t j = 0; j < originalWall->trailNodes.size(); j++)
+		//	{
+		//		if (originalWall->trailNodes[j].second == thisNode->children[sideToIgnore[k]]) {
+		//			removedFromTrailIndex = j;
+		//			break;
+		//		}
+		//		else {
+		//			trioffset += originalWall->trailNodes[j].first;
+		//		}
+		//	}
 
-			//TODO: This for is the current problem, we won't always have 4 sides, we need to know how many sides our node has
-			trianglesToRemove.push_back(firstTri + (4* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))));
-			trianglesToRemove.push_back(firstTri + (4* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 1);
-			trianglesToRemove.push_back(firstTri + (4* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 2);
-			trianglesToRemove.push_back(firstTri + (4* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 3);
+		//	int firstTri = (trioffset / 3);
 
-			//TODO: Not working, We need to update the node's indices value inside the trailNoedes pair after every removeTriangles
-			originalWall->trailNodes[removedFromTrailIndex].first -= trianglesToRemove.size() * 3;
-			render->_mesh->renderObject.RemoveTriangles(render->indices, trianglesToRemove);
-		}
+		//	//TODO: This for is the current problem, we won't always have 4 sides, we need to know how many sides our node has
+		//	int sideOffset = ((originalWall->trailNodes[removedFromTrailIndex].first - 6) / ((originalWall->subDivisions - 1) * 6)-1);
+		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))));
+		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 1);
+		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 2);
+		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 3);
+
+		//	//TODO: Not working, We need to update the node's indices value inside the trailNoedes pair after every removeTriangles
+		//	originalWall->trailNodes[removedFromTrailIndex].first -= trianglesToRemove.size() * 3;
+		//	render->_mesh->renderObject.RemoveTriangles(render->indices, trianglesToRemove);
+		//}
 
 		originalWall->UpdateWallGL();
 		//dynamic_cast<GO_Wall*>(thisNode->children[storedSideIndex[0]]->go)->UpdateWallGL();
@@ -135,7 +137,7 @@ void ToolWall::Use(int button_id)
 
 		LOG("Node added to existing wall");
 	}
-	else if (storedSideIndex.size() > 1)
+	else if (wallGoAround.size() > 1)
 	{
 		//TODO: Merge multiple existing walls
 		LOG("Multiple merge expected, good luck");

@@ -21,14 +21,14 @@ subDivisions(0), currentIndices(0)
 
 }
 
-int GO_Wall::InitWall(float3 wallPosition)
+WallNode GO_Wall::InitWall(float3 wallPosition)
 {
 
 	transform->SetTransformMatrix(wallPosition, Quat::identity, float3::one);
 	C_MeshRenderer* render = dynamic_cast<C_MeshRenderer*>(AddComponent(Component::Type::MeshRenderer));
 	this->subDivisions = 3;
 
-	int ret = GO_Wall::GenerateWall(this->subDivisions, float3::zero, render->vertices, render->indices, NULL);
+	WallNode ret = GO_Wall::GenerateWall(this->subDivisions, float3::zero, render->vertices, render->indices, NULL);
 
 	
 	render->_mesh = new ResourceMesh(EngineExternal->GetRandomInt());
@@ -59,7 +59,7 @@ void GO_Wall::UpdateWallGL()
 	render->_mesh->renderObject.UnBind();
 }
 
-int GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore)
+WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore)
 {
 	float maxH = 1;
 	float hIncrement = maxH / (subDivisions - 1);
@@ -67,7 +67,7 @@ int GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<
 	int indexOffset = vertices.size() / 3;
 	int angle = -45;
 
-	int beforeIndices = indices.size();
+	WallNode retNode;
 
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -93,10 +93,10 @@ int GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<
 
 	for (size_t i = 0; i < 4; i++)
 	{
-
 		if (sidesToIgnore != nullptr && std::find(sidesToIgnore->begin(), sidesToIgnore->end(), i) != sidesToIgnore->end()) {
 			continue;
 		}
+		int beforeIndices = indices.size();
 
 		for (size_t h = 0; h < subDivisions - 1; h++)
 		{
@@ -119,6 +119,7 @@ int GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<
 			indices.push_back(b);
 
 		}
+		retNode.faceIndices[i] = indices.size() - beforeIndices;
 	}
 
 	int top = indexOffset + subDivisions - 1;
@@ -131,5 +132,5 @@ int GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<
 	indices.push_back(top + (pilarOffset * 2) + 2);
 	indices.push_back(top + (pilarOffset * 3) + 3);
 
-	return indices.size() - beforeIndices;
+	return retNode;
 }
