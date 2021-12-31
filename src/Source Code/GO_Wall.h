@@ -27,6 +27,18 @@ struct WallNode
 		{
 			ret += faceIndices[i];
 		}
+		//TODO: Top triangles hardcoded, keep in mind if the top layout of a node is changed
+		ret += 6;
+		return ret;
+	}
+
+	int SumUntilIndex(int index) 
+	{
+		int ret = 0;
+		for (size_t i = 0; i < index; i++)
+		{
+			ret += faceIndices[i];
+		}
 		return ret;
 	}
 
