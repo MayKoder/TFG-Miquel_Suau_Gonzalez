@@ -136,42 +136,54 @@ void ToolWall::Use(int button_id)
 			int vertexIDBeforeNode = render->vertices.size() - ((( originalWall->subDivisions * NODE_SIDES) * 3));
 			vertexIDBeforeNode /= 3;
 
-			int accNextJump = vertexIDBeforeNode;
-			accNextJump += sideToIgnore[i] * originalWall->subDivisions;
-			vertexIDBeforeNode += sideToIgnore[i] * originalWall->subDivisions;
+			//int accNextJump = vertexIDBeforeNode;
+			//accNextJump += sideToIgnore[i] * originalWall->subDivisions;
+
+			int offSetIndex = vertexIDBeforeNode;
+			offSetIndex += sideToIgnore[i] * originalWall->subDivisions;
+			if (sideToIgnore[i] != NODE_SIDES - 1) {
+				offSetIndex += originalWall->subDivisions;
+			}
+			else {
+				offSetIndex = vertexIDBeforeNode;
+			}
 
 
-			//TODO: Hardcoded for 3 subdivision, should not be like that, for loop this or something
-			render->indices[indexJump + 1] = vertexIDBeforeNode;
-			render->indices[indexJump + 3] = vertexIDBeforeNode;
-			render->indices[indexJump + 4] = vertexIDBeforeNode + 1;
-
-			render->indices[indexJump + 7] = vertexIDBeforeNode + 1;
-			render->indices[indexJump + 9] = vertexIDBeforeNode +1;
-			render->indices[indexJump + 10] = vertexIDBeforeNode+ 2;
 
 			std::vector<int> midIndexInsertion;
 			midIndexInsertion.reserve(6 + originalWall->subDivisions * NODE_SIDES);
 
-			midIndexInsertion.push_back(render->indices[indexJump + 8]);
-			midIndexInsertion.push_back(accNextJump + 2);
-			midIndexInsertion.push_back(vertexIDBeforeNode+2);
-			//midIndexInsertion.push_back(vertexIDBeforeNode + originalWall->subDivisions + originalWall->subDivisions -1);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
-			midIndexInsertion.push_back(0);
+			//TOP
+			midIndexInsertion.push_back(render->indices[indexJump + 11]);
+			midIndexInsertion.push_back(offSetIndex + 2);
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+			midIndexInsertion.push_back(render->indices[indexJump + 10]);
+			midIndexInsertion.push_back(render->indices[indexJump + 11]);
+
+			//RIGHT
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions);
+			midIndexInsertion.push_back(render->indices[indexJump + 1]);
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 1);
+			midIndexInsertion.push_back(render->indices[indexJump + 1]);
+			midIndexInsertion.push_back(render->indices[indexJump + 4]);
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 1);
+
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions+1);
+			midIndexInsertion.push_back(render->indices[indexJump + 7]);
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+			midIndexInsertion.push_back(render->indices[indexJump + 7]);
+			midIndexInsertion.push_back(render->indices[indexJump + 10]);
+			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+
+			//TODO: Hardcoded for 3 subdivision, should not be like that, for loop this or something
+			render->indices[indexJump + 1] = offSetIndex;
+			render->indices[indexJump + 3] = offSetIndex;
+			render->indices[indexJump + 4] = offSetIndex + 1;
+
+			render->indices[indexJump + 7] = offSetIndex + 1;
+			render->indices[indexJump + 9] = offSetIndex +1;
+			render->indices[indexJump + 10] = offSetIndex + 2;
 
 			nodeToRemoveFrom->faceIndices[side] += midIndexInsertion.size();
 

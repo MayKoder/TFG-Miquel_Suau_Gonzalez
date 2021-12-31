@@ -70,7 +70,7 @@ void C_MeshRenderer::Update()
 
 void C_MeshRenderer::RenderMesh(bool rTex)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	ResourceShader*  meshGridShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
 
 	meshGridShader->Bind();
