@@ -69,6 +69,118 @@ WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::ve
 
 	WallNode retNode;
 
+	vec3 prePosition;
+	vec3 postPosition;
+	for (size_t i = 0; i < 4; i++)
+	{
+		//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
+		float k = 0.0f;
+
+		prePosition = vec3(0.4, k, 0);
+		prePosition = rotate(prePosition, angle, vec3(0, 1, 0));
+
+		postPosition = prePosition;
+
+		for (size_t j = 0; j < subDivisions; ++j)
+		{
+
+			vec3 ret = prePosition;
+			ret.y = k;
+			vertices.push_back(ret.x + positionOffset.x);
+			vertices.push_back(ret.y + positionOffset.y);
+			vertices.push_back(ret.z + positionOffset.z);
+			//glVertex3fv(&ret.x);
+
+			k += hIncrement;
+		}
+		angle += 90;
+
+		postPosition = rotate(postPosition, angle, vec3(0, 1, 0));
+
+		for (size_t j = 0; j < subDivisions; ++j)
+		{
+
+			vec3 ret = postPosition;
+			ret.y = k;
+			vertices.push_back(ret.x + positionOffset.x);
+			vertices.push_back(ret.y + positionOffset.y);
+			vertices.push_back(ret.z + positionOffset.z);
+			//glVertex3fv(&ret.x);
+
+			k += hIncrement;
+		}
+
+		prePosition = postPosition;
+	}
+
+	angle = -45;
+	int topIndex = vertices.size() / 3;
+	for (size_t i = 0; i < 4; i++)
+	{
+		vec3 topDir = vec3(0.4, maxH, 0);
+		topDir = rotate(topDir, angle, vec3(0, 1, 0));
+
+		vertices.push_back(topDir.x + positionOffset.x);
+		vertices.push_back(topDir.y + positionOffset.y);
+		vertices.push_back(topDir.z + positionOffset.z);
+
+		angle += 90;
+	}
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		if (sidesToIgnore != nullptr && std::find(sidesToIgnore->begin(), sidesToIgnore->end(), i) != sidesToIgnore->end()) {
+			continue;
+		}
+		int beforeIndices = indices.size();
+
+		for (size_t h = 0; h < subDivisions - 1; h++)
+		{
+			int a, b, c, d;
+
+			a = ((i * (subDivisions*2)) + h) + indexOffset;
+			b = (a + 1);
+			c = (((i == 3) ? 0 + h + indexOffset : a + (subDivisions*2)));
+			d = (c + 1);
+
+
+			LOG("Quad indices %i, %i, %i, %i", a, b, c, d);
+
+			indices.push_back(a);
+			indices.push_back(c);
+			indices.push_back(b);
+
+			indices.push_back(c);
+			indices.push_back(d);
+			indices.push_back(b);
+
+		}
+		retNode.faceIndices[i] = indices.size() - beforeIndices;
+	}
+
+
+	indices.push_back(topIndex);
+	indices.push_back(topIndex + 1);
+	indices.push_back(topIndex + 2);
+
+	indices.push_back(topIndex + 2);
+	indices.push_back(topIndex + 3);
+	indices.push_back(topIndex);
+
+	return retNode;
+}
+
+
+WallNode GO_Wall::GenerateSharedVertexWall(uint subDivisions, float3 positionOffset, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore)
+{
+	float maxH = 1;
+	float hIncrement = maxH / (subDivisions - 1);
+
+	int indexOffset = vertices.size() / 3;
+	int angle = -45;
+
+	WallNode retNode;
+
 	for (size_t i = 0; i < 4; i++)
 	{
 		//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
@@ -126,7 +238,7 @@ WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::ve
 	int pilarOffset = (subDivisions - 1);
 	indices.push_back(top);
 	indices.push_back(top + pilarOffset + 1);
-	indices.push_back(top + (pilarOffset*2) + 2);
+	indices.push_back(top + (pilarOffset * 2) + 2);
 
 	indices.push_back(top);
 	indices.push_back(top + (pilarOffset * 2) + 2);

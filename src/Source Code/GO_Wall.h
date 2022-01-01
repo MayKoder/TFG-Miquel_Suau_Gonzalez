@@ -57,6 +57,7 @@ public:
 	WallNode InitWall(float3 wallPosition);
 	void UpdateWallGL();
 	static WallNode GenerateWall(uint, float3, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore);
+	static WallNode GenerateSharedVertexWall(uint, float3, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore);
 
 
 public:

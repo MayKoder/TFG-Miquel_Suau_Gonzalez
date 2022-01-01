@@ -59,7 +59,7 @@ void ToolWall::Use(int button_id)
 	if (EngineExternal->moduleRenderer3D->gridInstance.CanBuildOnMouseNode() == false)
 		return;
 
-
+	int WALL_SIDES = 4;
 
 	GridNode* mouseNode = EngineExternal->moduleRenderer3D->gridInstance.GetNodeAt_Slow(EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_X(), EngineExternal->moduleRenderer3D->gridInstance.GetMouseGridPos_Z());
 	
@@ -118,7 +118,7 @@ void ToolWall::Use(int button_id)
 			}
 
 			int indexJump = trioffset;
-			for (size_t j = 0; j < NODE_SIDES; j++)
+			for (size_t j = 0; j < WALL_SIDES; j++)
 			{
 				if (side == j)
 				{
@@ -133,16 +133,17 @@ void ToolWall::Use(int button_id)
 			}
 			
 
-			int vertexIDBeforeNode = render->vertices.size() - ((( originalWall->subDivisions * NODE_SIDES) * 3));
+			int vertexIDBeforeNode = render->vertices.size() - (((( (originalWall->subDivisions*2) * WALL_SIDES)+4) * 3));
 			vertexIDBeforeNode /= 3;
 
 			//int accNextJump = vertexIDBeforeNode;
 			//accNextJump += sideToIgnore[i] * originalWall->subDivisions;
 
 			int offSetIndex = vertexIDBeforeNode;
-			offSetIndex += sideToIgnore[i] * originalWall->subDivisions;
-			if (sideToIgnore[i] != NODE_SIDES - 1) {
-				offSetIndex += originalWall->subDivisions;
+			offSetIndex += sideToIgnore[i] * (originalWall->subDivisions*2);
+
+			if (sideToIgnore[i] != WALL_SIDES - 1) {
+				offSetIndex += (originalWall->subDivisions * 2);
 			}
 			else {
 				offSetIndex = vertexIDBeforeNode;
@@ -151,52 +152,41 @@ void ToolWall::Use(int button_id)
 
 
 			std::vector<int> midIndexInsertion;
-			midIndexInsertion.reserve(6 + originalWall->subDivisions * NODE_SIDES);
+			midIndexInsertion.reserve(6 + (originalWall->subDivisions * WALL_SIDES));
 
-			//TOP
-			midIndexInsertion.push_back(render->indices[indexJump + 11]);
-			midIndexInsertion.push_back(offSetIndex + 2);
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
-			midIndexInsertion.push_back(render->indices[indexJump + 10]);
-			midIndexInsertion.push_back(render->indices[indexJump + 11]);
+			////TOP
+			int firstTopVertexIndex = (render->vertices.size() - (4 * 3)) / 3;
+			int firsTopOldWall = (((originalWall->subDivisions - 1) * 6) * WALL_SIDES);
 
-			//RIGHT
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions);
-			midIndexInsertion.push_back(render->indices[indexJump + 1]);
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 1);
-			midIndexInsertion.push_back(render->indices[indexJump + 1]);
-			midIndexInsertion.push_back(render->indices[indexJump + 4]);
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 1);
+			midIndexInsertion.push_back(render->indices[trioffset + firsTopOldWall]);
+			midIndexInsertion.push_back(firstTopVertexIndex + 3);
+			midIndexInsertion.push_back(firstTopVertexIndex + 2);
 
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions+1);
-			midIndexInsertion.push_back(render->indices[indexJump + 7]);
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
-			midIndexInsertion.push_back(render->indices[indexJump + 7]);
-			midIndexInsertion.push_back(render->indices[indexJump + 10]);
-			midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+			midIndexInsertion.push_back(firstTopVertexIndex + 2);
+			midIndexInsertion.push_back(render->indices[trioffset + firsTopOldWall + 1]);
+			midIndexInsertion.push_back(render->indices[trioffset + firsTopOldWall]);
 
-			//TODO: Hardcoded for 3 subdivision, should not be like that, for loop this or something
-			render->indices[indexJump + 1] = offSetIndex;
-			render->indices[indexJump + 3] = offSetIndex;
-			render->indices[indexJump + 4] = offSetIndex + 1;
+			////RIGHT
+			//for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
+			//{
+			//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + x);
+			//	midIndexInsertion.push_back(render->indices[indexJump + ((x*6)+1)]);
+			//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x+1));
+			//	midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 1)]);
+			//	midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 4)]);
+			//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x + 1));
+			//}
 
-			render->indices[indexJump + 7] = offSetIndex + 1;
-			render->indices[indexJump + 9] = offSetIndex +1;
-			render->indices[indexJump + 10] = offSetIndex + 2;
+			for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
+			{
+				render->indices[indexJump + (x*6)+1] = offSetIndex +x;
+				render->indices[indexJump + (x*6)+3] = offSetIndex +x;
+				render->indices[indexJump + (x*6)+4] = offSetIndex + (x+1);
+			}
 
 			nodeToRemoveFrom->faceIndices[side] += midIndexInsertion.size();
-
-			render->indices.insert(render->indices.begin() + (indexJump + 12), midIndexInsertion.begin(), midIndexInsertion.end());
-
-			//indexJump /= 3;
-			//std::vector<int> trianglesToRemove;
-			//trianglesToRemove.push_back(indexJump);
-			//trianglesToRemove.push_back(indexJump + 1);
-			//trianglesToRemove.push_back(indexJump + 2);
-			//trianglesToRemove.push_back(indexJump + 3);
-
-			//render->_mesh->renderObject.RemoveTriangles(render->indices, trianglesToRemove);
+			
+			render->indices.insert(render->indices.begin() + (indexJump + ((originalWall->subDivisions - 1) * 6)), midIndexInsertion.begin(), midIndexInsertion.end());
 		}
 
 
@@ -232,7 +222,6 @@ void ToolWall::Use(int button_id)
 		//}
 
 		originalWall->UpdateWallGL();
-		//dynamic_cast<GO_Wall*>(thisNode->children[storedSideIndex[0]]->go)->UpdateWallGL();
 
 
 		LOG("Node added to existing wall");
@@ -242,49 +231,94 @@ void ToolWall::Use(int button_id)
 		//TODO: Merge multiple existing walls
 		LOG("Multiple merge expected, good luck");
 	}
-
-
-
-
-	//for (size_t i = 0; i < NODE_SIDES; i++)
-	//{
-	//	if (thisNode->children[i] != nullptr && thisNode->children[i]->go != nullptr)
-	//	{
-	//		LOG("Side %i has a wall", i);
-
-	//		//std::vector<int>
-	//		C_MeshRenderer* childRend = thisNode->children[i]->go->GetComponent<C_MeshRenderer>();
-
-
-	//		std::vector<int> test;
-	//		test.reserve(4);
-
-	//		uint oppositeSide = GridManager::OPPOSITE_CHILDREN(static_cast<GridNode::Direction>(i));
-	//		test.push_back(0 + (oppositeSide * 4));
-	//		test.push_back(1 + (oppositeSide *4));
-	//		test.push_back(2 + (oppositeSide *4));
-	//		test.push_back(3 + (oppositeSide *4));
-
-	//		childRend->_mesh->renderObject.RemoveTriangles(childRend->indices, test);
-
-	//		childRend->_mesh->renderObject.Bind();
-	//		childRend->_mesh->renderObject.LoadEBO(childRend->indices.data(), childRend->indices.size());
-	//		childRend->_mesh->indices_count = childRend->indices.size();
-	//		childRend->_mesh->renderObject.UnBind();
-
-	//		//wall.
-	//	}
-	//}
-
-	//Check for nearby walls
-		//If nearby wall and new use breaks the direction of the other wall
-			//Add vertices to created wall
-	//else 
-		//create wall object with new vertices
-
-
-	//Wall creation
-		//create base points with determinated spacing (for a more advance weared wall)
-
-
 }
+
+
+
+
+
+//OLD: Old way to merge non-shared walls
+//for (size_t i = 0; i < sideToIgnore.size(); i++)
+//{
+//
+//	int side = GridManager::OPPOSITE_CHILDREN(static_cast<GridNode::Direction>(sideToIgnore[i]));
+//
+//	int trioffset = 0;
+//	WallNode* nodeToRemoveFrom = nullptr;
+//	for (size_t j = 0; j < originalWall->trailNodes.size(); j++)
+//	{
+//		if (originalWall->trailNodes[j].second == mouseNode->children[sideToIgnore[i]]) {
+//			nodeToRemoveFrom = &originalWall->trailNodes[j].first;
+//			break;
+//		}
+//		else {
+//			trioffset += originalWall->trailNodes[j].first.GetTotalIndices();
+//		}
+//	}
+//
+//	int indexJump = trioffset;
+//	for (size_t j = 0; j < NODE_SIDES; j++)
+//	{
+//		if (side == j)
+//		{
+//			//Todo this 6 is hardcoded
+//			//nodeToRemoveFrom->faceIndices[j] -= 12;
+//			break;
+//		}
+//		else
+//		{
+//			indexJump += nodeToRemoveFrom->faceIndices[j];
+//		}
+//	}
+//
+//
+//	int vertexIDBeforeNode = render->vertices.size() - (((originalWall->subDivisions * NODE_SIDES) * 3));
+//	vertexIDBeforeNode /= 3;
+//
+//	//int accNextJump = vertexIDBeforeNode;
+//	//accNextJump += sideToIgnore[i] * originalWall->subDivisions;
+//
+//	int offSetIndex = vertexIDBeforeNode;
+//	offSetIndex += sideToIgnore[i] * originalWall->subDivisions;
+//	if (sideToIgnore[i] != NODE_SIDES - 1) {
+//		offSetIndex += originalWall->subDivisions;
+//	}
+//	else {
+//		offSetIndex = vertexIDBeforeNode;
+//	}
+//
+//
+//
+//	std::vector<int> midIndexInsertion;
+//	midIndexInsertion.reserve(6 + originalWall->subDivisions * NODE_SIDES);
+//
+//	//TOP
+//	midIndexInsertion.push_back(render->indices[indexJump + 11]);
+//	midIndexInsertion.push_back(offSetIndex + 2);
+//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + 2);
+//	midIndexInsertion.push_back(render->indices[indexJump + 10]);
+//	midIndexInsertion.push_back(render->indices[indexJump + 11]);
+//
+//	//RIGHT
+//	for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
+//	{
+//		midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + x);
+//		midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 1)]);
+//		midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x + 1));
+//		midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 1)]);
+//		midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 4)]);
+//		midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x + 1));
+//	}
+//
+//	for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
+//	{
+//		render->indices[indexJump + (x * 6) + 1] = offSetIndex + x;
+//		render->indices[indexJump + (x * 6) + 3] = offSetIndex + x;
+//		render->indices[indexJump + (x * 6) + 4] = offSetIndex + (x + 1);
+//	}
+//
+//	nodeToRemoveFrom->faceIndices[side] += midIndexInsertion.size();
+//
+//	render->indices.insert(render->indices.begin() + (indexJump + 12), midIndexInsertion.begin(), midIndexInsertion.end());
+//}
