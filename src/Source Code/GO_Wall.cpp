@@ -40,7 +40,8 @@ WallNode GO_Wall::InitWall(float3 wallPosition)
 	render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size(), GL_DYNAMIC_DRAW);
 	render->_mesh->indices_count = render->indices.size();
 
-	render->_mesh->renderObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+	render->_mesh->renderObject.SetVertexAttrib(0, 3, 6 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+	render->_mesh->renderObject.SetVertexAttrib(1, 3, 6 * sizeof(float), 3 * sizeof(float), GL_FLOAT);
 
 	render->_mesh->renderObject.UnBind();
 
@@ -67,19 +68,29 @@ WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::ve
 	int indexOffset = vertices.size() / 3;
 	int angle = -45;
 
+
+
 	WallNode retNode;
+
+	int normalRotation = 0;
+	vec3 normalTest = vec3(1, 0, 0);
+	int vertexDataJump = 6;
 
 	vec3 prePosition;
 	vec3 postPosition;
 	for (size_t i = 0; i < 4; i++)
 	{
-		//TODO: We could add a vertical sum to avoid lots of rotations, but it would fuck up the vertex order
-		float k = 0.0f;
 
-		prePosition = vec3(0.4, k, 0);
+
+		float k = 0.0f;
+		prePosition = vec3(0.4, 0, 0);
 		prePosition = rotate(prePosition, angle, vec3(0, 1, 0));
 
-		postPosition = prePosition;
+		normalTest = vec3(1, 0, 0);
+		normalTest = rotate(normalTest, normalRotation, vec3(0, 1, 0));
+
+
+		int startVertexID = vertices.size() / vertexDataJump;
 
 		for (size_t j = 0; j < subDivisions; ++j)
 		{
@@ -89,14 +100,20 @@ WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::ve
 			vertices.push_back(ret.x + positionOffset.x);
 			vertices.push_back(ret.y + positionOffset.y);
 			vertices.push_back(ret.z + positionOffset.z);
+
+			vertices.push_back(normalTest.x);
+			vertices.push_back(normalTest.y);
+			vertices.push_back(normalTest.z);
 			//glVertex3fv(&ret.x);
 
 			k += hIncrement;
 		}
 		angle += 90;
 
+		postPosition = vec3(0.4, 0, 0);
 		postPosition = rotate(postPosition, angle, vec3(0, 1, 0));
 
+		k = 0.0f;
 		for (size_t j = 0; j < subDivisions; ++j)
 		{
 
@@ -105,16 +122,48 @@ WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::ve
 			vertices.push_back(ret.x + positionOffset.x);
 			vertices.push_back(ret.y + positionOffset.y);
 			vertices.push_back(ret.z + positionOffset.z);
+
+			vertices.push_back(normalTest.x);
+			vertices.push_back(normalTest.y);
+			vertices.push_back(normalTest.z);
 			//glVertex3fv(&ret.x);
 
 			k += hIncrement;
 		}
 
-		prePosition = postPosition;
+		normalRotation += 90;
+		//prePosition = postPosition;
+
+
+		if (sidesToIgnore == nullptr || std::find(sidesToIgnore->begin(), sidesToIgnore->end(), i) == sidesToIgnore->end()) 
+		{
+			int beforeIndices = indices.size();
+			for (size_t h = 0; h < subDivisions - 1; h++)
+			{
+				int a, b, c, d;
+
+				a = startVertexID + h;
+				b = (a + 1);
+				c = startVertexID + h + subDivisions;
+				d = (c + 1);
+
+
+				indices.push_back(a);
+				indices.push_back(c);
+				indices.push_back(b);
+
+				indices.push_back(c);
+				indices.push_back(d);
+				indices.push_back(b);
+
+			}
+			retNode.faceIndices[i] = indices.size() - beforeIndices;
+		}
+
 	}
 
 	angle = -45;
-	int topIndex = vertices.size() / 3;
+	int topIndex = vertices.size() / vertexDataJump;
 	for (size_t i = 0; i < 4; i++)
 	{
 		vec3 topDir = vec3(0.4, maxH, 0);
@@ -124,48 +173,28 @@ WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::ve
 		vertices.push_back(topDir.y + positionOffset.y);
 		vertices.push_back(topDir.z + positionOffset.z);
 
+		vertices.push_back(0.f);
+		vertices.push_back(1.f);
+		vertices.push_back(0.f);
+
 		angle += 90;
 	}
 
-	for (size_t i = 0; i < 4; i++)
-	{
-		if (sidesToIgnore != nullptr && std::find(sidesToIgnore->begin(), sidesToIgnore->end(), i) != sidesToIgnore->end()) {
-			continue;
-		}
-		int beforeIndices = indices.size();
+	//indices.push_back(topIndex);
+	//indices.push_back(topIndex + 1);
+	//indices.push_back(topIndex + 2);
 
-		for (size_t h = 0; h < subDivisions - 1; h++)
-		{
-			int a, b, c, d;
-
-			a = ((i * (subDivisions*2)) + h) + indexOffset;
-			b = (a + 1);
-			c = (((i == 3) ? 0 + h + indexOffset : a + (subDivisions*2)));
-			d = (c + 1);
-
-
-			LOG("Quad indices %i, %i, %i, %i", a, b, c, d);
-
-			indices.push_back(a);
-			indices.push_back(c);
-			indices.push_back(b);
-
-			indices.push_back(c);
-			indices.push_back(d);
-			indices.push_back(b);
-
-		}
-		retNode.faceIndices[i] = indices.size() - beforeIndices;
-	}
-
+	//indices.push_back(topIndex + 2);
+	//indices.push_back(topIndex + 3);
+	//indices.push_back(topIndex);
 
 	indices.push_back(topIndex);
 	indices.push_back(topIndex + 1);
-	indices.push_back(topIndex + 2);
+	indices.push_back(topIndex + 3);
 
+	indices.push_back(topIndex + 1);
 	indices.push_back(topIndex + 2);
 	indices.push_back(topIndex + 3);
-	indices.push_back(topIndex);
 
 	return retNode;
 }

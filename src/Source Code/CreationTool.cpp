@@ -97,6 +97,7 @@ void ToolWall::Use(int button_id)
 		originalWall->trailNodes.push_back({retIndices, mouseNode });
 
 		mouseNode->go = originalWall;
+		int vertexPackJump = 6;
 
 
 		for (size_t i = 0; i < sideToIgnore.size(); i++)
@@ -133,8 +134,8 @@ void ToolWall::Use(int button_id)
 			}
 			
 
-			int vertexIDBeforeNode = render->vertices.size() - (((( (originalWall->subDivisions*2) * WALL_SIDES)+4) * 3));
-			vertexIDBeforeNode /= 3;
+			int vertexIDBeforeNode = render->vertices.size() - (((( (originalWall->subDivisions*2) * WALL_SIDES)+4) * vertexPackJump));
+			vertexIDBeforeNode /= vertexPackJump;
 
 			//int accNextJump = vertexIDBeforeNode;
 			//accNextJump += sideToIgnore[i] * originalWall->subDivisions;
@@ -155,33 +156,64 @@ void ToolWall::Use(int button_id)
 			midIndexInsertion.reserve(6 + (originalWall->subDivisions * WALL_SIDES));
 
 			////TOP
-			int firstTopVertexIndex = (render->vertices.size() - (4 * 3)) / 3;
-			int firsTopOldWall = (((originalWall->subDivisions - 1) * 6) * WALL_SIDES);
+			int firstTopVertexIndex = (render->vertices.size() - (4 * vertexPackJump)) / vertexPackJump;
+			int oldNodeTopVertex = render->indices[trioffset + nodeToRemoveFrom->GetTotalIndices() - 6];
 
-			midIndexInsertion.push_back(render->indices[trioffset + firsTopOldWall]);
-			midIndexInsertion.push_back(firstTopVertexIndex + 3);
-			midIndexInsertion.push_back(firstTopVertexIndex + 2);
 
-			midIndexInsertion.push_back(firstTopVertexIndex + 2);
-			midIndexInsertion.push_back(render->indices[trioffset + firsTopOldWall + 1]);
-			midIndexInsertion.push_back(render->indices[trioffset + firsTopOldWall]);
 
-			////RIGHT
-			//for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
-			//{
-			//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + x);
-			//	midIndexInsertion.push_back(render->indices[indexJump + ((x*6)+1)]);
-			//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x+1));
-			//	midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 1)]);
-			//	midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 4)]);
-			//	midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x + 1));
-			//}
+			midIndexInsertion.push_back((sideToIgnore[i] == WALL_SIDES-1) ? firstTopVertexIndex : firstTopVertexIndex + sideToIgnore[i]+1);
+			midIndexInsertion.push_back(firstTopVertexIndex + sideToIgnore[i]);
+			midIndexInsertion.push_back(oldNodeTopVertex + side);
+
+			midIndexInsertion.push_back(firstTopVertexIndex + sideToIgnore[i]);
+			midIndexInsertion.push_back((side == WALL_SIDES-1) ? oldNodeTopVertex : oldNodeTopVertex + side+1);
+			midIndexInsertion.push_back(oldNodeTopVertex + side);
+
+
+			int originalStart = render->indices[indexJump + (0 * 6) + 0];
+			int firstVertex = render->indices[trioffset];
+			int newNormalVertex = (side != 0) ? render->indices[indexJump + (0 * 6) + 0] - 3 : firstVertex + ((originalWall->subDivisions * 2) * WALL_SIDES) - originalWall->subDivisions;
+			
+			//RIGHT
+			for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
+			{
+				/*midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + x);
+				midIndexInsertion.push_back(render->indices[indexJump + ((x*6)+1)]);
+				midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x+1));
+				midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 1)]);
+				midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 4)]);
+				midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x + 1));*/
+
+				//midIndexInsertion.push_back(vertexIDBeforeNode + (sideToIgnore[i] * (originalWall->subDivisions*2)- originalWall->subDivisions) + x);
+				//midIndexInsertion.push_back(render->indices[trioffset] + (originalWall->subDivisions*2*side) + (originalWall->subDivisions*2) + x);
+				//midIndexInsertion.push_back(vertexIDBeforeNode + (sideToIgnore[i] * (originalWall->subDivisions*2)- originalWall->subDivisions) + (x+1));
+				int test = (firstTopVertexIndex - ((WALL_SIDES - sideToIgnore[i]) * (originalWall->subDivisions * 2)));
+				if (sideToIgnore[i] != 0) {
+					test -= 3;
+				}
+				else {
+					test = firstTopVertexIndex - originalWall->subDivisions;
+				}
+				midIndexInsertion.push_back(test + x);
+				int test2 = (side == 3) ? oldNodeTopVertex - (originalWall->subDivisions * 2 * WALL_SIDES) : oldNodeTopVertex - (originalWall->subDivisions * 2 * WALL_SIDES) + (originalWall->subDivisions * 2) + (side * 6);
+				midIndexInsertion.push_back(test2+x);
+				midIndexInsertion.push_back(test+(x+1));
+
+				midIndexInsertion.push_back(test2 + x);
+				midIndexInsertion.push_back(test2 + x+1);
+				midIndexInsertion.push_back(test + (x + 1));
+			}
 
 			for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
 			{
+
+				render->indices[indexJump + (x * 6) + 0] = newNormalVertex+x;
 				render->indices[indexJump + (x*6)+1] = offSetIndex +x;
+				render->indices[indexJump + (x*6)+2] = newNormalVertex+x+1;
+
 				render->indices[indexJump + (x*6)+3] = offSetIndex +x;
 				render->indices[indexJump + (x*6)+4] = offSetIndex + (x+1);
+				render->indices[indexJump + (x*6)+5] = newNormalVertex+x+1;
 			}
 
 			nodeToRemoveFrom->faceIndices[side] += midIndexInsertion.size();
