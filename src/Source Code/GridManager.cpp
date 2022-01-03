@@ -313,7 +313,8 @@ void GridManager::LoadShader(const char* path)
 	gridMeshObject.CreateVBO();
 	AddNode(0, 0, false);
 
-	gridMeshObject.SetVertexAttrib(0, 3, 3 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+	gridMeshObject.SetVertexAttrib(0, 3, 6 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+	gridMeshObject.SetVertexAttrib(1, 3, 6 * sizeof(float), 3 * sizeof(float), GL_FLOAT);
 
 	gridMeshObject.UnBind();
 
@@ -574,10 +575,10 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 	val->indicesIndexTmp = gridMeshIndices.size();
 
 	int indices[4] = {
-		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(-0.5+x, 0.0, -0.5+y)), 
-		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(-0.5 + x, 0.0, +0.5 + y)),
-		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(+0.5 + x, 0.0, +0.5 + y)),
-		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(+0.5 + x, 0.0, -0.5 + y)),
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(-0.5+x, 0.0, -0.5+y)) / 2, 
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(-0.5 + x, 0.0, +0.5 + y)) / 2,
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(+0.5 + x, 0.0, +0.5 + y)) / 2,
+		gridMeshObject.FloatArrayToIndex(gridMeshVertices, float3(+0.5 + x, 0.0, -0.5 + y)) / 2,
 	};
 
 	gridMeshIndices.push_back(indices[0]);
@@ -927,6 +928,10 @@ std::vector<float> GridNode::GetUniqueVertices()
 			verticesRet.push_back(vertices[i].x);
 			verticesRet.push_back(vertices[i].y);
 			verticesRet.push_back(vertices[i].z);
+
+			verticesRet.push_back(0);
+			verticesRet.push_back(1);
+			verticesRet.push_back(0);
 		}
 	}
 	

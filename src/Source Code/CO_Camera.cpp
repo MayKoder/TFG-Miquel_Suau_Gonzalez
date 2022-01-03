@@ -258,6 +258,9 @@ void C_Camera::PushCameraShaderVars(GLint shaderID)
 
 	modelLoc = glGetUniformLocation(shaderID, "projection");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, ProjectionMatrixOpenGL().ptr());
+
+	modelLoc = glGetUniformLocation(shaderID, "viewPos");
+	glUniform3fv(modelLoc, 1, GetPosition().ptr());
 }
 
 void C_Camera::LookAt(const float3& Spot)

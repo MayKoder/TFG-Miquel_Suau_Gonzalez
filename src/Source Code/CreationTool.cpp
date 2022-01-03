@@ -84,7 +84,7 @@ void ToolWall::Use(int button_id)
 
 		LOG("New wall created");
 	}
-	else if (wallGoAround.size() == 1) {
+	else if (wallGoAround.size() == 1 || true) {
 		//Add node to existing wall
 
 		GO_Wall* originalWall = wallGoAround[0];
