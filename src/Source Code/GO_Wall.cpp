@@ -26,7 +26,7 @@ WallNode GO_Wall::InitWall(float3 wallPosition)
 
 	transform->SetTransformMatrix(wallPosition, Quat::identity, float3::one);
 	C_MeshRenderer* render = dynamic_cast<C_MeshRenderer*>(AddComponent(Component::Type::MeshRenderer));
-	this->subDivisions = 3;
+	this->subDivisions = 20;
 
 	WallNode ret = GO_Wall::GenerateWall(this->subDivisions, float3::zero, render->vertices, render->indices, NULL);
 
@@ -62,7 +62,7 @@ void GO_Wall::UpdateWallGL()
 
 WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore)
 {
-	float maxH = 1;
+	float maxH = 2;
 	float hIncrement = maxH / (subDivisions - 1);
 
 	int indexOffset = vertices.size() / 3;

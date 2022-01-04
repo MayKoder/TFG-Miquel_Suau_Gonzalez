@@ -84,14 +84,10 @@ void ToolWall::Use(int button_id)
 
 		LOG("New wall created");
 	}
-	else if (wallGoAround.size() == 1 || true) {
-		//Add node to existing wall
+	else if (wallGoAround.size() == 1) {
 
 		GO_Wall* originalWall = wallGoAround[0];
 		C_MeshRenderer* render = originalWall->GetComponent<C_MeshRenderer>();
-
-
-
 		
 		WallNode retIndices= GO_Wall::GenerateWall(originalWall->subDivisions, mouseNode->GetGridPositionF3() - originalWall->transform->position, render->vertices, render->indices, &sideToIgnore);
 		originalWall->trailNodes.push_back({retIndices, mouseNode });
@@ -123,8 +119,6 @@ void ToolWall::Use(int button_id)
 			{
 				if (side == j)
 				{
-					//Todo this 6 is hardcoded
-					//nodeToRemoveFrom->faceIndices[j] -= 12;
 					break;
 				}
 				else 
@@ -136,9 +130,6 @@ void ToolWall::Use(int button_id)
 
 			int vertexIDBeforeNode = render->vertices.size() - (((( (originalWall->subDivisions*2) * WALL_SIDES)+4) * vertexPackJump));
 			vertexIDBeforeNode /= vertexPackJump;
-
-			//int accNextJump = vertexIDBeforeNode;
-			//accNextJump += sideToIgnore[i] * originalWall->subDivisions;
 
 			int offSetIndex = vertexIDBeforeNode;
 			offSetIndex += sideToIgnore[i] * (originalWall->subDivisions*2);
@@ -172,30 +163,20 @@ void ToolWall::Use(int button_id)
 
 			int originalStart = render->indices[indexJump + (0 * 6) + 0];
 			int firstVertex = render->indices[trioffset];
-			int newNormalVertex = (side != 0) ? render->indices[indexJump + (0 * 6) + 0] - 3 : firstVertex + ((originalWall->subDivisions * 2) * WALL_SIDES) - originalWall->subDivisions;
+			int newNormalVertex = (side != 0) ? render->indices[indexJump + (0 * 6) + 0] - originalWall->subDivisions : firstVertex + ((originalWall->subDivisions * 2) * WALL_SIDES) - originalWall->subDivisions;
 			
 			//RIGHT
 			for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
 			{
-				/*midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + x);
-				midIndexInsertion.push_back(render->indices[indexJump + ((x*6)+1)]);
-				midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x+1));
-				midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 1)]);
-				midIndexInsertion.push_back(render->indices[indexJump + ((x * 6) + 4)]);
-				midIndexInsertion.push_back(vertexIDBeforeNode + sideToIgnore[i] * originalWall->subDivisions + (x + 1));*/
-
-				//midIndexInsertion.push_back(vertexIDBeforeNode + (sideToIgnore[i] * (originalWall->subDivisions*2)- originalWall->subDivisions) + x);
-				//midIndexInsertion.push_back(render->indices[trioffset] + (originalWall->subDivisions*2*side) + (originalWall->subDivisions*2) + x);
-				//midIndexInsertion.push_back(vertexIDBeforeNode + (sideToIgnore[i] * (originalWall->subDivisions*2)- originalWall->subDivisions) + (x+1));
 				int test = (firstTopVertexIndex - ((WALL_SIDES - sideToIgnore[i]) * (originalWall->subDivisions * 2)));
 				if (sideToIgnore[i] != 0) {
-					test -= 3;
+					test -= originalWall->subDivisions;
 				}
 				else {
 					test = firstTopVertexIndex - originalWall->subDivisions;
 				}
 				midIndexInsertion.push_back(test + x);
-				int test2 = (side == 3) ? oldNodeTopVertex - (originalWall->subDivisions * 2 * WALL_SIDES) : oldNodeTopVertex - (originalWall->subDivisions * 2 * WALL_SIDES) + (originalWall->subDivisions * 2) + (side * 6);
+				int test2 = (side == 3) ? oldNodeTopVertex - (originalWall->subDivisions * 2 * WALL_SIDES) : oldNodeTopVertex - (originalWall->subDivisions * 2 * WALL_SIDES) + (originalWall->subDivisions * 2) + (side * originalWall->subDivisions * 2);
 				midIndexInsertion.push_back(test2+x);
 				midIndexInsertion.push_back(test+(x+1));
 
@@ -220,38 +201,6 @@ void ToolWall::Use(int button_id)
 			
 			render->indices.insert(render->indices.begin() + (indexJump + ((originalWall->subDivisions - 1) * 6)), midIndexInsertion.begin(), midIndexInsertion.end());
 		}
-
-
-		//for (size_t k = 0; k < sideToIgnore.size(); k++)
-		//{
-
-		//	std::vector<int> trianglesToRemove;
-		//	int trioffset = 0;
-		//	int removedFromTrailIndex = 0;
-		//	for (size_t j = 0; j < originalWall->trailNodes.size(); j++)
-		//	{
-		//		if (originalWall->trailNodes[j].second == thisNode->children[sideToIgnore[k]]) {
-		//			removedFromTrailIndex = j;
-		//			break;
-		//		}
-		//		else {
-		//			trioffset += originalWall->trailNodes[j].first;
-		//		}
-		//	}
-
-		//	int firstTri = (trioffset / 3);
-
-		//	//TODO: This for is the current problem, we won't always have 4 sides, we need to know how many sides our node has
-		//	int sideOffset = ((originalWall->trailNodes[removedFromTrailIndex].first - 6) / ((originalWall->subDivisions - 1) * 6)-1);
-		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))));
-		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 1);
-		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 2);
-		//	trianglesToRemove.push_back(firstTri + (sideOffset* GridManager::OPPOSITE_CHILDREN( static_cast<GridNode::Direction>(sideToIgnore[k]))) + 3);
-
-		//	//TODO: Not working, We need to update the node's indices value inside the trailNoedes pair after every removeTriangles
-		//	originalWall->trailNodes[removedFromTrailIndex].first -= trianglesToRemove.size() * 3;
-		//	render->_mesh->renderObject.RemoveTriangles(render->indices, trianglesToRemove);
-		//}
 
 		originalWall->UpdateWallGL();
 
