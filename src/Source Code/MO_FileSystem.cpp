@@ -46,6 +46,8 @@ bool M_FileSystem::Init()
 	return true;
 }
 
+#include"MO_GUI.h"
+#include"CreationTool.h"
 bool M_FileSystem::Start()
 {
 
@@ -61,6 +63,20 @@ bool M_FileSystem::Start()
 	App->moduleRenderer3D->skybox.shaderRes = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(28971592, "Library/Shaders/1992884532.shdr"));
 
 	App->moduleRenderer3D->gridInstance.LoadShader("Library/Shaders/1554189485.shdr");
+
+	for (int y = -20; y < 21; y+=1)
+	{
+		for (int x = -20; x < 21; x+=1)
+		{
+			if (y == 20 && x == 20) {
+
+			}
+			else {
+				App->moduleRenderer3D->gridInstance.AddNode(x, y, false, false);
+			}
+		}
+	}
+	App->moduleRenderer3D->gridInstance.AddNode(20, 20);
 
 	return true;
 }

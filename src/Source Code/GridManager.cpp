@@ -558,9 +558,13 @@ bool GridManager::CanBuildOnMouseNode()
 
 /*TODO: If we want to add a lot of nodes at once (ex: loading a scene) we should wait until the last node is created to upload the data to the GPU
 to avoid useless calls*/
-GridNode* GridManager::AddNode(int x, int y, bool unBind)
+GridNode* GridManager::AddNode(int x, int y, bool unBind, bool updateGL)
 {
 	uint cantor = CANTOR_MAPPING(x, y);
+
+	if (nodeMap.count(cantor) != 0)
+		return &nodeMap[cantor];
+
 	nodeMap[cantor] = GridNode(x, y);
 
 	GridNode* val = &nodeMap[cantor];
@@ -590,12 +594,14 @@ GridNode* GridManager::AddNode(int x, int y, bool unBind)
 
 	LOG("Unique vertices %d", gridMeshVertices.size() / 3);
 
-	gridMeshObject.Bind();
-	gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
-	gridMeshObject.LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
+	if (updateGL == true) {
+		gridMeshObject.Bind();
+		gridMeshObject.SetVBO(0, gridMeshVertices.data(), gridMeshVertices.size(), GL_DYNAMIC_DRAW);
+		gridMeshObject.LoadEBO(gridMeshIndices.data(), gridMeshIndices.size());
 
-	if (unBind == true) {
-		gridMeshObject.UnBind();
+		if (unBind == true) {
+			gridMeshObject.UnBind();
+		}
 	}
 
 	return val;

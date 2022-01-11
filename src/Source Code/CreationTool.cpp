@@ -69,7 +69,9 @@ void ToolWall::Use(int button_id)
 	{
 		if (mouseNode->children[i] != nullptr && mouseNode->children[i]->go != nullptr)
 		{
-			wallGoAround.push_back(dynamic_cast<GO_Wall*>(mouseNode->children[i]->go));
+			if (std::find(wallGoAround.begin(), wallGoAround.end(), dynamic_cast<GO_Wall*>(mouseNode->children[i]->go)) == wallGoAround.end()) {
+				wallGoAround.push_back(dynamic_cast<GO_Wall*>(mouseNode->children[i]->go));
+			}
 			sideToIgnore.push_back(i);
 		}
 	}
@@ -144,7 +146,7 @@ void ToolWall::Use(int button_id)
 
 
 			std::vector<int> midIndexInsertion;
-			midIndexInsertion.reserve(6 + (originalWall->subDivisions * WALL_SIDES));
+			midIndexInsertion.reserve(6 + ((originalWall->subDivisions-1) *6));
 
 			////TOP
 			int firstTopVertexIndex = (render->vertices.size() - (4 * vertexPackJump)) / vertexPackJump;
@@ -169,10 +171,12 @@ void ToolWall::Use(int button_id)
 			for (size_t x = 0; x < originalWall->subDivisions - 1; ++x)
 			{
 				int test = (firstTopVertexIndex - ((WALL_SIDES - sideToIgnore[i]) * (originalWall->subDivisions * 2)));
-				if (sideToIgnore[i] != 0) {
+				if (sideToIgnore[i] != 0) 
+				{
 					test -= originalWall->subDivisions;
 				}
-				else {
+				else 
+				{
 					test = firstTopVertexIndex - originalWall->subDivisions;
 				}
 				midIndexInsertion.push_back(test + x);

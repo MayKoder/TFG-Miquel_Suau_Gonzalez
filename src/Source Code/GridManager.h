@@ -77,7 +77,7 @@ public:
 	void CreateNodesCircular(int radius);
 
 
-	GridNode* AddNode(int x, int y, bool unBind = true);
+	GridNode* AddNode(int x, int y, bool unBind = true, bool updateGL = true);
 
 	bool DeleteHoveredNode();
 
@@ -140,6 +140,8 @@ private:
 	std::vector<int> gridMeshIndices;
 
 	GridNode* hoveredNode;
+
+public:
 	int cursorGridPos[2];
 
 	//LineRenderer testRender;
