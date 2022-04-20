@@ -24,6 +24,7 @@ public:
 
 	float4x4 ViewMatrixOpenGL() const;
 	float4x4 ProjectionMatrixOpenGL() const;
+	
 
 	void SetAspectRatio(float aspectRatio);
 

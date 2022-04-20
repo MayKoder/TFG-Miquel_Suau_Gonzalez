@@ -5,6 +5,7 @@
 #include"MathGeoLib/include/Geometry/OBB.h"
 
 class ResourceMesh;
+class ResourceShader;
 
 class C_MeshRenderer : public Component
 {
@@ -36,6 +37,7 @@ public:
 	std::vector<int> indices;
 
 	ResourceMesh* _mesh;
+	ResourceShader* shader;
 private:
 	float3 alternColor;
 };

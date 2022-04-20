@@ -43,6 +43,7 @@ public:
 	float3 GetUp();
 	float3 GetRight();
 	void UpdateBoxes();
+	float3x3 NormalMatrixOpenGL() const;
 
 private: 
 	void UpdateTransform();

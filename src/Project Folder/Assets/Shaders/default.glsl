@@ -8,6 +8,7 @@ layout (location = 1) in vec3 normals;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 position;
+uniform mat3 normalMatrix;
 
 out vec3 Normal;
 out vec3 FragPos;  
@@ -19,7 +20,7 @@ void main()
                    0.0, 0.0, 1.0, 0.0,
                    position.x, position.y, position.z, 1.0);
 
-	Normal = normals;
+	Normal = normalMatrix * normals;
 	FragPos = vec3(offset * vec4(meshVertices, 1.0f));
 
 	gl_Position = projection * view * offset * vec4(meshVertices, 1.0f);

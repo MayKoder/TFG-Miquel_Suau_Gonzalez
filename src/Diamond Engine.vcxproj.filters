@@ -525,6 +525,9 @@
     <ClInclude Include="Source Code\GO_Wall.h">
       <Filter>Sources\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\GO_Bridge.h">
+      <Filter>Sources\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -828,6 +831,9 @@
       <Filter>Sources\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Source Code\GO_Wall.cpp">
+      <Filter>Sources\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\GO_Bridge.cpp">
       <Filter>Sources\Components</Filter>
     </ClCompile>
   </ItemGroup>

@@ -134,17 +134,6 @@ bool ModuleRenderer3D::Init()
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//glBlendEquation(GL_FUNC_ADD);
-		
-		//GLfloat LightModelAmbient[] = {0.0f, 0.0f, 0.0f, 0.0f};
-		//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, LightModelAmbient);
-
-		//glEnable(GL_LIGHT0);
-		//glLightf(GL_LIGHT0, GL_AMBIENT, 0.75f);
-		//glLightf(GL_LIGHT0, GL_DIFFUSE, 0.05f);
-
-		//float pos[] = { 0, 1, 0, 1.0f };
-		//glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 		GLfloat MaterialAmbient[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, MaterialAmbient);
@@ -207,7 +196,7 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
-	gridInstance.UpdateInput(App->moduleGUI->selectedTool);
+	//gridInstance.UpdateInput(App->moduleGUI->selectedTool);
 	return UPDATE_CONTINUE;
 }
 
@@ -234,128 +223,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//
 	App->moduleCamera->editorCamera.StartDraw();
 	//
-
-//#pragma region IcoTest
-//
-//	glPointSize(10.0f);
-//	glBegin(GL_TRIANGLES);
-//	glColor3f(1.f, 0.f, 0.f);
-//
-//	// create 12 vertices of a icosahedron
-//	float t = (1.0 + sqrtf(5.0)) / 2.0;
-//
-//	float3 vertices[] = 
-//	{
-//		float3(-1, t, 0),
-//		float3(1, t, 0),
-//		float3(-1, -t, 0),
-//		float3(1, -t, 0),
-//
-//		float3(0, -1, t),
-//		float3(0, 1, t),
-//		float3(0, -1, -t),
-//		float3(0, 1, -t),
-//
-//		float3(t, 0, -1),
-//		float3(t, 0, 1),
-//		float3(-t, 0, -1),
-//		float3(-t, 0, 1),
-//	};
-//
-//	// 5 faces around point 0
-//	glVertex3fv(&vertices[0].x);
-//	glVertex3fv(&vertices[11].x);
-//	glVertex3fv(&vertices[5].x);
-//
-//	glVertex3fv(&vertices[0].x);
-//	glVertex3fv(&vertices[5].x);
-//	glVertex3fv(&vertices[1].x);
-//
-//	glVertex3fv(&vertices[0].x);
-//	glVertex3fv(&vertices[1].x);
-//	glVertex3fv(&vertices[7].x);
-//
-//	glVertex3fv(&vertices[0].x);
-//	glVertex3fv(&vertices[7].x);
-//	glVertex3fv(&vertices[10].x);
-//
-//	glVertex3fv(&vertices[0].x);
-//	glVertex3fv(&vertices[10].x);
-//	glVertex3fv(&vertices[11].x);
-//
-//	//// 5 adjacent faces
-//	glVertex3fv(&vertices[1].x);
-//	glVertex3fv(&vertices[5].x);
-//	glVertex3fv(&vertices[9].x);
-//
-//	glVertex3fv(&vertices[5].x);
-//	glVertex3fv(&vertices[11].x);
-//	glVertex3fv(&vertices[4].x);
-//
-//	glVertex3fv(&vertices[11].x);
-//	glVertex3fv(&vertices[10].x);
-//	glVertex3fv(&vertices[2].x);
-//
-//	glVertex3fv(&vertices[10].x);
-//	glVertex3fv(&vertices[7].x);
-//	glVertex3fv(&vertices[6].x);
-//
-//	glVertex3fv(&vertices[7].x);
-//	glVertex3fv(&vertices[1].x);
-//	glVertex3fv(&vertices[8].x);
-//
-//	//// 5 faces around point 3
-//	glVertex3fv(&vertices[3].x);
-//	glVertex3fv(&vertices[9].x);
-//	glVertex3fv(&vertices[4].x);
-//
-//	glVertex3fv(&vertices[3].x);
-//	glVertex3fv(&vertices[4].x);
-//	glVertex3fv(&vertices[2].x);
-//
-//	glVertex3fv(&vertices[3].x);
-//	glVertex3fv(&vertices[2].x);
-//	glVertex3fv(&vertices[6].x);
-//
-//	glVertex3fv(&vertices[3].x);
-//	glVertex3fv(&vertices[6].x);
-//	glVertex3fv(&vertices[8].x);
-//
-//	glVertex3fv(&vertices[3].x);
-//	glVertex3fv(&vertices[8].x);
-//	glVertex3fv(&vertices[9].x);
-//
-//	//// 5 adjacent faces
-//	glVertex3fv(&vertices[4].x);
-//	glVertex3fv(&vertices[9].x);
-//	glVertex3fv(&vertices[5].x);
-//
-//	glVertex3fv(&vertices[2].x);
-//	glVertex3fv(&vertices[4].x);
-//	glVertex3fv(&vertices[11].x);
-//
-//	glVertex3fv(&vertices[6].x);
-//	glVertex3fv(&vertices[2].x);
-//	glVertex3fv(&vertices[10].x);
-//
-//	glVertex3fv(&vertices[8].x);
-//	glVertex3fv(&vertices[6].x);
-//	glVertex3fv(&vertices[7].x);
-//
-//	glVertex3fv(&vertices[9].x);
-//	glVertex3fv(&vertices[8].x);
-//	glVertex3fv(&vertices[1].x);
-//
-//
-//	glEnd();
-//	glPointSize(1.0f);
-//	glColor3f(1.f, 1.f, 1.f);
-//
-//#pragma endregion
-
 	
-	gridInstance.RenderGridTemporal();
-
+	//gridInstance.RenderGridTemporal();
 
 	//Uint32 start = SDL_GetTicks();
 	//TODO: This should not be here
@@ -365,7 +234,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		{
 			//float distance = App->moduleCamera->editorCamera.camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
 			//renderQueueMap.emplace(distance, renderQueue[i]);
-			renderQueue[i]->RenderMesh();
+			renderQueue[i]->Draw();
 		}
 
 		//(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -410,7 +279,7 @@ bool ModuleRenderer3D::CleanUp()
 {
 	LOG(  "Destroying 3D Renderer");
 	skybox.ClearMemory();
-	gridInstance.ClearMemory();
+	//gridInstance.ClearMemory();
 
 	SDL_GL_DeleteContext(context);
 	ClearAllRenderData();
@@ -551,123 +420,123 @@ void ModuleRenderer3D::DrawBox(float3* points, float3 color)
 
 void ModuleRenderer3D::RayToMeshQueueIntersection(LineSegment& ray)
 {
-	pickingDebug = ray;
-
-	std::map<float, C_MeshRenderer*> canSelect;
-	float nHit = 0;
-	float fHit = 0;
-
-	bool selected = false;
-	for (std::vector<C_MeshRenderer*>::iterator i = renderQueue.begin(); i != renderQueue.end(); ++i)
-	{
-		if (ray.Intersects((*i)->globalAABB, nHit, fHit))
-			canSelect[nHit] = (*i);
-	}
-
-
-	//Add all meshes with a triangle hit and store the distance from the ray to the triangle, then pick the closest one
-	std::map<float, C_MeshRenderer*> distMap;
-	for(auto i = canSelect.begin(); i != canSelect.end(); ++i)
-	{
-		const ResourceMesh* _mesh = (*i).second->GetRenderMesh();
-		if (_mesh)
-		{
-			LineSegment local = ray;
-			local.Transform((*i).second->GetGO()->transform->globalTransform.Inverted());
-
-			if (_mesh->vertices_count >= 9) //TODO: Had to do this to avoid squared meshes crash
-			{
-				for (uint index = 0; index < _mesh->indices_count; index += 3)
-				{
-					float3 pA(&_mesh->vertices[_mesh->indices[index] * VERTEX_ATTRIBUTES]);
-					float3 pB(&_mesh->vertices[_mesh->indices[index + 1] * VERTEX_ATTRIBUTES]);
-					float3 pC(&_mesh->vertices[_mesh->indices[index + 2] * VERTEX_ATTRIBUTES]);
-
-					Triangle triangle(pA, pB, pC);
-
-					float dist = 0;
-					if (local.Intersects(triangle, &dist, nullptr))
-						distMap[dist] = (*i).second;
-
-				}
-			}
-		}
-	}
-	canSelect.clear();
-
-//#ifndef STANDALONE
-//	if (distMap.begin() != distMap.end())
+//	pickingDebug = ray;
+//
+//	std::map<float, C_MeshRenderer*> canSelect;
+//	float nHit = 0;
+//	float fHit = 0;
+//
+//	bool selected = false;
+//	for (std::vector<C_MeshRenderer*>::iterator i = renderQueue.begin(); i != renderQueue.end(); ++i)
 //	{
-//		App->moduleEditor->SetSelectedGO((*distMap.begin()).second->GetGO());
-//		selected = true;
+//		if (ray.Intersects((*i)->globalAABB, nHit, fHit))
+//			canSelect[nHit] = (*i);
 //	}
 //
 //
-//	//If nothing is selected, set selected GO to null
-//	if(!selected)
-//		App->moduleEditor->SetSelectedGO(nullptr);
-//#endif // !STANDALONE
-	distMap.clear();
+//	//Add all meshes with a triangle hit and store the distance from the ray to the triangle, then pick the closest one
+//	std::map<float, C_MeshRenderer*> distMap;
+//	for(auto i = canSelect.begin(); i != canSelect.end(); ++i)
+//	{
+//		const ResourceMesh* _mesh = (*i).second->GetRenderMesh();
+//		if (_mesh)
+//		{
+//			LineSegment local = ray;
+//			local.Transform((*i).second->GetGO()->transform->globalTransform.Inverted());
+//
+//			if (_mesh->vertices_count >= 9) //TODO: Had to do this to avoid squared meshes crash
+//			{
+//				for (uint index = 0; index < _mesh->indices_count; index += 3)
+//				{
+//					float3 pA(&_mesh->vertices[_mesh->indices[index] * VERTEX_ATTRIBUTES]);
+//					float3 pB(&_mesh->vertices[_mesh->indices[index + 1] * VERTEX_ATTRIBUTES]);
+//					float3 pC(&_mesh->vertices[_mesh->indices[index + 2] * VERTEX_ATTRIBUTES]);
+//
+//					Triangle triangle(pA, pB, pC);
+//
+//					float dist = 0;
+//					if (local.Intersects(triangle, &dist, nullptr))
+//						distMap[dist] = (*i).second;
+//
+//				}
+//			}
+//		}
+//	}
+//	canSelect.clear();
+//
+////#ifndef STANDALONE
+////	if (distMap.begin() != distMap.end())
+////	{
+////		App->moduleEditor->SetSelectedGO((*distMap.begin()).second->GetGO());
+////		selected = true;
+////	}
+////
+////
+////	//If nothing is selected, set selected GO to null
+////	if(!selected)
+////		App->moduleEditor->SetSelectedGO(nullptr);
+////#endif // !STANDALONE
+//	distMap.clear();
 }
 
 void ModuleRenderer3D::DirectionalShadowPass()
 {
-	//Render light depth pass
-	if (directLight)
-	{
-		directLight->StartPass();
-		if (!renderQueue.empty())
-		{
-			for (size_t i = 0; i < renderQueue.size(); i++)
-			{
-				float distance = directLight->orthoFrustum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
-				renderQueueMap.emplace(distance, renderQueue[i]);
-			}
+	////Render light depth pass
+	//if (directLight)
+	//{
+	//	directLight->StartPass();
+	//	if (!renderQueue.empty())
+	//	{
+	//		for (size_t i = 0; i < renderQueue.size(); i++)
+	//		{
+	//			float distance = directLight->orthoFrustum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
+	//			renderQueueMap.emplace(distance, renderQueue[i]);
+	//		}
 
 
-			if (!renderQueueMap.empty())
-			{
-				for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
-				{
-					// Get the range of the current key
-					auto range = renderQueueMap.equal_range(i->first);
+	//		if (!renderQueueMap.empty())
+	//		{
+	//			for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
+	//			{
+	//				// Get the range of the current key
+	//				auto range = renderQueueMap.equal_range(i->first);
 
-					// Now render out that whole range
-					for (auto d = range.first; d != range.second; ++d)
-					{
-						GLint modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "model");
-						glUniformMatrix4fv(modelLoc, 1, GL_FALSE, d->second->GetGO()->transform->GetGlobalTransposed());
+	//				// Now render out that whole range
+	//				for (auto d = range.first; d != range.second; ++d)
+	//				{
+	//					GLint modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "model");
+	//					glUniformMatrix4fv(modelLoc, 1, GL_FALSE, d->second->GetGO()->transform->GetGlobalTransposed());
 
-						modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "lightSpaceMatrix");
-						glUniformMatrix4fv(modelLoc, 1, GL_FALSE, directLight->spaceMatrixOpenGL.ptr());
+	//					modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "lightSpaceMatrix");
+	//					glUniformMatrix4fv(modelLoc, 1, GL_FALSE, directLight->spaceMatrixOpenGL.ptr());
 
-						d->second->GetRenderMesh()->OGL_GPU_Render();
-					}
-				}
+	//					d->second->GetRenderMesh()->OGL_GPU_Render();
+	//				}
+	//			}
 
-				renderQueueMap.clear();
-			}
-		}
-		directLight->EndPass();
-	}
+	//			renderQueueMap.clear();
+	//		}
+	//	}
+	//	directLight->EndPass();
+	//}
 }
 
 void ModuleRenderer3D::RenderWithOrdering(bool rTex)
 {
-	if (renderQueueMap.empty())
-		return;
+	//if (renderQueueMap.empty())
+	//	return;
 
-	for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
-	{
-		// Get the range of the current key
-		auto range = renderQueueMap.equal_range(i->first);
+	//for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
+	//{
+	//	// Get the range of the current key
+	//	auto range = renderQueueMap.equal_range(i->first);
 
-		// Now render out that whole range
-		for (auto d = range.first; d != range.second; ++d)
-			d->second->RenderMesh(rTex);
-	}
+	//	// Now render out that whole range
+	//	for (auto d = range.first; d != range.second; ++d)
+	//		d->second->RenderMesh(rTex);
+	//}
 
-	renderQueueMap.clear();
+	//renderQueueMap.clear();
 }
 
 void ModuleRenderer3D::DebugLine(LineSegment& line)
@@ -720,7 +589,7 @@ void ModuleRenderer3D::SetGameRenderTarget(C_Camera* cam)
 
 void ModuleRenderer3D::ClearAllRenderData()
 {
-	renderQueueMap.clear();
+	//renderQueueMap.clear();
 	renderQueue.clear();
 	
 	//lines.clear();

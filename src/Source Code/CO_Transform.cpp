@@ -179,6 +179,15 @@ void C_Transform::UpdateBoxes()
 	}
 }
 
+float3x3 C_Transform::NormalMatrixOpenGL() const
+{
+		//mat4 normalMatrix = transpose(inverse(modelView));
+		//mat3(transpose(inverse(model)))* aNormal;
+		//return camFrustrum.ViewMatrix
+
+	return this->globalTransformTRANS.InverseTransposed().Float3x3Part();
+}
+
 
 void C_Transform::SetTransformMatrix(float3 _position, Quat _rotation, float3 _localScale)
 {

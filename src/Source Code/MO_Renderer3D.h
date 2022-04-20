@@ -15,10 +15,10 @@
 #include<map>
 
 class ResourceMesh;
-class C_MeshRenderer;
 class ResourceTexture;
 class C_Camera;
 class C_DirectionalLight;
+class GameObject;
 
 typedef unsigned int	GLuint;		/* 4-byte unsigned */
 typedef unsigned char	GLubyte;	/* 1-byte unsigned */
@@ -78,15 +78,17 @@ public:
 	GLuint checkersTexture;
 	GLubyte checkerImage[SQUARE_TEXTURE_W][SQUARE_TEXTURE_H][4];
 
-	std::vector<C_MeshRenderer*> renderQueue;
-	std::multimap<float, C_MeshRenderer*> renderQueueMap;
+	std::vector<GameObject*> renderQueue;
+	//std::multimap<float, C_MeshRenderer*> renderQueueMap;
 
 	SDL_GLContext context;
 
 	C_Camera* activeRenderCamera = nullptr; //TODO: This is temporal
 	DE_Cubemap skybox;
 	C_DirectionalLight* directLight;
-	GridManager gridInstance;
+
+
+	//GridManager gridInstance;
 
 
 private:

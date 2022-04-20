@@ -44,8 +44,8 @@ M_GUI::~M_GUI()
 
 bool M_GUI::Init()
 {
-	this->uiTools[0] = new ToolNode("Nodes");
-	this->uiTools[1] = new ToolWall("Walls");
+	//this->uiTools[0] = new ToolNode("Nodes");
+	//this->uiTools[1] = new ToolWall("Walls");
 
 	developerWindow.SetTextFromFile("Assets/Shaders/cubeMap.glsl");
 
@@ -162,9 +162,9 @@ bool M_GUI::Start()
 		//ImGui::PushStyleVar(ImGuiStyleVar_::ImGuiStyleVar_WindowRounding, ImDrawCornerFlags_Right);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
-			if (selectedTool != nullptr) {
-				selectedTool->DrawEditor();
-			}
+			//if (selectedTool != nullptr) {
+			//	selectedTool->DrawEditor();
+			//}
 		}
 		ImGui::End();
 		//ImGui::PopStyleVar();
@@ -205,10 +205,10 @@ bool M_GUI::Start()
 				//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
 				//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
 
-				if (ImGui::Button(uiTools[i]->GetName(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y))) {
-					
-					(this->selectedTool == uiTools[i]) ? selectedTool = nullptr : this->selectedTool = uiTools[i];
-				}
+				//if (ImGui::Button(uiTools[i]->GetName(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y))) {
+				//	
+				//	(this->selectedTool == uiTools[i]) ? selectedTool = nullptr : this->selectedTool = uiTools[i];
+				//}
 				ImGui::SameLine();
 
 				if (colorChanged == true)

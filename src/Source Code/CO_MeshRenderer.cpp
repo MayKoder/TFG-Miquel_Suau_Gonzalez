@@ -26,12 +26,15 @@ faceNormals(false), vertexNormals(false), showAABB(false), showOBB(false)
 {
 	name = "Mesh Renderer";
 	alternColor = float3::one;
+	shader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
 }
 
 C_MeshRenderer::~C_MeshRenderer()
 {
 	indices.clear();
 	vertices.clear();
+	EngineExternal->moduleResources->UnloadResource(shader->GetUID());
+	shader = nullptr;
 
 	if (_mesh != nullptr) 
 	{
@@ -46,7 +49,7 @@ void C_MeshRenderer::Update()
 	//if (_mesh == nullptr)
 	//	return;
 
-	EngineExternal->moduleRenderer3D->renderQueue.push_back(this);
+	//EngineExternal->moduleRenderer3D->renderQueue.push_back(this->gameObject);
 
 #ifndef STANDALONE
 	if (showAABB ==true) 
@@ -71,22 +74,19 @@ void C_MeshRenderer::Update()
 void C_MeshRenderer::RenderMesh(bool rTex)
 {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	ResourceShader*  meshGridShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(1990536996, "Library/Shaders/1990536996.shdr"));
 
-	meshGridShader->Bind();
-	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(meshGridShader->shaderProgramID);
+	shader->Bind();
+	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(shader->shaderProgramID);
 
-	GLint modelLoc = glGetUniformLocation(meshGridShader->shaderProgramID, "position");
-	glUniform3f(modelLoc, this->gameObject->transform->position.x, this->gameObject->transform->position.y, this->gameObject->transform->position.z);
-
-	modelLoc = glGetUniformLocation(meshGridShader->shaderProgramID, "color");
-	glUniform4f(modelLoc, 1, 1, 1, 1);
+	shader->SetVector3("position", this->gameObject->transform->position);
+	shader->SetVector4("color", float4(1, 1, 1, 1));
+	shader->SetMatrix3("normalMatrix", this->gameObject->transform->NormalMatrixOpenGL());
 
 	this->_mesh->OGL_GPU_Render();
 
-	meshGridShader->Unbind();
+	shader->Unbind();
 
-	EngineExternal->moduleResources->UnloadResource(meshGridShader->GetUID());
+	EngineExternal->moduleResources->UnloadResource(shader->GetUID());
 	//if (_mesh == nullptr)
 	//	return;
 

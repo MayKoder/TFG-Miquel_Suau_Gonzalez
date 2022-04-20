@@ -275,6 +275,7 @@
     <ClInclude Include="Source Code\External Libraries\PugiXML\pugiconfig.hpp" />
     <ClInclude Include="Source Code\External Libraries\PugiXML\pugixml.hpp" />
     <ClInclude Include="Source Code\GL_Object.h" />
+    <ClInclude Include="Source Code\GO_Bridge.h" />
     <ClInclude Include="Source Code\GO_Wall.h" />
     <ClInclude Include="Source Code\IM_FileSystem.h" />
     <ClInclude Include="Source Code\GameObject.h" />
@@ -382,6 +383,7 @@
     <ClCompile Include="Source Code\External Libraries\parson\parson.c" />
     <ClCompile Include="Source Code\External Libraries\PugiXML\pugixml.cpp" />
     <ClCompile Include="Source Code\GL_Object.cpp" />
+    <ClCompile Include="Source Code\GO_Bridge.cpp" />
     <ClCompile Include="Source Code\GO_Wall.cpp" />
     <ClCompile Include="Source Code\IM_FileSystem.cpp" />
     <ClCompile Include="Source Code\GameObject.cpp" />

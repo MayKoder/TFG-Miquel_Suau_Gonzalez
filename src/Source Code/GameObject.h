@@ -7,7 +7,6 @@
 #include"parson/parson.h"
 
 class C_Transform;
-struct SerializedField;
 
 class GameObject
 {
@@ -23,6 +22,10 @@ public:
 	void RecursiveUIDRegeneration();
 
 	bool isActive() const;
+
+	virtual void Draw() {
+
+	}
 
 	void Enable();
 	void Disable();
@@ -54,8 +57,6 @@ public:
 	std::vector<GameObject*> children;
 
 	std::vector<Component*> components;
-
-	//std::vector<SerializedField*> csReferences;
 
 public:
 	std::string name;
