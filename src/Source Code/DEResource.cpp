@@ -1,7 +1,7 @@
 #include "DEResource.h"
 #include"Globals.h"
 
-Resource::Resource(int _uid, Resource::Type _type) : uid(_uid), assetsFile(""), libraryFile(""), type(_type),
+Resource::Resource(std::string& _uid, Resource::Type _type) : uid(_uid), assetsFile(_uid),  type(_type),
 referenceCount(0)
 {
 
@@ -9,9 +9,8 @@ referenceCount(0)
 
 Resource::~Resource()
 {
-	uid = 0;
+	uid.clear();
 	assetsFile.clear();
-	libraryFile.clear();
 	type = Type::UNKNOWN;
 
 	if (referenceCount != 0)
@@ -23,9 +22,4 @@ Resource::~Resource()
 void Resource::SetAssetsPath(const char* _aPath)
 {
 	assetsFile = _aPath;
-}
-
-void Resource::SetLibraryPath(const char* _lPath)
-{
-	libraryFile = _lPath;
 }

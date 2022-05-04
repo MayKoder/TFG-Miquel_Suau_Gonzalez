@@ -1,10 +1,8 @@
 #include "GO_Wall.h"
 #include"GridManager.h"
 #include"CO_Transform.h"
-#include"CO_MeshRenderer.h"
 #include"glmath.h"
 #include"Application.h"
-#include"RE_Mesh.h"
 
 GO_Wall::GO_Wall(const char* name, GameObject* parent, int _uid) : GameObject(name, parent, _uid),
 subDivisions(0), currentIndices(0)
@@ -24,40 +22,42 @@ subDivisions(0), currentIndices(0)
 WallNode GO_Wall::InitWall(float3 wallPosition)
 {
 
-	transform->SetTransformMatrix(wallPosition, Quat::identity, float3::one);
-	C_MeshRenderer* render = dynamic_cast<C_MeshRenderer*>(AddComponent(Component::Type::MeshRenderer));
-	this->subDivisions = 20;
+	//transform->SetTransformMatrix(wallPosition, Quat::identity, float3::one);
+	//C_MeshRenderer* render = dynamic_cast<C_MeshRenderer*>(AddComponent(Component::Type::MeshRenderer));
+	//this->subDivisions = 20;
 
-	WallNode ret = GO_Wall::GenerateWall(this->subDivisions, float3::zero, render->vertices, render->indices, NULL);
+	std::vector<float> input1;
+	std::vector<int> input2;
+	WallNode ret = GO_Wall::GenerateWall(this->subDivisions, float3::zero, input1, input2, NULL);
 
 	
-	render->_mesh = new ResourceMesh(EngineExternal->GetRandomInt());
+	//render->_mesh = new ResourceMesh(EngineExternal->GetRandomInt());
 
-	render->_mesh->renderObject.InitBuffers();
-	render->_mesh->renderObject.Bind();
+	//render->_mesh->renderObject.InitBuffers();
+	//render->_mesh->renderObject.Bind();
 
-	render->_mesh->renderObject.CreateAndSetVBO(render->vertices.data(), render->vertices.size(), GL_DYNAMIC_DRAW);
-	render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size(), GL_DYNAMIC_DRAW);
-	render->_mesh->indices_count = render->indices.size();
+	//render->_mesh->renderObject.CreateAndSetVBO(render->vertices.data(), render->vertices.size(), GL_DYNAMIC_DRAW);
+	//render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size(), GL_DYNAMIC_DRAW);
+	//render->_mesh->indices_count = render->indices.size();
 
-	render->_mesh->renderObject.SetVertexAttrib(0, 3, 6 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
-	render->_mesh->renderObject.SetVertexAttrib(1, 3, 6 * sizeof(float), 3 * sizeof(float), GL_FLOAT);
+	//render->_mesh->renderObject.SetVertexAttrib(0, 3, 6 * sizeof(float), 0 * sizeof(float), GL_FLOAT);
+	//render->_mesh->renderObject.SetVertexAttrib(1, 3, 6 * sizeof(float), 3 * sizeof(float), GL_FLOAT);
 
-	render->_mesh->renderObject.UnBind();
+	//render->_mesh->renderObject.UnBind();
 
 	return ret;
 }
 
 void GO_Wall::UpdateWallGL()
 {
-	C_MeshRenderer* render = GetComponent<C_MeshRenderer>();
-	render->_mesh->renderObject.Bind();
+	//C_MeshRenderer* render = GetComponent<C_MeshRenderer>();
+	//render->_mesh->renderObject.Bind();
 
-	render->_mesh->renderObject.SetVBO(0, render->vertices.data(), render->vertices.size(), GL_DYNAMIC_DRAW);
-	render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size(), GL_DYNAMIC_DRAW);
-	render->_mesh->indices_count = render->indices.size();
+	//render->_mesh->renderObject.SetVBO(0, render->vertices.data(), render->vertices.size(), GL_DYNAMIC_DRAW);
+	//render->_mesh->renderObject.LoadEBO(render->indices.data(), render->indices.size(), GL_DYNAMIC_DRAW);
+	//render->_mesh->indices_count = render->indices.size();
 
-	render->_mesh->renderObject.UnBind();
+	//render->_mesh->renderObject.UnBind();
 }
 
 WallNode GO_Wall::GenerateWall(uint subDivisions, float3 positionOffset, std::vector<float>& vertices, std::vector<int>& indices, std::vector<int>* sidesToIgnore)

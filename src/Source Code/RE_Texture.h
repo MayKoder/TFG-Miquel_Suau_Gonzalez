@@ -11,7 +11,7 @@ typedef unsigned int GLuint;
 class ResourceTexture : public Resource
 {
 public:
-	ResourceTexture(unsigned int _uid);
+	ResourceTexture(std::string& _uid);
 	~ResourceTexture();
 
 	bool LoadToMemory() override;

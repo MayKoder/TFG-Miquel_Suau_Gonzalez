@@ -11,8 +11,6 @@ struct TempShader {
 
 namespace ShaderImporter
 {
-	void Import(char* buffer, int bSize, ResourceShader* res, const char* assetsPath);
-
 	bool CheckForErrors(std::string& glslBuffer, TempShader& vertexShader, TempShader& fragmentShader);
 
 	int GetTypeMacro(ShaderType type);
@@ -20,5 +18,5 @@ namespace ShaderImporter
 
 	void CreateBaseShaderFile(const char* path);
 
-	GLuint Compile(char* fileBuffer, ShaderType type, const GLint size);
+	GLuint Compile(const char* fileBuffer, ShaderType type, const GLint size);
 }

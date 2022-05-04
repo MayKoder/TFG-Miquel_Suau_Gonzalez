@@ -25,7 +25,7 @@
 
 //TODO: Change all std::string in methods to std::string&
 extern Application* EngineExternal = nullptr;
-Application::Application() : quitApplicationState(false), fpsCap(60)
+Application::Application() : quitApplicationState(false), fpsCap(60), dt(0.0f)
 {
 	EngineExternal = this;
 

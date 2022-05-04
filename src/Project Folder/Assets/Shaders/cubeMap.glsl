@@ -30,7 +30,7 @@ uniform samplerCube skybox;
 void main()
 {    
     //FragColor = texture(skybox, TexCoords);
-    FragColor = vec4(color.x, color.y, color.z, 1.0);
+    FragColor = texture(skybox, TexCoords) * vec4(color.x, color.y, color.z, 1.0);
 }
 #endif
 

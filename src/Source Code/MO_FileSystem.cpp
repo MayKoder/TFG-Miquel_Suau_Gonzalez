@@ -1,7 +1,6 @@
 #include "MO_FileSystem.h"
 #include "Globals.h"
 
-#include "IM_MeshLoader.h"
 #include "IM_FileSystem.h"
 
 #include "Application.h"
@@ -16,7 +15,6 @@
 #include "DevIL\include\ilu.h"
 #include "DevIL\include\ilut.h"
 #include"RE_Shader.h"
-#include"RE_Material.h"
 
 
 M_FileSystem::M_FileSystem(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -38,9 +36,9 @@ bool M_FileSystem::Init()
 
 	FileSystem::FSInit();
 
-#ifndef STANDALONE
-	MeshLoader::EnableDebugMode();
-#endif // !STANDALONE
+//#ifndef STANDALONE
+//	MeshLoader::EnableDebugMode();
+//#endif // !STANDALONE
 
 
 	return true;
@@ -51,16 +49,10 @@ bool M_FileSystem::Init()
 bool M_FileSystem::Start()
 {
 
-	//TODO: Move to resource manager
-	App->moduleResources->PopulateFileArray();
-	GenerateAllMetaFiles();
-	ImportAssetsToLibrary();
 
-	//TODO: Should be updated kinda like assetsRoot;
-	//TODO: Add Library/ to gitignore?
-	GetAllFilesRecursive(App->moduleResources->meshesLibraryRoot);
-	App->moduleScene->defaultMaterial = (ResourceMaterial*)App->moduleResources->RequestFromAssets("Assets/Materials/default.mat");
-	App->moduleRenderer3D->skybox.shaderRes = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(28971592, "Library/Shaders/1992884532.shdr"));
+	//GetAllFilesRecursive(App->moduleResources->meshesLibraryRoot);
+	//App->moduleScene->defaultMaterial = (ResourceMaterial*)App->moduleResources->RequestFromAssets("Assets/Materials/default.mat");
+	App->moduleRenderer3D->skybox.shaderRes = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource("Assets/Shaders/cubeMap.glsl", Resource::Type::SHADER));
 
 	//App->moduleRenderer3D->gridInstance.LoadShader("Library/Shaders/1554189485.shdr");
 
@@ -86,9 +78,9 @@ bool M_FileSystem::CleanUp()
 
 	FileSystem::FSDeInit();
 
-#ifndef STANDALONE
-	MeshLoader::DisableDebugMode();
-#endif // !STANDALONE
+//#ifndef STANDALONE
+//	MeshLoader::DisableDebugMode();
+//#endif // !STANDALONE
 
 	return true;
 }
@@ -212,12 +204,3 @@ int M_FileSystem::DeleteAssetFile(const char* fileDir)
 	return PHYSFS_delete(fileDir);
 }
 
-void M_FileSystem::GenerateAllMetaFiles()
-{
-	App->moduleResources->assetsRoot.GenerateMetaRecursive();
-}
-
-void M_FileSystem::ImportAssetsToLibrary()
-{
-	App->moduleResources->assetsRoot.CreateLibraryFileRecursive();
-}

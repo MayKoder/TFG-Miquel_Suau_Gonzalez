@@ -5,6 +5,7 @@
 
 #include "Component.h"
 #include"parson/parson.h"
+#include"Primitive.h"
 
 class C_Transform;
 
@@ -26,6 +27,9 @@ public:
 	virtual void Draw() {
 
 	}
+	virtual void DrawOptionsMenu() {
+
+	}
 
 	void Enable();
 	void Disable();
@@ -44,6 +48,7 @@ public:
 
 	void RemoveChild(GameObject*);
 
+	//void CompilePrimitivesToMesh();
 
 	template<typename A>
 	A* GetComponent()
@@ -51,25 +56,28 @@ public:
 		return (A*)GetComponent(A::GetType());
 	}
 
+
+
 	GameObject* parent;
 	C_Transform* transform;
 
 	std::vector<GameObject*> children;
-
 	std::vector<Component*> components;
+
+
+	std::vector<Primitive> objPrimitives;
+	ResourceShader* generalShader;
+	
 
 public:
 	std::string name;
 	bool active, isStatic;
 
-	//TODO: Temporal tree display bool
-	bool showChildren;
 	bool toDelete;
-
 	int UID;
 
 private:
-	Component* GetComponent(Component::Type _type , const char* scriptName = nullptr);
+	Component* GetComponent(Component::Type _type);
 	Component* dumpComponent;
 
 };

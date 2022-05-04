@@ -2,8 +2,6 @@
 #include "Component.h"
 
 #include "CO_Transform.h"
-#include "CO_MeshRenderer.h"
-#include "CO_Material.h"
 #include "CO_Camera.h"
 #include "CO_DirectionalLight.h"
 
@@ -16,8 +14,9 @@
 #include"Application.h"
 #include"MO_Editor.h"
 
-GameObject::GameObject(const char* _name, GameObject* parent, int _uid) : parent(parent), name(_name), showChildren(false),
-active(true), isStatic(false), toDelete(false), UID(_uid), transform(nullptr), dumpComponent(nullptr)
+GameObject::GameObject(const char* _name, GameObject* parent, int _uid) : parent(parent), name(_name),
+active(true), isStatic(false), toDelete(false), UID(_uid), transform(nullptr), dumpComponent(nullptr),
+generalShader(nullptr)
 {
 
 	if(parent != nullptr)
@@ -25,12 +24,11 @@ active(true), isStatic(false), toDelete(false), UID(_uid), transform(nullptr), d
 
 	transform = dynamic_cast<C_Transform*>(AddComponent(Component::Type::Transform));
 
-	//TODO: Should make sure there are not duplicated ID's
+
 	if (UID == -1) 
 	{
 		UID = EngineExternal->GetRandomInt();
 	}
-		//UID = MaykMath::Random(0, INT_MAX);
 }
 
 GameObject::~GameObject()
@@ -55,12 +53,7 @@ GameObject::~GameObject()
 	}
 	children.clear();
 
-	//for (size_t i = 0; i < csReferences.size(); i++)
-	//{
-	//	mono_field_set_value(mono_gchandle_get_target(csReferences[i]->parentSC->noGCobject), csReferences[i]->field, NULL);
-	//	csReferences[i]->fiValue.goValue = nullptr;
-	//}
-	//csReferences.clear();
+	objPrimitives.clear();
 }
 
 void GameObject::Update()
@@ -92,16 +85,6 @@ Component* GameObject::AddComponent(Component::Type _type, const char* params)
 		if(transform == nullptr)
 			ret = new C_Transform(this);
 		break;
-	case Component::Type::MeshRenderer:
-		ret = new C_MeshRenderer(this);
-		break;
-	case Component::Type::Material:
-		ret = new C_Material(this);
-		break;
-	//case Component::Type::Script:
-	//	assert(params != nullptr, "Script without name can't be created");
-	//	ret = new C_Script(this, params);
-	//	break;
 	case Component::Type::Camera:
 		ret = new C_Camera(this);
 		EngineExternal->moduleScene->SetGameCamera(dynamic_cast<C_Camera*>(ret));
@@ -120,21 +103,13 @@ Component* GameObject::AddComponent(Component::Type _type, const char* params)
 	return ret;
 }
 
-Component* GameObject::GetComponent(Component::Type _type, const char* scriptName)
+Component* GameObject::GetComponent(Component::Type _type)
 {
 	for (size_t i = 0; i < components.size(); i++)
 	{
 		if (components[i]->type == _type) 
 		{
-			//if (_type == Component::Type::Script)
-			//{
-			//	if(scriptName != nullptr && strcmp(components[i]->GetName().c_str(), scriptName) == 0)
-			//		return components[i];
-			//}
-			//else 
-			//{
-				return components[i];
-			//}
+			return components[i];
 		}
 	}
 
@@ -304,3 +279,12 @@ void GameObject::RemoveChild(GameObject* child)
 {
 	children.erase(std::find(children.begin(), children.end(), child));
 }
+
+//void GameObject::CompilePrimitivesToMesh()
+//{
+//	std::vector
+//	for (size_t i = 0; i < objPrimitives.size(); ++i)
+//	{
+//
+//	}
+//}

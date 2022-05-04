@@ -15,23 +15,12 @@ namespace StringLogic {
 
 #define ASSETS_PATH "Assets/"
 
-#define LIBRARY_PATH "Library/"
-#define MESHES_PATH "Library/Meshes/"
-#define TEXTURES_PATH "Library/Textures/"
-#define MODELS_PATH "Library/Models/"
-#define SCENES_PATH "Library/Scenes/"
-#define SCRIPTS_PATH "Library/ScriptsAssembly/"
-#define SHADERS_PATH "Library/Shaders/"
-#define MATERIALS_PATH "Library/Materials/"
-
 namespace FileSystem
 {
 	ImportType GetTypeFromPath(const char* path);
 
 	void FSInit();
 	void FSDeInit();
-	void CreateLibraryFolders();
-	void LoadDroppedFile(const char* globalPath);
 	void GetFileName(const char* file, std::string& fileName, bool extension);
 	void SplitFilePath(const char* full_path, std::string* path, std::string* file = nullptr, std::string* extension = nullptr) /*const*/;
 

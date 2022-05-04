@@ -12,9 +12,7 @@
 #include <sstream> //std::stringstream
 
 #include "PhysFS/include/physfs.h"
-#include "IM_MeshLoader.h"
 #include"GameObject.h"
-#include"CO_Material.h"
 
 #include"MO_Editor.h"
 #include"MO_ResourceManager.h"
@@ -74,65 +72,11 @@ void FileSystem::FSInit()
 
 	FileSystem::AddPath("."); //Adding ProjectFolder (working directory)
 	FileSystem::AddPath("Assets");
-	FileSystem::AddPath("Library");
-	//FileSystem::AddPath("Assets/Primitives");
-	FileSystem::CreateLibraryFolders();
 }
 
 void FileSystem::FSDeInit()
 {
 	PHYSFS_deinit();
-}
-
-//TODO: Move this to resource manager
-void FileSystem::LoadDroppedFile(const char* globalPath)
-{
-	ImportType iType = GetTypeFromPath(globalPath);
-
-	if (iType == ImportType::NOTYPE) {
-		LOG( "File extension not supported yet");
-		return;
-	}
-
-
-	std::string normalizedPath = NormalizePath(globalPath);
-	std::string relativePath = StringLogic::GlobalToLocalPath(globalPath);
-
-	std::string output = "";
-
-	std::string fileNameAndExtension = StringLogic::GlobalToLocalPath(normalizedPath.c_str());
-	if (fileNameAndExtension.length() == 0)
-		fileNameAndExtension = normalizedPath;
-
-	if (Exists(fileNameAndExtension.c_str()) == 0)
-	{
-		Copy(globalPath, ASSETS_PATH, output);
-		fileNameAndExtension = output;
-	}
-
-	//UPDATE ASSETS WINDOW WITH NEW FILE, JUST RECALCULATE ALL FOR NOW
-	//TODO: Generate META FILE ASAP WHEN DROPPED
-	//EngineExternal->moduleResources->GenerateMeta();
-	std::string name = "";
-	GetFileName(fileNameAndExtension.c_str(), name, true);
-
-	AssetDir nFile(name.c_str(), fileNameAndExtension.c_str(), EngineExternal->moduleFileSystem->GetLastModTime(fileNameAndExtension.c_str()), false);
-	nFile.GenerateMeta();
-	nFile.CreateLibraryFileRecursive();
-
-	EngineExternal->moduleResources->NeedsDirsUpdate(EngineExternal->moduleResources->assetsRoot);
-}
-
-void FileSystem::CreateLibraryFolders()
-{
-	CreateDir(LIBRARY_PATH);
-	CreateDir(MESHES_PATH);
-	CreateDir(MODELS_PATH);
-	CreateDir(TEXTURES_PATH);
-	CreateDir(SCENES_PATH);
-	//CreateDir(SCRIPTS_PATH);
-	CreateDir(SHADERS_PATH);
-	CreateDir(MATERIALS_PATH);
 }
 
 // Add a new zip file or folder

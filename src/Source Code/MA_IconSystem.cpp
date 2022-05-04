@@ -19,7 +19,7 @@ void IconManager::CleanUp()
 	for (auto it = icons.begin(); it != icons.end(); it++)
 	{
 		if (it->second != nullptr)
-			EngineExternal->moduleResources->UnloadResource(it->second->GetUID());
+			EngineExternal->moduleResources->UnloadResource(it->second->GetAssetPath());
 	}
 	icons.clear();
 }
@@ -44,7 +44,7 @@ void IconManager::LoadPreDefinedIcons()
 void IconManager::LoadEditorIcon(const char* iconID, const char* path)
 {
 	//TODO: Maybe hard-coding id's is stupid, find a better way
-	icons.emplace(iconID, dynamic_cast<ResourceTexture*>(EngineExternal->moduleResources->RequestResource(iconCount, path)));
+	icons.emplace(iconID, dynamic_cast<ResourceTexture*>(EngineExternal->moduleResources->RequestResource(path, Resource::Type::TEXTURE)));
 	iconCount++;
 }
 

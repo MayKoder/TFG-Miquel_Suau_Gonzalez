@@ -4,7 +4,7 @@
 #include"IM_TextureImporter.h"
 #include"IM_FileSystem.h"
 
-ResourceTexture::ResourceTexture(unsigned int _uid) : Resource(_uid, Resource::Type::TEXTURE), textureID(0), tWidth(0), tHeight(0)
+ResourceTexture::ResourceTexture(std::string& _uid) : Resource(_uid, Resource::Type::TEXTURE), textureID(0), tWidth(0), tHeight(0)
 {
 	color = White;
 }
@@ -22,7 +22,7 @@ bool ResourceTexture::LoadToMemory()
 {
 	LOG( "Texture loaded to memory");
 	char* buffer = nullptr;
-	int size = FileSystem::LoadToBuffer(GetLibraryPath(), &buffer);
+	int size = FileSystem::LoadToBuffer(GetAssetPath().c_str(), &buffer);
 
 	textureID = TextureImporter::LoadToMemory(buffer, size, &tWidth, &tHeight);
 

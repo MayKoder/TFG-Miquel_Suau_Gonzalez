@@ -52,44 +52,6 @@ GLuint TextureImporter::LoadToMemory(char* buffer, int size, int* w, int* h)
 	return glID;
 }
 
-void TextureImporter::SaveDDS(char* buffer, int size, const char* fileName)
-{
-	ILuint imageID;
-	ilGenImages(1, &imageID);
-	ilBindImage(imageID);
-
-	if (!ilLoadL(IL_TYPE_UNKNOWN, buffer, size))
-	{
-		LOG( "Image not loaded");
-	}
-
-	//TODO: Move this to function
-	ILuint _size = 0;
-	ILubyte* data = nullptr;
-	ilSetInteger(IL_DXTC_FORMAT, IL_DXT5);
-	_size = ilSaveL(IL_DDS, nullptr, 0);
-	if (_size > 0) 
-	{
-		data = new ILubyte[_size];
-		ilSaveL(IL_DDS, data, _size);
-
-		std::string path(fileName);
-		//path += ".dds";
-
-		FileSystem::Save(path.c_str(), (char*)data, _size, false);
-
-		delete[] data;
-		data = nullptr;
-	}
-
-	ilDeleteImages(1, &imageID);
-}
-
-void TextureImporter::Import(char* buffer, int bSize, Resource* res)
-{
-	SaveDDS(buffer, bSize, res->GetLibraryPath());
-}
-
 /*Take a screenshot*/
 void TextureImporter::TakeScreenshot(int frameBuffer)
 {

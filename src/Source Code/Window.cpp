@@ -118,38 +118,38 @@ void Window::DrawShaderEditor()
 	ImGui::Dummy(ImVec2(10, 10));
 	if (ImGui::Button("Save and compile shader"))
 	{
-		//Check for errors
-		TempShader vertexShaderPair, fragmentShaderPair;
+		////Check for errors
+		//TempShader vertexShaderPair, fragmentShaderPair;
 
-		TextEditor::ErrorMarkers markers;
-		txtEditor.SetErrorMarkers(markers);
+		//TextEditor::ErrorMarkers markers;
+		//txtEditor.SetErrorMarkers(markers);
 
-		if (ShaderImporter::CheckForErrors(txtEditor.GetText(), vertexShaderPair, fragmentShaderPair) == true)
-		{
-			//Save glsl
-			FileSystem::Save(txtName.c_str(), &txtEditor.GetText()[0], txtEditor.GetText().length(), false);
+		//if (ShaderImporter::CheckForErrors(txtEditor.GetText(), vertexShaderPair, fragmentShaderPair) == true)
+		//{
+		//	//Save glsl
+		//	FileSystem::Save(txtName.c_str(), &txtEditor.GetText()[0], txtEditor.GetText().length(), false);
 
-			//Find resource
-			uint uid = EngineExternal->moduleResources->GetMetaUID(EngineExternal->moduleResources->GetMetaPath(txtName.c_str()).c_str());
-			Resource* res = EngineExternal->moduleResources->GetResourceFromUID(uid);
+		//	//Find resource
+		//	uint uid = EngineExternal->moduleResources->GetMetaUID(EngineExternal->moduleResources->GetMetaPath(txtName.c_str()).c_str());
+		//	Resource* res = EngineExternal->moduleResources->GetResourceFromUID(uid);
 
-			bool new_resource = false;
+		//	bool new_resource = false;
 
-			//Clear resource
-			if (res != nullptr)
-				res->UnloadFromMemory();
-			else
-			{
-				new_resource = true;
-				res = EngineExternal->moduleResources->RequestResource(uid, Resource::Type::SHADER);
-			}
+		//	//Clear resource
+		//	if (res != nullptr)
+		//		res->UnloadFromMemory();
+		//	else
+		//	{
+		//		new_resource = true;
+		//		res = EngineExternal->moduleResources->RequestResource(uid, Resource::Type::SHADER);
+		//	}
 
-			//Save .shdr and reimport data
-			ShaderImporter::Import(&txtEditor.GetText()[0], txtEditor.GetText().length(), dynamic_cast<ResourceShader*>(res), txtName.c_str());
+		//	//Save .shdr and reimport data
+		//	//ShaderImporter::Import(&txtEditor.GetText()[0], txtEditor.GetText().length(), dynamic_cast<ResourceShader*>(res), txtName.c_str());
 
-			if (new_resource)
-				EngineExternal->moduleResources->UnloadResource(uid);
-		}
+		//	if (new_resource)
+		//		EngineExternal->moduleResources->UnloadResource(uid);
+		//}
 	}
 
 	if (!txtName.empty())

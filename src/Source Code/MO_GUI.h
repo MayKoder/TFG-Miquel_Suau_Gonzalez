@@ -98,7 +98,7 @@ public:
 	void SetPanelData(int, int);
 
 	/*TODO: Temporal, move to another place or som'*/
-	void DrawGameObjectsTree(GameObject* node, bool drawAsDisabled);
+	//void DrawGameObjectsTree(GameObject* node, bool drawAsDisabled);
 
 	/*template <typename Func, typename... Args>*/
 	UIElement* AddUIButton(UIElement* parent, float2 pos, float2 rot, float2 scale)

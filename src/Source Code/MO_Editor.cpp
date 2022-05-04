@@ -180,29 +180,29 @@ void M_Editor::DrawMenuBar()
 			}
 			if (ImGui::MenuItem("Save scene", "CTRL+S"))
 			{
-				std::string sceneDir = M_FileSystem::OpenSaveAsDialog();
-				App->moduleFileSystem->ToLocalAssetsPath(sceneDir);
-				if (!sceneDir.empty())
-				{
-					App->moduleScene->SaveScene(sceneDir.c_str());
-					App->moduleResources->NeedsDirsUpdate(App->moduleResources->assetsRoot);
-				}
+				//std::string sceneDir = M_FileSystem::OpenSaveAsDialog();
+				//App->moduleFileSystem->ToLocalAssetsPath(sceneDir);
+				//if (!sceneDir.empty())
+				//{
+				//	App->moduleScene->SaveScene(sceneDir.c_str());
+				//	App->moduleResources->NeedsDirsUpdate(App->moduleResources->assetsRoot);
+				//}
 
 			}
-			if (ImGui::MenuItem("Load scene"))
-			{
+			//if (ImGui::MenuItem("Load scene"))
+			//{
 
-				std::string sceneDir = M_FileSystem::OpenFileSelectDialog();
-				
-				//WARNINR: Can't we += .meta to the string?
-				App->moduleFileSystem->ToLocalAssetsPath(sceneDir);
-				if (!sceneDir.empty()) 
-				{
-					std::string metaDir = App->moduleResources->GetMetaPath(sceneDir.c_str());
-					std::string test = App->moduleResources->LibraryFromMeta(metaDir.c_str());
-					App->moduleScene->LoadScene(test.c_str());
-				}
-			}
+			//	std::string sceneDir = M_FileSystem::OpenFileSelectDialog();
+			//	
+			//	//WARNINR: Can't we += .meta to the string?
+			//	App->moduleFileSystem->ToLocalAssetsPath(sceneDir);
+			//	//if (!sceneDir.empty()) 
+			//	//{
+			//	//	//std::string metaDir = App->moduleResources->GetMetaPath(sceneDir.c_str());
+			//	//	//std::string test = App->moduleResources->LibraryFromMeta(metaDir.c_str());
+			//	//	App->moduleScene->LoadScene(test.c_str());
+			//	//}
+			//}
 			if (ImGui::MenuItem("Quit", "Esc"))
 			{
 				App->ExitApplication();
@@ -212,7 +212,6 @@ void M_Editor::DrawMenuBar()
 		}
 		if (ImGui::BeginMenu("GameObject"))
 		{
-			DrawCreateMenu();
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Help"))
@@ -344,43 +343,6 @@ void M_Editor::DrawMenuBar()
 //
 //	dockspace_id = ImGui::DockSpaceOverViewportCustom(viewport, ImGuiDockNodeFlags_PassthruCentralNode, dockPos, dockSize, nullptr);
 //}
-
-
-void M_Editor::DrawCreateMenu()
-{
-	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, 1.f, 1.f, 1.f));
-
-	if (ImGui::MenuItem("Empty", nullptr))
-		App->moduleScene->CreateGameObject("Empty", App->moduleScene->root);
-
-	if (ImGui::BeginMenu("3D"))
-	{
-		//TODO: This is temporal, meshes should not laod every time and 
-		//should be stored only once, then only copy mesh pointers.
-		if (ImGui::MenuItem("Cube", nullptr)) 
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Cube.fbx.meta").c_str());
-		if (ImGui::MenuItem("Plane", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Plane.fbx.meta").c_str());
-		if (ImGui::MenuItem("Cylinder", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Cylinder.fbx.meta").c_str());
-		if (ImGui::MenuItem("Icosphere", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Icosphere.fbx.meta").c_str());
-		if (ImGui::MenuItem("Pyramid", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Pyramid.fbx.meta").c_str());
-		if (ImGui::MenuItem("Sphere", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Sphere.fbx.meta").c_str());
-		if (ImGui::MenuItem("Torus", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Torus.fbx.meta").c_str());
-		if (ImGui::MenuItem("Monkey", nullptr))
-			EngineExternal->moduleScene->LoadModelTree(EngineExternal->moduleResources->LibraryFromMeta("Assets/Primitives/Monkey.fbx.meta").c_str());
-		ImGui::EndMenu();
-	}
-	if (ImGui::MenuItem("Game Camera", nullptr))
-		App->moduleScene->CreateGameCamera("Game Camera");
-
-
-	ImGui::PopStyleColor(1);
-}
 
 //Save a style to JSON
 void M_Editor::SaveStyle(const char* styleName)

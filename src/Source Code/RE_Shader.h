@@ -22,7 +22,7 @@ class ResourceShader : public Resource
 {
 
 public:
-	ResourceShader(unsigned int _uid);
+	ResourceShader(std::string& _uid);
 	~ResourceShader();
 
 	void LinkToProgram();
@@ -73,6 +73,15 @@ public:
 		GLint modelLoc = glGetUniformLocation(this->shaderProgramID, inputName);
 		if (modelLoc != -1) {
 			glUniformMatrix3fv(modelLoc, 1, GL_FALSE, value.ptr());
+		}
+		else {
+
+		}
+	}
+	void SetMatrix4(const char* inputName, float4x4& value) {
+		GLint modelLoc = glGetUniformLocation(this->shaderProgramID, inputName);
+		if (modelLoc != -1) {
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value.ptr());
 		}
 		else {
 

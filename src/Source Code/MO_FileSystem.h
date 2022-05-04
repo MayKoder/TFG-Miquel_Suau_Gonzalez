@@ -30,8 +30,4 @@ public:
 
 	//Permanent delete, use with caution
 	int DeleteAssetFile(const char* fileDir);
-
-private:
-	void GenerateAllMetaFiles();
-	void ImportAssetsToLibrary();
 };

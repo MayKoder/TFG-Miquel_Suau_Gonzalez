@@ -119,7 +119,7 @@ bool M_GUI::Start()
 
 	/*AddUIElement(AddUIElement(root, float2::zero, float2::zero, float2(0.9, 0.5)), float2::zero, float2::zero, float2(0.9, 0.9));*/
 
-	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource(App->GetRandomInt(), "Library\/Shaders\/1569048839.shdr"));
+	uiShader = dynamic_cast<ResourceShader*>(App->moduleResources->RequestResource("Assets/Shaders/uiRender.glsl", Resource::Type::SHADER));
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -179,7 +179,7 @@ bool M_GUI::Start()
 		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
-			DrawGameObjectsTree(App->moduleScene->root, false);
+			//DrawGameObjectsTree(App->moduleScene->root, false);
 		}
 		ImGui::End();
 	};
@@ -252,7 +252,7 @@ bool M_GUI::CleanUp()
 		uiTools[i] = nullptr;
 	}
 
-	App->moduleResources->UnloadResource(uiShader->GetUID());
+	App->moduleResources->UnloadResource(uiShader->GetAssetPath());
 	
 	delete root;
 	root = nullptr;
@@ -423,77 +423,77 @@ void M_GUI::SetPanelData(int w, int h)
 	send->animator.Invert();
 }
 
-void M_GUI::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)
-{
-	if (drawAsDisabled == false)
-		drawAsDisabled = !node->isActive();
-
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
-
-	if (node->children.size() == 0)
-		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-
-	//if (node == EngineExternal->moduleEditor->GetSelectedGO())
-	//	flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
-
-
-	if (drawAsDisabled)
-		ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
-
-	bool nodeOpen = ImGui::TreeNodeEx(node, flags, node->name.c_str());
-
-	if (drawAsDisabled)
-		ImGui::PopStyleColor();
-
-	//Only can use if this is not the root node
-	//ASK: Should the root node really be a gameobject? Problems with checks
-	if (!node->IsRoot())
-	{
-		//Start drag for reparent
-		if (ImGui::BeginDragDropSource(/*ImGuiDragDropFlags_SourceNoDisableHover*/))
-		{
-			ImGui::SetDragDropPayload("_GAMEOBJECT", node, sizeof(GameObject*));
-
-			//dropTarget = node;
-
-			ImGui::Text("Change parent to...");
-			ImGui::EndDragDropSource();
-		}
-
-		//if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left))
-		//{
-		//	EngineExternal->moduleEditor->SetSelectedGO(node);
-		//	if (EngineExternal->moduleEditor->GetSelectedAsset() != nullptr)
-		//		EngineExternal->moduleEditor->SetSelectedAsset(nullptr);
-		//}
-	}
-
-	node->showChildren = (node->children.size() == 0) ? false : nodeOpen;
-
-	//All nodes can be a drop target
-	if (ImGui::BeginDragDropTarget())
-	{
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_GAMEOBJECT"))
-		{
-
-			GameObject* dropGO = static_cast<GameObject*>(payload->Data);
-			//memcpy(dropGO, payload->Data, payload->DataSize);
-
-			//dropTarget->ChangeParent(node);
-			//LOG(  "%s", dropTarget->name.c_str());
-			//dropTarget = nullptr;
-		}
-		ImGui::EndDragDropTarget();
-	}
-
-
-	if (node->showChildren == true)
-	{
-
-		for (unsigned int i = 0; i < node->children.size(); i++)
-		{
-			DrawGameObjectsTree(node->children[i], drawAsDisabled);
-		}
-		ImGui::TreePop();
-	}
-}
+//void M_GUI::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)
+//{
+//	if (drawAsDisabled == false)
+//		drawAsDisabled = !node->isActive();
+//
+//	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+//
+//	if (node->children.size() == 0)
+//		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+//
+//	//if (node == EngineExternal->moduleEditor->GetSelectedGO())
+//	//	flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
+//
+//
+//	if (drawAsDisabled)
+//		ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
+//
+//	bool nodeOpen = ImGui::TreeNodeEx(node, flags, node->name.c_str());
+//
+//	if (drawAsDisabled)
+//		ImGui::PopStyleColor();
+//
+//	//Only can use if this is not the root node
+//	//ASK: Should the root node really be a gameobject? Problems with checks
+//	if (!node->IsRoot())
+//	{
+//		//Start drag for reparent
+//		if (ImGui::BeginDragDropSource(/*ImGuiDragDropFlags_SourceNoDisableHover*/))
+//		{
+//			ImGui::SetDragDropPayload("_GAMEOBJECT", node, sizeof(GameObject*));
+//
+//			//dropTarget = node;
+//
+//			ImGui::Text("Change parent to...");
+//			ImGui::EndDragDropSource();
+//		}
+//
+//		//if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left))
+//		//{
+//		//	EngineExternal->moduleEditor->SetSelectedGO(node);
+//		//	if (EngineExternal->moduleEditor->GetSelectedAsset() != nullptr)
+//		//		EngineExternal->moduleEditor->SetSelectedAsset(nullptr);
+//		//}
+//	}
+//
+//	node->showChildren = (node->children.size() == 0) ? false : nodeOpen;
+//
+//	//All nodes can be a drop target
+//	if (ImGui::BeginDragDropTarget())
+//	{
+//		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_GAMEOBJECT"))
+//		{
+//
+//			GameObject* dropGO = static_cast<GameObject*>(payload->Data);
+//			//memcpy(dropGO, payload->Data, payload->DataSize);
+//
+//			//dropTarget->ChangeParent(node);
+//			//LOG(  "%s", dropTarget->name.c_str());
+//			//dropTarget = nullptr;
+//		}
+//		ImGui::EndDragDropTarget();
+//	}
+//
+//
+//	if (node->showChildren == true)
+//	{
+//
+//		for (unsigned int i = 0; i < node->children.size(); i++)
+//		{
+//			DrawGameObjectsTree(node->children[i], drawAsDisabled);
+//		}
+//		ImGui::TreePop();
+//	}
+//}

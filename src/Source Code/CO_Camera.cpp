@@ -7,8 +7,6 @@
 #include"MathGeoLib/include/Geometry/Plane.h"
 #include"MathGeoLib/include/Geometry/AABB.h"
 
-#include"RE_Material.h"
-
 #include"MO_Renderer3D.h"
 #include"MO_Scene.h"
 
@@ -182,7 +180,7 @@ void C_Camera::StartDraw()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	PushCameraMatrix();
 

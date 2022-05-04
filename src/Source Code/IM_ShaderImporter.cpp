@@ -5,43 +5,6 @@
 #include "IM_FileSystem.h"
 #include "MO_Editor.h"
 
-void ShaderImporter::Import(char* buffer, int bSize, ResourceShader* res, const char* assetsPath)
-{
-//Get every shader typs string from the glsl
-	//Buffer is now a complete shader with 2 types
-	//Get a string for every shader type with find
-	//Compile string
-	//Save binary as type sizes + shader codes
-	if (buffer == NULL)
-		return;
-
-	std::string bufferString(buffer);
-	TempShader vertexShaderPair;
-	TempShader fragmentShaderPair;
-
-	CheckForErrors(bufferString, vertexShaderPair, fragmentShaderPair);
-
-	if (vertexShaderPair.tmpID != 0 && fragmentShaderPair.tmpID != 0)
-	{
-		res->shaderObjects[(int)ShaderType::SH_Vertex] = vertexShaderPair.tmpID;
-		res->shaderObjects[(int)ShaderType::SH_Frag] = fragmentShaderPair.tmpID;
-
-		res->LinkToProgram();
-
-		char* saveBuffer = res->SaveShaderCustomFormat(vertexShaderPair.data.second, vertexShaderPair.data.first, fragmentShaderPair.data.second, fragmentShaderPair.data.first);
-		
-		std::string shaderFileName = SHADERS_PATH;
-		shaderFileName += std::to_string(res->GetUID());
-		shaderFileName += ".shdr";
-		
-		FileSystem::Save(shaderFileName.c_str(), saveBuffer, 8 + vertexShaderPair.data.first + fragmentShaderPair.data.first, false);
-
-		//res->LoadShaderCustomFormat(shaderFileName.c_str());
-
-		RELEASE_ARRAY(saveBuffer);
-	}
-}
-
 bool ShaderImporter::CheckForErrors(std::string& glslBuffer, TempShader& vertexShader, TempShader& fragmentShader)
 {
 	size_t startByte = glslBuffer.find("#ifdef vertex");
@@ -117,7 +80,7 @@ bool ShaderImporter::CheckForErrors(std::string& glslBuffer, TempShader& vertexS
 //		RELEASE_ARRAY(pairBuffer);
 //}
 
-GLuint ShaderImporter::Compile(char* fileBuffer, ShaderType type, const GLint size)
+GLuint ShaderImporter::Compile(const char* fileBuffer, ShaderType type, const GLint size)
 {
 	GLuint compileShader = 0;
 	compileShader = glCreateShader((type == ShaderType::SH_Vertex) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);

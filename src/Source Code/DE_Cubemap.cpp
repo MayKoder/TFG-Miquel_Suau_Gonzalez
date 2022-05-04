@@ -70,7 +70,7 @@ void DE_Cubemap::ClearMemory()
 	//	glDeleteBuffers(1, &vboId);
 
 	if (shaderRes)
-		EngineExternal->moduleResources->UnloadResource(shaderRes->GetUID());
+		EngineExternal->moduleResources->UnloadResource(shaderRes->GetAssetPath());
 
 
 	//glDeleteVertexArrays(1, &VAO);

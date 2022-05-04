@@ -5,9 +5,8 @@
 #include"IM_ShaderImporter.h"
 
 #include"ImGui/imgui.h"
-#include"RE_Material.h"
 
-ResourceShader::ResourceShader(unsigned int _uid) : Resource(_uid, Resource::Type::SHADER), shaderProgramID(0)
+ResourceShader::ResourceShader(std::string& _uid) : Resource(_uid, Resource::Type::SHADER), shaderProgramID(0)
 {
 	for (GLuint i = 0; i < static_cast<GLuint>(ShaderType::SH_Max); i++)
 		shaderObjects[i] = 0;
@@ -54,17 +53,15 @@ void ResourceShader::LinkToProgram()
 		shaderObjects[i] = 0;
 	}
 
-	//TODO: Find all the active materials using this shader and update their uniforms with material->FillVariables()
-	//TODO: What if the shader changes on some materials?
-	for (std::vector<ResourceMaterial*>::iterator i = references.begin(); i != references.end(); ++i)
-	{
-		(*i)->FillVariables();
-	}
+	//for (std::vector<ResourceMaterial*>::iterator i = references.begin(); i != references.end(); ++i)
+	//{
+	//	(*i)->FillVariables();
+	//}
 }
 
 bool ResourceShader::LoadToMemory()
 {
-	LoadShaderCustomFormat(libraryFile.c_str());
+	LoadShaderCustomFormat(assetsFile.c_str());
 	return false;
 }
 
@@ -118,6 +115,43 @@ char* ResourceShader::SaveShaderCustomFormat(char* vertexObjectBuffer, int vofSi
 void ResourceShader::LoadShaderCustomFormat(const char* libraryPath)
 {
 	char* fileBuffer = nullptr;
+	uint size = FileSystem::LoadToBuffer(libraryPath, &fileBuffer);
+
+	std::string shaderFile = std::string(fileBuffer);
+	for (size_t i = 0; i < (int)ShaderType::SH_Max; i++)
+	{
+		size_t indicator = shaderFile.find("#ifdef");
+		if (indicator != std::string::npos)
+		{
+
+			size_t endPos = shaderFile.find("#endif");
+			assert(endPos != std::string::npos && "#endif missing in shader");
+
+			std::string subGLSLstring = shaderFile.substr(indicator, endPos - indicator);
+
+			std::string vertexType;
+			ShaderType type = ShaderType::SH_Max;
+			if (subGLSLstring.find("#ifdef vertex") != std::string::npos) {
+				vertexType = "#ifdef vertex";
+				type = ShaderType::SH_Vertex;
+			}
+			else if (subGLSLstring.find("#ifdef fragment") != std::string::npos) {
+				vertexType = "#ifdef fragment";
+				type = ShaderType::SH_Frag;
+			}
+
+			std::string clearShaderBloc = subGLSLstring.substr(vertexType.length());
+			shaderObjects[(int)type] = ShaderImporter::Compile(clearShaderBloc.c_str(), type, clearShaderBloc.length());
+			shaderFile = shaderFile.substr(endPos + sizeof("#endif"));
+		}
+	}
+
+	this->LinkToProgram();
+	RELEASE_ARRAY(fileBuffer);
+	shaderFile.clear();
+
+
+	/*char* fileBuffer = nullptr;
 
 	uint size = FileSystem::LoadToBuffer(libraryPath, &fileBuffer);
 
@@ -151,5 +185,5 @@ void ResourceShader::LoadShaderCustomFormat(const char* libraryPath)
 
 	RELEASE_ARRAY(vertex);
 	RELEASE_ARRAY(fragment);
-	RELEASE_ARRAY(fileBuffer);
+	RELEASE_ARRAY(fileBuffer);*/
 }

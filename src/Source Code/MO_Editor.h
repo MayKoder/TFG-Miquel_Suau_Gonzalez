@@ -32,8 +32,6 @@ public:
 
 	bool CleanUp() override;
 
-	void DrawCreateMenu();
-
 	void SaveStyle(const char* styleName);
 	void ChangeStyleTo(const char* styleName);
 	void DeleteStyle(const char* styleName);

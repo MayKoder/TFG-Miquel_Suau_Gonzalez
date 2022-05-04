@@ -52,32 +52,6 @@ void W_Scene::Draw()
 		App->moduleCamera->editorCamera.SetAspectRatio(ImGui::GetContentRegionAvail().x / ImGui::GetContentRegionAvail().y);
 		ImGui::Image((ImTextureID)App->moduleCamera->editorCamera.resolvedFBO.GetTextureBuffer(), size, ImVec2(0, 1), ImVec2(1, 0));
 
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_MODEL"))
-			{
-				//Drop asset from Asset window to scene window
-				std::string* name = (std::string*)payload->Data;
-
-				//TODO: This is working only with textures now
-				std::string libPath = EngineExternal->moduleResources->LibraryFromMeta((*name).c_str());
-				EngineExternal->moduleScene->LoadModelTree(libPath.c_str());
-				
-				LOG( "Model %s loaded to resource manager", (*name).c_str());
-			}
-
-			if (const ImGuiPayload * payload = ImGui::AcceptDragDropPayload("_TEXTURE"))
-			{
-				//Drop asset from Asset window to scene window
-				std::string* name = (std::string*)payload->Data;
-				
-				//TODO: Change selected mesh texture
-				//EngineExternal->moduleResources->AssetsToScene((*name).c_str());
-				LOG( "Texture %s did nothing", (*name).c_str());
-			}
-			ImGui::EndDragDropTarget();
-		}
-
 		int position = 10;
 		ImGui::SetCursorPos(ImVec2(position, 30));
 		if (ImGui::Button((mode == ImGuizmo::MODE::LOCAL) ? "LOCAL" : "WORLD"))

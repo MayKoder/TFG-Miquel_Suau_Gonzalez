@@ -24,7 +24,7 @@ void LineRenderer::InitLineRenderer()
 
 	renderData.UnBind();
 
-	shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource(763632538, "Library/Shaders/763632538.shdr"));
+	shaderRes = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource("Assets/Shaders/lineRenderer.glsl", Resource::Type::SHADER));
 }
 
 void LineRenderer::AddPoint(float3 point)

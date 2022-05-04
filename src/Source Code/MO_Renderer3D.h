@@ -10,8 +10,6 @@
 #include"DE_Cubemap.h"
 #include"GridManager.h"
 
-//#include"MM_ProceduralMeshGenerator.h"
-
 #include<map>
 
 class ResourceMesh;
@@ -79,7 +77,6 @@ public:
 	GLubyte checkerImage[SQUARE_TEXTURE_W][SQUARE_TEXTURE_H][4];
 
 	std::vector<GameObject*> renderQueue;
-	//std::multimap<float, C_MeshRenderer*> renderQueueMap;
 
 	SDL_GLContext context;
 
@@ -87,14 +84,11 @@ public:
 	DE_Cubemap skybox;
 	C_DirectionalLight* directLight;
 
-
 	//GridManager gridInstance;
-
 
 private:
 	//std::vector<LineRender> lines;
 	LineSegment pickingDebug;
-
 
 	//MMP_Plane plane;
 };

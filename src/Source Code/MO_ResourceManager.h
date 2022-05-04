@@ -28,48 +28,22 @@ public:
 
 
 	int GenerateNewUID();
-	int GetMetaUID(const char* metaFile) const;
 	int ExistsOnLibrary(const char* file_in_assets) const;	
-	int CreateLibraryFromAssets(const char* assetsFile);
-	int ImportFile(const char* assetsFile, Resource::Type type);
 
-	void PopulateFileArray();
-	void UnloadResource(int uid);
-	Resource* RequestFromAssets(const char* assets_path);
-	void GenerateMeta(const char* aPath, const char* lPath, unsigned int uid, Resource::Type type);
+	void UnloadResource(std::string&);
 
-	Resource* RequestResource(int uid, Resource::Type type);
-	Resource* RequestResource(int uid, const char* libraryPath = nullptr);
-	Resource* CreateNewResource(const char* assetsFile, uint uid, Resource::Type type);
-	Resource* LoadFromLibrary(const char* libraryFile, Resource::Type type, uint _uid);
-	Resource* GetResourceFromUID(int uid);
+	Resource* RequestResource(std::string, Resource::Type type);
+	Resource* RequestResource(std::string&);
 	
-	Resource::Type GetMetaType(const char* metaFile) const;
 	Resource::Type GetTypeFromAssetExtension(const char* assetFile) const;
-	Resource::Type GetTypeFromLibraryExtension(const char* libraryFile) const;
-
-	std::string GetMetaPath(const char* assetsFile);
-	std::string LibraryFromMeta(const char* metaFile);
-	std::string GenLibraryPath(uint _uid, Resource::Type _type);
-
-	void UpdateMeshesDisplay();
-	void NeedsDirsUpdate(AssetDir& dir);
 
 private:
-	void LoadResource(int uid);
-	void ReleaseResource(int uid);
-	void UpdateFile(AssetDir& modDir);
+	void LoadResource(std::string&);
+	void ReleaseResource(std::string& uid);
 
-	bool IsResourceLoaded(int uid);
+	bool IsResourceLoaded(std::string&);
 
 
 private:
-	std::map<int, Resource*> resources;
-
-	float fileCheckTime;
-	float fileUpdateDelay;
-
-public:
-	AssetDir assetsRoot;
-	AssetDir meshesLibraryRoot;
+	std::map<std::string, Resource*> resources;
 };

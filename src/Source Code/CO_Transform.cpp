@@ -5,9 +5,6 @@
 #include <vector>
 #include"GameObject.h"
 
-#include"CO_MeshRenderer.h"
-#include"RE_Mesh.h"
-
 C_Transform::C_Transform() : Component(nullptr), updateTransform(false)
 {
 	globalTransform.SetIdentity();
@@ -166,17 +163,17 @@ C_Transform* C_Transform::GetRecursiveTransforms(C_Transform* node, std::vector<
 
 void C_Transform::UpdateBoxes()
 {
-	C_MeshRenderer* mesh = nullptr;
-	mesh = gameObject->GetComponent<C_MeshRenderer>();
-	if (mesh != nullptr && mesh->GetRenderMesh() != nullptr)
-	{
-		mesh->globalOBB = mesh->GetRenderMesh()->localAABB;
-		mesh->globalOBB.Transform(globalTransform);
+	//C_MeshRenderer* mesh = nullptr;
+	//mesh = gameObject->GetComponent<C_MeshRenderer>();
+	//if (mesh != nullptr && mesh->GetRenderMesh() != nullptr)
+	//{
+	//	mesh->globalOBB = mesh->GetRenderMesh()->localAABB;
+	//	mesh->globalOBB.Transform(globalTransform);
 
-		// Generate global AABB
-		mesh->globalAABB.SetNegativeInfinity();
-		mesh->globalAABB.Enclose(mesh->globalOBB);
-	}
+	//	// Generate global AABB
+	//	mesh->globalAABB.SetNegativeInfinity();
+	//	mesh->globalAABB.Enclose(mesh->globalOBB);
+	//}
 }
 
 float3x3 C_Transform::NormalMatrixOpenGL() const

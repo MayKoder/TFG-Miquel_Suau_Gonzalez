@@ -9,14 +9,13 @@
 #include "MO_Input.h"
 #include "MO_GUI.h"
 
-#include "RE_Mesh.h"
 #include "RE_Texture.h"
 #include "mmgr/mmgr.h"
 #include "DE_FrameBuffer.h"
+#include"GO_Bridge.h"
 
 #include"GameObject.h"
 
-#include"CO_MeshRenderer.h"
 #include"CO_Camera.h"
 #include"CO_Transform.h"
 #include"CO_DirectionalLight.h"
@@ -196,6 +195,7 @@ bool ModuleRenderer3D::Init()
 // PreUpdate: clear buffer
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
+	//dynamic_cast<GO_Bridge*>(this->renderQueue[0])->CreatBridge();
 	//gridInstance.UpdateInput(App->moduleGUI->selectedTool);
 	return UPDATE_CONTINUE;
 }
@@ -225,6 +225,24 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//
 	
 	//gridInstance.RenderGridTemporal();
+	glBegin(GL_LINES);
+
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(1.0, 0.0, 0.0);
+
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0.0, 1.0, 0.0);
+
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0.0, 0.0, 1.0);
+
+	glEnd();
 
 	//Uint32 start = SDL_GetTicks();
 	//TODO: This should not be here
@@ -282,7 +300,14 @@ bool ModuleRenderer3D::CleanUp()
 	//gridInstance.ClearMemory();
 
 	SDL_GL_DeleteContext(context);
-	ClearAllRenderData();
+	/*ClearAllRenderData();*/
+
+	//for (size_t i = 0; i < renderQueue.size(); i++)
+	//{
+	//	delete renderQueue[i];
+	//	renderQueue[i] = nullptr;
+	//}
+	//renderQueue.clear();
 
 	return true;
 }
@@ -590,7 +615,7 @@ void ModuleRenderer3D::SetGameRenderTarget(C_Camera* cam)
 void ModuleRenderer3D::ClearAllRenderData()
 {
 	//renderQueueMap.clear();
-	renderQueue.clear();
+	//renderQueue.clear();
 	
 	//lines.clear();
 }

@@ -20,16 +20,14 @@ public:
 	};
 
 public:
-	Resource(int _uid, Resource::Type _type);
+	Resource(std::string& _uid, Resource::Type _type);
 	virtual ~Resource();
 
 	inline Resource::Type GetType() const { return type; }
-	inline int GetUID() const { return uid; }
-	inline const char* GetAssetPath() const { return assetsFile.c_str(); }
-	inline const char* GetLibraryPath() const { return libraryFile.c_str(); }
+	inline const char* GetUID() const { return uid.c_str(); }
+	inline std::string GetAssetPath() const { return assetsFile; }
 
 	void SetAssetsPath(const char*);
-	void SetLibraryPath(const char*);
 
 	//inline bool IsLoadedToMemory() const { return (referenceCount >= 0) ? true : false; }
 
@@ -46,9 +44,8 @@ public:
 
 protected:
 
-	int uid;
+	std::string uid;
 	std::string assetsFile;
-	std::string libraryFile;
 	Type type = Type::UNKNOWN;
 	unsigned int referenceCount;
 };

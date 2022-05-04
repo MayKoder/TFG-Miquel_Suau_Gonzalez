@@ -12,18 +12,6 @@ struct AssetDir
 
 	void ClearData();
 
-	bool HasMeta();
-	void GenerateMeta();
-	void LoadDataFromMeta();
-	//void ReadMeta();
-
-	void GenerateMetaRecursive();
-	void CreateLibraryFileRecursive();
-
-	void GenerateMetaPath();
-
-	void DeletePermanent();
-
 	std::string dirName = ""; //File name
 
 	std::string importPath = ""; //Assets path

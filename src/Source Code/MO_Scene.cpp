@@ -10,7 +10,6 @@
 #include "MO_ResourceManager.h"
 
 #include"MaykMath.h"
-
 #include "IM_FileSystem.h"
 
 #include"DEJsonSupport.h"
@@ -19,7 +18,8 @@
 
 #include"RE_Texture.h"
 #include"DETime.h"
-#include"RE_Material.h"
+
+#include"GO_Bridge.h"
 
 M_Scene::M_Scene(Application* app, bool start_enabled) : Module(app, start_enabled), root(nullptr),
 defaultMaterial(nullptr)
@@ -46,6 +46,8 @@ bool M_Scene::Start()
 //	// TODO: Maybe this should be handled on the editor module? texture #include is stupid
 //	App->moduleEditor->editorIcons.LoadPreDefinedIcons();
 //#endif // !STANDALONE
+
+	App->moduleRenderer3D->renderQueue.push_back(new GO_Bridge("Bridge", root));
 
 	return true;
 }
@@ -152,8 +154,8 @@ update_status M_Scene::Update(float dt)
 bool M_Scene::CleanUp()
 {
 	//This will delete all the gameObjects
-	if (defaultMaterial != nullptr)
-		EngineExternal->moduleResources->UnloadResource(defaultMaterial->GetUID());
+	//if (defaultMaterial != nullptr)
+	//	EngineExternal->moduleResources->UnloadResource(defaultMaterial->getasse());
 
 	delete root;
 	return true;

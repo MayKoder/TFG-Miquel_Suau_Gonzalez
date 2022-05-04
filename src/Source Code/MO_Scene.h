@@ -30,10 +30,6 @@ public:
 	GameObject* GetGOFromUID(GameObject* n, uint sUID);
 	GameObject* CreateGameObject(const char* name, GameObject* parent, int _uid = -1);
 
-//#ifndef STANDALONE
-//	void OnGUI() override;
-//#endif // !STANDALONE
-
 	void SaveScene(const char* name);
 	void LoadScene(const char* name);
 
@@ -47,7 +43,6 @@ public:
 
 	GameObject* root;
 	std::vector<GameObject*> destroyList;
-	//std::multimap<uint, SerializedField*> referenceMap;
 
 	ResourceMaterial* defaultMaterial;
 
