@@ -90,18 +90,35 @@ Primitive PMG::CreateCylinder(float4x4& transform, int hDivisions, int vDivision
 	float halfUpperSize = 1.0;
 	float upperIncrement = (2.0 * halfUpperSize) / static_cast<float>(hDivisions);
 
+	float3 bezPointA = float3(0.0, halfUpperSize, 0.0);
+	float3 bezPointB = curveOffset;
+	float3 bezPointC = float3(0.0, -halfUpperSize, 0.0);
+
 	float normalizedIncrementA = 0.0;
 	float normalizedIncrementB = 0.0;
 	//WARNING: This may need a revision for overflow Y
 	for (float yh = halfUpperSize; yh > -halfUpperSize; yh -= upperIncrement)
 	{
 
-		normalizedIncrementA = (halfUpperSize - abs(yh)) / halfUpperSize;
+		normalizedIncrementA = (yh - (halfUpperSize)) / (-halfUpperSize - halfUpperSize);
+
+		float3 lerpedA = bezPointA.Lerp(bezPointB, normalizedIncrementA);
+		float3 lerpedB = bezPointB.Lerp(bezPointC, normalizedIncrementA);
+		float3 lerpedFinal = lerpedA.Lerp(lerpedB, normalizedIncrementA);
+		lerpedFinal.y = 0.0;
+		//normalizedIncrementA = pow(2, 10 * normalizedIncrementA - 10);
 
 		float clampY = yh - upperIncrement;
 		CLAMP(clampY,-halfUpperSize, halfUpperSize);
 
-		normalizedIncrementB = (halfUpperSize - abs(clampY)) / halfUpperSize;
+		normalizedIncrementB = (clampY - (halfUpperSize)) / (-halfUpperSize - halfUpperSize);
+		float3 lerpedA2 = bezPointA.Lerp(bezPointB, normalizedIncrementB);
+		float3 lerpedB2 = bezPointB.Lerp(bezPointC, normalizedIncrementB);
+		float3 lerpedFinal2 = lerpedA2.Lerp(lerpedB2, normalizedIncrementB);
+		lerpedFinal2.y = 0.0;
+		//normalizedIncrementB = pow(2, 10 * normalizedIncrementB - 10);
+
+		/*LOG("%f", pow(2, 10 * normalizedIncrementA - 10));*/
 
 		for (float i = 0; i <= (2.0 * PI); i += step)
 		{
@@ -113,19 +130,17 @@ Primitive PMG::CreateCylinder(float4x4& transform, int hDivisions, int vDivision
 
 
 			a.Set(x, clampY, z);
-			a = a + float3::Lerp(float3::zero, curveOffset, normalizedIncrementB);
-
+			a = a + lerpedFinal2;
 			b.Set(x, yh, z);
-			b = b + float3::Lerp(float3::zero, curveOffset, normalizedIncrementA);
+			b = b + lerpedFinal;
 
 			x = 0.0 + 1.0 * cos(i + step);
 			z = 0.0 + 1.0 * sin(i + step);
 
 			c.Set(x, yh, z);
-			c = c + float3::Lerp(float3::zero, curveOffset, normalizedIncrementA);
-
+			c = c + lerpedFinal;
 			d.Set(x, clampY, z);
-			d = d + float3::Lerp(float3::zero, curveOffset, normalizedIncrementB);
+			d = d + lerpedFinal2;
 
 			float3 normal = ret.CalculateQuadNormal(a, b, c, d);
 

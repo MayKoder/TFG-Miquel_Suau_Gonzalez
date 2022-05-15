@@ -17,4 +17,9 @@ public:
 private:
 	float counter;
 
+	float3 basePositionA;
+	float3 basePositionB;
+
+	float3 ropeOffset;
+
 };

@@ -180,6 +180,8 @@ bool M_GUI::Start()
 		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize))
 		{
 			//DrawGameObjectsTree(App->moduleScene->root, false);
+			if (App->moduleRenderer3D->renderQueue[0] != nullptr)
+				App->moduleRenderer3D->renderQueue[0]->DrawOptionsMenu();
 		}
 		ImGui::End();
 	};

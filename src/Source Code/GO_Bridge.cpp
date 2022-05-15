@@ -7,8 +7,11 @@
 #include"CO_Camera.h"
 #include"MO_Renderer3D.h"
 #include"CO_Transform.h"
+#include"ImGui/imgui.h"
 
-GO_Bridge::GO_Bridge(const char* name, GameObject* parent, int _uid) : GameObject(name, parent, _uid)
+GO_Bridge::GO_Bridge(const char* name, GameObject* parent, int _uid) : GameObject(name, parent, _uid),
+basePositionA(float3(abs(sinf(counter)) * 10.0, 0.5, 0.0)), basePositionB(float3(-5.0, 0.5, 0.0)),
+ropeOffset(float3(-10.5, 0., 0.))
 {
 	//this->objPrimitives.push_back(PMG::CreateCylinder(40, 20));
 	counter = 0.0f;
@@ -55,45 +58,53 @@ void GO_Bridge::Draw()
 
 void GO_Bridge::DrawOptionsMenu()
 {
+	ImGui::Text("Bridge settings");
+	ImGui::Spacing();
+
+	if (ImGui::SliderFloat3("Base A", basePositionA.ptr(), 0.0, 5.0)) {
+		CreatBridge();
+	}	
+	
+	if (ImGui::SliderFloat3("Rope point", ropeOffset.ptr(), -20.0, 20.0)) {
+		CreatBridge();
+	}
 }
 
 void GO_Bridge::CreatBridge()
 {
 	this->objPrimitives.clear();
-	float3 cubeAPosition = float3(abs(sinf(counter)) * 10.0, 0.5, 0.0);
-	float3 cubeBPosition = float3(-5.0, 0.5, 0.0);
 	float cubeSize = 1.0;
 
-	//this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(float3(0., 0., 0.), Quat::FromEulerXYZ(0.), float3::one) , 8, 10));
+	//this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(float3(0., 0., 0.), Quat::FromEulerXYZ(0., 0., 0.), float3::one) , 8, 10));
 	//this->objPrimitives.push_back(PMG::CreateQuad(float4x4::FromTRS(float3::zero, Quat::identity, float3(FLT_MAX, FLT_MAX, FLT_MAX))));
 
 	//Base cubes
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cubeAPosition, Quat::identity, float3(cubeSize, 1.0, 3.0))));
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cubeBPosition, Quat::identity, float3(cubeSize, 1.0, 3.0))));
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA, Quat::identity, float3(cubeSize, 1.0, 3.0))));
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB, Quat::identity, float3(cubeSize, 1.0, 3.0))));
 
 
 	//Poles
 	float3 poleOffset = float3(0.3, 1.0, 1.0);
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cubeBPosition + poleOffset.Mul(float3(1.0, 1.0, -1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cubeBPosition + poleOffset, Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB + poleOffset.Mul(float3(1.0, 1.0, -1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB + poleOffset, Quat::identity, float3(0.15, 1.0, 0.15))));
 
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cubeAPosition + poleOffset.Mul(float3(-1.0, 1.0, -1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cubeAPosition + poleOffset.Mul(float3(-1.0, 1.0, 1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA + poleOffset.Mul(float3(-1.0, 1.0, -1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA + poleOffset.Mul(float3(-1.0, 1.0, 1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
 
 	//Ropes
-	float3 poleAPosition = (cubeAPosition + poleOffset.Mul(float3(-1.0, 1.0, -1.0)));
-	float3 poleBPosition = (cubeBPosition + poleOffset.Mul(float3(1.0, 1.0, -1.0)));
-	this->objPrimitives.push_back(PMG::CreateCylinder(CalculateRopeTransform(poleAPosition, poleBPosition), 30, 20, float3(-5.5, 0., 0.)));
+	float3 poleAPosition = (basePositionA + poleOffset.Mul(float3(-1.0, 1.0, -1.0)));
+	float3 poleBPosition = (basePositionB + poleOffset.Mul(float3(1.0, 1.0, -1.0)));
+	this->objPrimitives.push_back(PMG::CreateCylinder(CalculateRopeTransform(poleAPosition, poleBPosition), 30, 20, ropeOffset));
 
-	poleAPosition = (cubeAPosition + poleOffset.Mul(float3(-1.0, 1.0, 1.0)));
-	poleBPosition = (cubeBPosition + poleOffset.Mul(float3(1.0, 1.0, 1.0)));
-	this->objPrimitives.push_back(PMG::CreateCylinder(CalculateRopeTransform(poleAPosition, poleBPosition), 30, 20, float3(-5.5, 0., 0.)));
+	poleAPosition = (basePositionA + poleOffset.Mul(float3(-1.0, 1.0, 1.0)));
+	poleBPosition = (basePositionB + poleOffset.Mul(float3(1.0, 1.0, 1.0)));
+	this->objPrimitives.push_back(PMG::CreateCylinder(CalculateRopeTransform(poleAPosition, poleBPosition), 30, 20, ropeOffset));
 
 
 	//Tables
 	float tableSize = 0.5;
-	float3 startPoint = cubeAPosition + float3(-0.5 - (tableSize / 2.0), 0.5, 0.0);
-	float3 endPoint = cubeBPosition + float3(0.5 + (tableSize / 2.0), 0.5, 0.0);
+	float3 startPoint = basePositionA + float3(-0.5 - (tableSize / 2.0), 0.5, 0.0);
+	float3 endPoint = basePositionB + float3(0.5 + (tableSize / 2.0), 0.5, 0.0);
 
 	double sizeAndOffset = 0.5 + 0.05;
 	double distance = abs(startPoint.Distance(endPoint));
