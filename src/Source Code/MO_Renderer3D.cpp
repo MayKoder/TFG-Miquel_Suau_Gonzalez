@@ -36,7 +36,7 @@
 
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), str_CAPS(""),
-vsync(true), wireframe(false), directLight(nullptr), activeRenderCamera(nullptr)
+vsync(true), wireframe(false), activeRenderCamera(nullptr), directLight(nullptr)
 {
 	GetCAPS(str_CAPS);
 	/*depth =*/ cull = lightng = color_material = texture_2d = true;
@@ -186,7 +186,6 @@ bool ModuleRenderer3D::Init()
 	skybox.CreateGLData();
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-
 	//plane.GenerateData();
 
 	return ret;
@@ -204,7 +203,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
 
-	//DirectionalShadowPass();
+	DirectionalShadowPass();
 
 	//-------- CAMERA CULLING PROCESS -----------//
 	// 	   TODO: Disable now, as meshes do not have AABB or OBB
@@ -252,7 +251,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		{
 			//float distance = App->moduleCamera->editorCamera.camFrustrum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
 			//renderQueueMap.emplace(distance, renderQueue[i]);
-			renderQueue[i]->Draw();
+			renderQueue[i]->Draw(this->directLight);
 		}
 
 		//(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -266,7 +265,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
 	
 	//DebugLine(pickingDebug);
-	//DrawDebugLines();
+	DrawDebugLines();
 
 	//App->moduleCamera->editorCamera.msaaFBO.BindFrameBuffer();
 	//glClear(GL_DEPTH_BUFFER_BIT);
@@ -401,22 +400,22 @@ void ModuleRenderer3D::OnGUI()
 }
 void ModuleRenderer3D::DrawDebugLines()
 {
-	//glBegin(GL_LINES);
-	//for (size_t i = 0; i < lines.size(); i++)
-	//{
-	//	glColor3fv(lines[i].color.ptr());
-	//	glVertex3fv(lines[i].a.ptr());
-	//	glVertex3fv(lines[i].b.ptr());
+	glBegin(GL_LINES);
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		glColor3fv(lines[i].color.ptr());
+		glVertex3fv(lines[i].a.ptr());
+		glVertex3fv(lines[i].b.ptr());
 
-	//	glColor3f(255.f, 255.f, 255.f);
-	//}
-	//glEnd();
+		glColor3f(255.f, 255.f, 255.f);
+	}
+	glEnd();
 
-	//lines.clear();
+	lines.clear();
 }
 void ModuleRenderer3D::AddDebugLines(float3& a, float3& b, float3& color)
 {
-	//lines.push_back(LineRender(a, b, color));
+	lines.push_back(LineRender(a, b, color));
 }
 #endif // !STANDALONE
 
@@ -506,44 +505,25 @@ void ModuleRenderer3D::RayToMeshQueueIntersection(LineSegment& ray)
 
 void ModuleRenderer3D::DirectionalShadowPass()
 {
-	////Render light depth pass
-	//if (directLight)
-	//{
-	//	directLight->StartPass();
-	//	if (!renderQueue.empty())
-	//	{
-	//		for (size_t i = 0; i < renderQueue.size(); i++)
-	//		{
-	//			float distance = directLight->orthoFrustum.pos.DistanceSq(renderQueue[i]->globalOBB.pos);
-	//			renderQueueMap.emplace(distance, renderQueue[i]);
-	//		}
+	//Render light depth pass
+	if (directLight)
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		directLight->StartPass();
+		if (!renderQueue.empty())
+		{
 
+			for (size_t i = 0; i < renderQueue.size(); i++)
+			{
+				directLight->depthShader->SetMatrix4("lightSpaceMatrix", directLight->spaceMatrixOpenGL);
+				renderQueue[i]->PureGLDraw(*directLight->depthShader);
+			}
 
-	//		if (!renderQueueMap.empty())
-	//		{
-	//			for (auto i = renderQueueMap.rbegin(); i != renderQueueMap.rend(); ++i)
-	//			{
-	//				// Get the range of the current key
-	//				auto range = renderQueueMap.equal_range(i->first);
-
-	//				// Now render out that whole range
-	//				for (auto d = range.first; d != range.second; ++d)
-	//				{
-	//					GLint modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "model");
-	//					glUniformMatrix4fv(modelLoc, 1, GL_FALSE, d->second->GetGO()->transform->GetGlobalTransposed());
-
-	//					modelLoc = glGetUniformLocation(directLight->depthShader->shaderProgramID, "lightSpaceMatrix");
-	//					glUniformMatrix4fv(modelLoc, 1, GL_FALSE, directLight->spaceMatrixOpenGL.ptr());
-
-	//					d->second->GetRenderMesh()->OGL_GPU_Render();
-	//				}
-	//			}
-
-	//			renderQueueMap.clear();
-	//		}
-	//	}
-	//	directLight->EndPass();
-	//}
+		}
+		directLight->EndPass();
+		glCullFace(GL_BACK); // don't forget to reset original culling face
+	}
 }
 
 void ModuleRenderer3D::RenderWithOrdering(bool rTex)
@@ -617,5 +597,5 @@ void ModuleRenderer3D::ClearAllRenderData()
 	//renderQueueMap.clear();
 	//renderQueue.clear();
 	
-	//lines.clear();
+	lines.clear();
 }

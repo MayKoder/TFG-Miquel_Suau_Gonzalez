@@ -26,11 +26,11 @@ typedef unsigned char	GLubyte;	/* 1-byte unsigned */
 #define SQUARE_TEXTURE_W 256
 #define SQUARE_TEXTURE_H 256
 
-//struct LineRender
-//{
-//	LineRender(float3& _a, float3& _b, float3& _color) : a(_a), b(_b), color(_color) {}
-//	float3 a, b, color;
-//};
+struct LineRender
+{
+	LineRender(float3& _a, float3& _b, float3& _color) : a(_a), b(_b), color(_color) {}
+	float3 a, b, color;
+};
 
 class ModuleRenderer3D : public Module
 {
@@ -87,8 +87,9 @@ public:
 	//GridManager gridInstance;
 
 private:
-	//std::vector<LineRender> lines;
+	std::vector<LineRender> lines;
 	LineSegment pickingDebug;
+	std::vector<float3> debugPoints;
 
 	//MMP_Plane plane;
 };

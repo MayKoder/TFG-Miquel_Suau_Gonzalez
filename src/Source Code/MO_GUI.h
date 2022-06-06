@@ -119,7 +119,7 @@ public:
 
 	ResourceShader* uiShader;
 
-	PanelTemp imGuiPanels[3];
+	PanelTemp imGuiPanels[2];
 
 	Tool* uiTools[UI_TOOLS_MAX];
 	Tool* selectedTool;

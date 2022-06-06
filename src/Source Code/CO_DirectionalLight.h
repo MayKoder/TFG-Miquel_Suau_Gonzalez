@@ -25,7 +25,7 @@ public:
 	void LoadData(DEConfig& nObj) override;
 
 	void StartPass();
-	void PushLightUniforms(ResourceMaterial* material);
+	void PushLightUniforms(ResourceShader* material);
 	void EndPass();
 
 	Frustum orthoFrustum;
@@ -39,4 +39,6 @@ private:
 	unsigned int depthMap;		//Depth texture
 
 	float3 lightColor;
+
+	float2 biasRange;
 };

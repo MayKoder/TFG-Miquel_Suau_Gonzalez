@@ -507,6 +507,9 @@
     <ClInclude Include="Source Code\PMG.h">
       <Filter>Sources\PMG</Filter>
     </ClInclude>
+    <ClInclude Include="Source Code\BezierCurve.h">
+      <Filter>Sources\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -793,6 +796,9 @@
     </ClCompile>
     <ClCompile Include="Source Code\PMG.cpp">
       <Filter>Sources\PMG</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Code\BezierCurve.cpp">
+      <Filter>Sources\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

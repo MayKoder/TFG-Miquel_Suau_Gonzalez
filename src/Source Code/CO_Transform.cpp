@@ -196,7 +196,7 @@ void C_Transform::SetTransformMatrix(float3 _position, Quat _rotation, float3 _l
 
 	localTransform = float4x4::FromTRS(position, rotation, localScale);
 
-	if (gameObject->parent->transform != nullptr) {
+	if (gameObject->parent && gameObject->parent->transform != nullptr) {
 		globalTransform = gameObject->parent->transform->globalTransform * localTransform;
 	}
 	globalTransformTRANS = globalTransform.Transposed();

@@ -12,8 +12,9 @@
 #include"RE_Shader.h"
 #include"MO_Window.h"
 
-const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-C_DirectionalLight::C_DirectionalLight(GameObject* _gm) : Component(_gm), orthoSize(10.0f, 10.0f), lightColor(float3::one)
+const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
+C_DirectionalLight::C_DirectionalLight(GameObject* _gm) : Component(_gm), orthoSize(60.0f, 60.0f), lightColor(float3::one),
+biasRange(float2(0.000f, 0.000f))
 {
 	name = "Directional Light";
 
@@ -23,8 +24,8 @@ C_DirectionalLight::C_DirectionalLight(GameObject* _gm) : Component(_gm), orthoS
 	orthoFrustum.front = gameObject->transform->GetForward();
 	orthoFrustum.up = gameObject->transform->GetUp();
 	orthoFrustum.pos = gameObject->transform->position;
-	orthoFrustum.orthographicWidth = 100;
-	orthoFrustum.orthographicHeight = 100;
+	orthoFrustum.orthographicWidth = SHADOW_WIDTH / orthoSize.x;
+	orthoFrustum.orthographicHeight = SHADOW_HEIGHT / orthoSize.y;
 
 	glGenFramebuffers(1, &depthMapFBO);
 
@@ -47,7 +48,6 @@ C_DirectionalLight::C_DirectionalLight(GameObject* _gm) : Component(_gm), orthoS
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	depthShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource("Assets/Shaders/simpleShadowMap.glsl", Resource::Type::SHADER));
-	EngineExternal->moduleRenderer3D->directLight = this;
 }
 
 C_DirectionalLight::~C_DirectionalLight()
@@ -75,12 +75,12 @@ void C_DirectionalLight::Update()
 		spaceMatrixOpenGL = (orthoFrustum.ProjectionMatrix() * orthoFrustum.ViewMatrix()).Transposed();
 	//}
 
-#ifndef STANDALONE
+//#ifndef STANDALONE
 	float3 points[8];
 	orthoFrustum.GetCornerPoints(points);
 
 	ModuleRenderer3D::DrawBox(points, float3(0.0f, 1.f, 0.0f));
-#endif // !STANDALONE
+//#endif // !STANDALONE
 
 }
 
@@ -89,13 +89,15 @@ bool C_DirectionalLight::OnEditor()
 {
 	if (Component::OnEditor() == true)
 	{
-		ImGui::Image((ImTextureID)depthMap, ImVec2(250, 250), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)depthMap, ImVec2(150, 150), ImVec2(0, 1), ImVec2(1, 0));
 
-		if (ImGui::DragFloat2("Ortho size", orthoSize.ptr(), 0.001f)) 
+		if (ImGui::DragFloat2("Ortho size", orthoSize.ptr(), 1.0f)) 
 		{
 			orthoFrustum.orthographicWidth = SHADOW_WIDTH / orthoSize.x;
 			orthoFrustum.orthographicHeight = SHADOW_HEIGHT / orthoSize.y;
 		}
+
+		ImGui::DragFloat2("Bias range", biasRange.ptr(), 0.00001f, 0.0f, 1.0f, "%.5f");
 
 		ImGui::ColorPicker3("Color", lightColor.ptr());
 
@@ -128,48 +130,44 @@ void C_DirectionalLight::StartPass()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_CULL_FACE);
 
 	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	// 1. first render to depth map
 	glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-	//glLoadIdentity();
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadMatrixf((GLfloat*)orthoFrustum.ProjectionMatrix().Transposed().v);
 
-	//math::float4x4 mat = orthoFrustum.ViewMatrix();
-	//mat.Transposed();
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadMatrixf((GLfloat*)mat.v);
+	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf((GLfloat*)orthoFrustum.ProjectionMatrix().Transposed().v);
+
+	math::float4x4 mat = orthoFrustum.ViewMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf((GLfloat*)mat.Transposed().v);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	//glClearColor(0.08f, 0.08f, 0.08f, 1.f);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	depthShader->Bind();
+
 }
 
-void C_DirectionalLight::PushLightUniforms(ResourceMaterial* material)
+void C_DirectionalLight::PushLightUniforms(ResourceShader* shader)
 {
-	//GLint modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "lightSpaceMatrix");
-	//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, this->spaceMatrixOpenGL.ptr());
+	shader->SetMatrix4("lightSpaceMatrix", this->spaceMatrixOpenGL);
+	shader->SetVector3("lightPos", gameObject->transform->position);
+	shader->SetVector3("viewPos", EngineExternal->moduleRenderer3D->activeRenderCamera->GetPosition());
+	shader->SetVector3("lightColor", lightColor);
+	shader->SetVector3("altColor", float3(1.0, 1.0, 1.0));
+	shader->SetVector2("biasRange", biasRange);
 
-	//modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "lightPos");
-	//glUniform3fv(modelLoc, 1, &gameObject->transform->position.x);
+	//glUniform1i(glGetUniformLocation(material->shader->shaderProgramID, shadowMap), used_textures);
 
-	//modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "viewPos");
-	//glUniform3fv(modelLoc, 1, EngineExternal->moduleRenderer3D->activeRenderCamera->GetPosition().ptr());
-
-	//modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "lightColor");
-	//glUniform3fv(modelLoc, 1, &lightColor.x);
-
-	////glUniform1i(glGetUniformLocation(material->shader->shaderProgramID, shadowMap), used_textures);
-
-	//glActiveTexture(GL_TEXTURE5);
-	//modelLoc = glGetUniformLocation(material->shader->shaderProgramID, "shadowMap");
-	//glUniform1i(modelLoc, 5);
-	//glBindTexture(GL_TEXTURE_2D, depthMap);
+	glActiveTexture(GL_TEXTURE5);
+	GLint modelLoc = glGetUniformLocation(shader->shaderProgramID, "shadowMap");
+	glUniform1i(modelLoc, 5);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
 }
 
 void C_DirectionalLight::EndPass()
@@ -184,7 +182,7 @@ void C_DirectionalLight::EndPass()
 
 	depthShader->Unbind();
 
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glViewport(0, 0, EngineExternal->moduleWindow->s_width, EngineExternal->moduleWindow->s_height);
 }
 

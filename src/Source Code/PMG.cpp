@@ -1,6 +1,7 @@
 #include "PMG.h"
 #include"Globals.h"
 #include"MathGeoLib/include/Math/Quat.h"
+#include"BezierCurve.h"
 
 Primitive PMG::CreateCube(float4x4& transform)
 {
@@ -90,9 +91,7 @@ Primitive PMG::CreateCylinder(float4x4& transform, int hDivisions, int vDivision
 	float halfUpperSize = 1.0;
 	float upperIncrement = (2.0 * halfUpperSize) / static_cast<float>(hDivisions);
 
-	float3 bezPointA = float3(0.0, halfUpperSize, 0.0);
-	float3 bezPointB = curveOffset;
-	float3 bezPointC = float3(0.0, -halfUpperSize, 0.0);
+	BezierCurve ropeCurve = BezierCurve(std::vector<float3>{float3(0.0, halfUpperSize, 0.0), curveOffset, float3(0.0, -halfUpperSize, 0.0)});
 
 	float normalizedIncrementA = 0.0;
 	float normalizedIncrementB = 0.0;
@@ -101,10 +100,7 @@ Primitive PMG::CreateCylinder(float4x4& transform, int hDivisions, int vDivision
 	{
 
 		normalizedIncrementA = (yh - (halfUpperSize)) / (-halfUpperSize - halfUpperSize);
-
-		float3 lerpedA = bezPointA.Lerp(bezPointB, normalizedIncrementA);
-		float3 lerpedB = bezPointB.Lerp(bezPointC, normalizedIncrementA);
-		float3 lerpedFinal = lerpedA.Lerp(lerpedB, normalizedIncrementA);
+		float3 lerpedFinal = ropeCurve.GetValue(normalizedIncrementA);
 		lerpedFinal.y = 0.0;
 		//normalizedIncrementA = pow(2, 10 * normalizedIncrementA - 10);
 
@@ -112,9 +108,7 @@ Primitive PMG::CreateCylinder(float4x4& transform, int hDivisions, int vDivision
 		CLAMP(clampY,-halfUpperSize, halfUpperSize);
 
 		normalizedIncrementB = (clampY - (halfUpperSize)) / (-halfUpperSize - halfUpperSize);
-		float3 lerpedA2 = bezPointA.Lerp(bezPointB, normalizedIncrementB);
-		float3 lerpedB2 = bezPointB.Lerp(bezPointC, normalizedIncrementB);
-		float3 lerpedFinal2 = lerpedA2.Lerp(lerpedB2, normalizedIncrementB);
+		float3 lerpedFinal2 = ropeCurve.GetValue(normalizedIncrementB);
 		lerpedFinal2.y = 0.0;
 		//normalizedIncrementB = pow(2, 10 * normalizedIncrementB - 10);
 

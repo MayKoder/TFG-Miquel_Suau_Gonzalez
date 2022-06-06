@@ -155,8 +155,11 @@ bool M_Sound::Init()
 bool M_Sound::CleanUp()
 {
 	/* All done. Delete resources, and close down OpenAL. */
-	alDeleteSources(1, &source);
-	alDeleteBuffers(1, &buffer);
+	if(source != 0)
+		alDeleteSources(1, &source);
+
+	if (buffer != 0)
+		alDeleteBuffers(1, &buffer);
 
 	CloseAL();
 	return true;

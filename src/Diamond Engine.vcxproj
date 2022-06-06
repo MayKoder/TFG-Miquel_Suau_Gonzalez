@@ -178,6 +178,7 @@
     <ClInclude Include="Source Code\alhelpers.h" />
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\AssetDir.h" />
+    <ClInclude Include="Source Code\BezierCurve.h" />
     <ClInclude Include="Source Code\Color.h" />
     <ClInclude Include="Source Code\Component.h" />
     <ClInclude Include="Source Code\CO_Camera.h" />
@@ -315,6 +316,7 @@
     <ClCompile Include="Source Code\alhelpers.c" />
     <ClCompile Include="Source Code\Application.cpp" />
     <ClCompile Include="Source Code\AssetDir.cpp" />
+    <ClCompile Include="Source Code\BezierCurve.cpp" />
     <ClCompile Include="Source Code\Color.cpp" />
     <ClCompile Include="Source Code\Component.cpp" />
     <ClCompile Include="Source Code\CO_Camera.cpp" />

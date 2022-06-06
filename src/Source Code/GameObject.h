@@ -8,6 +8,7 @@
 #include"Primitive.h"
 
 class C_Transform;
+class C_DirectionalLight;
 
 class GameObject
 {
@@ -24,10 +25,13 @@ public:
 
 	bool isActive() const;
 
-	virtual void Draw() {
+	virtual void Draw(C_DirectionalLight* light = nullptr) {
 
 	}
 	virtual void DrawOptionsMenu() {
+
+	}
+	virtual void PureGLDraw(ResourceShader& selectedShader) {
 
 	}
 

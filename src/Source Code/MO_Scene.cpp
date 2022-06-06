@@ -20,6 +20,7 @@
 #include"DETime.h"
 
 #include"GO_Bridge.h"
+#include"CO_DirectionalLight.h"
 
 M_Scene::M_Scene(Application* app, bool start_enabled) : Module(app, start_enabled), root(nullptr),
 defaultMaterial(nullptr)
@@ -48,6 +49,10 @@ bool M_Scene::Start()
 //#endif // !STANDALONE
 
 	App->moduleRenderer3D->renderQueue.push_back(new GO_Bridge("Bridge", root));
+
+	GameObject* lightObject = App->moduleScene->CreateGameObject("Light", App->moduleScene->root);
+	lightObject->transform->SetTransformMatrix(float3(6, 10, 5), Quat::identity, float3::one);
+	App->moduleRenderer3D->directLight = dynamic_cast<C_DirectionalLight*>(lightObject->AddComponent(Component::Type::DIRECTIONAL_LIGHT));
 
 	return true;
 }

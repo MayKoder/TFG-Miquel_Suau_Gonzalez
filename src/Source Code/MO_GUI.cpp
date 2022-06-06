@@ -154,6 +154,7 @@ bool M_GUI::Start()
 	io.IniFilename = NULL;
 
 	SetPanelData(App->moduleWindow->s_width, App->moduleWindow->s_height);
+
 	PanelTemp* send = &imGuiPanels[0];
 	std::function<void(int)> customDrawCalls = [&, send] (int i)
 	{
@@ -165,6 +166,11 @@ bool M_GUI::Start()
 			//if (selectedTool != nullptr) {
 			//	selectedTool->DrawEditor();
 			//}
+			GameObject* light = App->moduleScene->root->children[1];
+			for (auto it = light->components.begin(); it < light->components.end(); ++it)
+			{
+				(*it)->OnEditor();
+			}
 		}
 		ImGui::End();
 		//ImGui::PopStyleVar();
@@ -187,39 +193,39 @@ bool M_GUI::Start()
 	};
 	send->drawCallback = customDrawCalls;
 
-	send = &imGuiPanels[2];
-	customDrawCalls = [this, send](int i)
-	{
-		ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_Top;
-		ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
-		if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_AlwaysHorizontalScrollbar))
-		{
-			if (ImGui::IsWindowFocused() && ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
-				ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
-			for (size_t i = 0; i < UI_TOOLS_MAX; i++)
-			{
+	//send = &imGuiPanels[1];
+	//customDrawCalls = [this, send](int i)
+	//{
+	//	ImGui::GetStyle().RoundingStyleFlag = ImDrawCornerFlags_Top;
+	//	ImGui::SetNextWindowPos(send->animator.GetAndStep(EngineExternal->GetDT()), 0, send->pivot);
+	//	if (ImGui::Begin(std::to_string(i).c_str(), NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_AlwaysHorizontalScrollbar))
+	//	{
+	//		if (ImGui::IsWindowFocused() && ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x != 0.0)
+	//			ImGui::SetScrollX(ImGui::GetScrollX() - ImGui::GetMouseDragDelta(ImGuiMouseButton_Left).x);
+	//		for (size_t i = 0; i < UI_TOOLS_MAX; i++)
+	//		{
 
-				bool colorChanged = false;
-				if (selectedTool == uiTools[i]) {
-					colorChanged = true;
-					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
-				}
-				//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
-				//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
+	//			bool colorChanged = false;
+	//			if (selectedTool == uiTools[i]) {
+	//				colorChanged = true;
+	//				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 0, 0, 1));
+	//			}
+	//			//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
+	//			//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
 
-				//if (ImGui::Button(uiTools[i]->GetName(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y))) {
-				//	
-				//	(this->selectedTool == uiTools[i]) ? selectedTool = nullptr : this->selectedTool = uiTools[i];
-				//}
-				ImGui::SameLine();
+	//			//if (ImGui::Button(uiTools[i]->GetName(), ImVec2(ImGui::GetContentRegionAvail().y, ImGui::GetContentRegionAvail().y))) {
+	//			//	
+	//			//	(this->selectedTool == uiTools[i]) ? selectedTool = nullptr : this->selectedTool = uiTools[i];
+	//			//}
+	//			ImGui::SameLine();
 
-				if (colorChanged == true)
-					ImGui::PopStyleColor(1);
-			}
-		}
-		ImGui::End();
-	};
-	send->drawCallback = customDrawCalls;
+	//			if (colorChanged == true)
+	//				ImGui::PopStyleColor(1);
+	//		}
+	//	}
+	//	ImGui::End();
+	//};
+	//send->drawCallback = customDrawCalls;
 
 	//test.Set(0, 1, 0.1, false);
 	//test.isActive = true;
@@ -290,7 +296,7 @@ void M_GUI::RenderUIElements()
 	}
 
 
-	for (size_t i = 0; i < 3; i++)
+	for (size_t i = 0; i < 2; i++)
 	{
 		PanelTemp* panel = &imGuiPanels[i];
 		if (panel->isOpen == true) 
@@ -414,15 +420,15 @@ void M_GUI::SetPanelData(int w, int h)
 	send->animator.Set(send->pos, float2(w + send->size.x, send->pos.y), .25f, true);
 	send->animator.Invert();
 
-	send = &imGuiPanels[2];
-	imGuiPanels[2].Set(
-		ImVec2(0.5, 1.0), 
-		ImVec2(w / 2, h), 
-		ImVec2(w / 2, h / 4), 
-		ImVec2(w / 10, h / 25),
-		ImVec2(-(w/10)/2, -(h / 4) - h/25));
-	send->animator.Set(send->pos, float2(send->pos.x, send->pos.y + send->size.y), .25f, true);
-	send->animator.Invert();
+	//send = &imGuiPanels[2];
+	//imGuiPanels[2].Set(
+	//	ImVec2(0.5, 1.0), 
+	//	ImVec2(w / 2, h), 
+	//	ImVec2(w / 2, h / 4), 
+	//	ImVec2(w / 10, h / 25),
+	//	ImVec2(-(w/10)/2, -(h / 4) - h/25));
+	//send->animator.Set(send->pos, float2(send->pos.x, send->pos.y + send->size.y), .25f, true);
+	//send->animator.Invert();
 }
 
 //void M_GUI::DrawGameObjectsTree(GameObject* node, bool drawAsDisabled)

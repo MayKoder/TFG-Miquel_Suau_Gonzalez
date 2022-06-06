@@ -115,6 +115,10 @@ void DE_Cubemap::DrawAsSkybox(C_Camera* _camera)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, _camera->ProjectionMatrixOpenGL().ptr());
 
 	//glEnableClientState(GL_VERTEX_ARRAY);
+
+	glActiveTexture(GL_TEXTURE0);
+	//modelLoc = glGetUniformLocation(shaderRes->shaderProgramID, "skybox");
+	//glUniform1i(modelLoc, 0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	/*glBindBuffer(GL_ARRAY_BUFFER, vboId);
