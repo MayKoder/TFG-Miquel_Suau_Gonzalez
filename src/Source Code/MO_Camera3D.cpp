@@ -10,6 +10,7 @@
 
 #include"CO_Transform.h"
 #include"MathGeoLib/include/Math/float4.h"
+#include"GO_Bridge.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled), mouseSensitivity(0.50f), cameraSpeed(40.f), cameraMovement(0.f, 0.f, 0.f)
 {
@@ -86,12 +87,22 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	if (App->moduleInput->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) cameraMovement -= editorCamera.camFrustrum.front * speed;
 
 
-	if (App->moduleInput->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) cameraMovement -= editorCamera.camFrustrum.WorldRight() * speed;
-	if (App->moduleInput->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) cameraMovement += editorCamera.camFrustrum.WorldRight() * speed;
+	//if (App->moduleInput->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) cameraMovement -= editorCamera.camFrustrum.WorldRight() * speed;
+	//if (App->moduleInput->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) cameraMovement += editorCamera.camFrustrum.WorldRight() * speed;
 
 	if (App->moduleInput->GetMouseZ() != 0)
 	{
-		cameraMovement += editorCamera.camFrustrum.front * App->moduleInput->GetMouseZ() * (editorCamera.camFrustrum.pos - float3::zero).Normalized().LengthSq();
+		float minDistance = 1.0;
+
+		float3 centerPoint = dynamic_cast<GO_Bridge*>(App->moduleRenderer3D->renderQueue[0])->localAABB.CenterPoint();
+		float3 newPoint = editorCamera.camFrustrum.front * App->moduleInput->GetMouseZ() * (editorCamera.camFrustrum.pos - centerPoint).Normalized().LengthSq();
+
+		cameraMovement += editorCamera.camFrustrum.front * App->moduleInput->GetMouseZ() * (editorCamera.camFrustrum.pos - centerPoint).Normalized().LengthSq();
+		//if ((cameraMovement + newPoint).Distance(centerPoint) >= minDistance) {
+		//}
+		//else {
+
+		//}
 	}
 
 	// Mouse motion ----------------
@@ -112,23 +123,24 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	//TODO: Camera rotation should not be affected by the program framerate
 	if (App->moduleInput->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
 	{
-		FreeRotation(dt);
+		//FreeRotation(dt);
+		OrbitalRotation(dynamic_cast<GO_Bridge*>(App->moduleRenderer3D->renderQueue[0])->localAABB.CenterPoint(), dt);
 	}
 
 #ifndef STANDALONE
 	//Rotate around 0,0,0
 	//ASK: Should i also include Right alt?
 	//Maybe we could use quaternions?
-	if (/*App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && */App->moduleInput->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT) 
-	{
-		/*float3 target(0.f, 0.f, 0.f);*/
-		//if (App->moduleEditor->GetSelectedGO() != nullptr)
-		//{
-		//	float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
-		//	target.Set(maTogl.x, maTogl.y, maTogl.z);
-		//}
-		OrbitalRotation(Reference, dt);
-	}
+	//if (/*App->moduleInput->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT && */App->moduleInput->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT) 
+	//{
+	//	/*float3 target(0.f, 0.f, 0.f);*/
+	//	//if (App->moduleEditor->GetSelectedGO() != nullptr)
+	//	//{
+	//	//	float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
+	//	//	target.Set(maTogl.x, maTogl.y, maTogl.z);
+	//	//}
+	//	OrbitalRotation(Reference, dt);
+	//}
 
 
 	if (App->moduleInput->GetKey(SDL_SCANCODE_F) == KEY_DOWN) 

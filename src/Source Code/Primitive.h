@@ -3,6 +3,7 @@
 #include<vector>
 #include"GL_Object.h"
 #include"MathGeoLib/include/Math/float4x4.h"
+#include"MathGeoLib/include/Math/float4.h"
 
 class Primitive
 {
@@ -25,6 +26,18 @@ public:
 		indices.push_back(a);
 		indices.push_back(b);
 		indices.push_back(c);
+	}
+
+	int GetNumOfVertices() {
+		return dataPacks.size() / dataPackSize;
+	}
+
+	void ExtractVertexPositions(std::vector<float3>& input) {
+		for (size_t i = 0; i < dataPacks.size(); i += dataPackSize)
+		{
+			float4 modifiedPoint = this->modelMatrix * float4(dataPacks[i], dataPacks[i + 1], dataPacks[i + 2], 1.0);
+			input.push_back(modifiedPoint.xyz());
+		}
 	}
 
 	void CapMeshVertices(int);

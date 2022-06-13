@@ -1,6 +1,8 @@
 #pragma once
 
 #include"GameObject.h"
+#include"MathGeoLib/include/Geometry/OBB.h"
+#include"MathGeoLib/include/Geometry/AABB.h"
 
 class GO_Bridge : public GameObject
 {
@@ -15,8 +17,11 @@ public:
 	void CreatBridge();
 	float4x4 CalculateRopeTransform(float3& pointA, float3& pointB);
 
+	AABB localAABB;
 private:
 	float counter;
+
+	OBB orientedBox;
 
 	//Base settings
 	float3 basePositionA;

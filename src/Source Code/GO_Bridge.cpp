@@ -22,7 +22,8 @@ tableCurveOffset(float3::zero)
 
 	this->generalShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource("Assets/Shaders/shadowShader.glsl", Resource::Type::SHADER));
 
-
+	//localAABB.SetNegativeInfinity();
+	//orientedBox.SetNegativeInfinity();
 }
 
 GO_Bridge::~GO_Bridge()
@@ -32,6 +33,10 @@ GO_Bridge::~GO_Bridge()
 
 void GO_Bridge::Draw(C_DirectionalLight* light)
 {
+	float3 points[8];
+	localAABB.GetCornerPoints(points);
+	ModuleRenderer3D::DrawBox(points);
+
 	this->generalShader->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(this->generalShader->shaderProgramID);
 
@@ -161,6 +166,17 @@ void GO_Bridge::CreatBridge()
 	}
 
 	//counter += EngineExternal->GetDT();
+	std::vector<float3> allVertices;
+	int numVerticesPack = 0;
+	for (size_t i = 1; i < objPrimitives.size(); i++)
+	{
+		objPrimitives[i].ExtractVertexPositions(allVertices);
+		numVerticesPack += objPrimitives[i].GetNumOfVertices();
+	}
+	localAABB.SetNegativeInfinity();
+	localAABB.Enclose(allVertices.data(), numVerticesPack);
+	//localAABB.Transform();
+
 
 	//Load OpenGL data
 	for (size_t i = 0; i < objPrimitives.size(); i++)
