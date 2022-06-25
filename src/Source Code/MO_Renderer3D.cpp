@@ -288,6 +288,10 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	SDL_GL_SwapWindow(App->moduleWindow->window);
 
+	if (App->moduleInput->GetKey(SDL_SCANCODE_SPACE) == KEY_STATE::KEY_DOWN)
+	{
+		TextureImporter::TakeScreenshot(App->moduleCamera->editorCamera.msaaFBO.GetFrameBuffer());
+	}
 	return UPDATE_CONTINUE;
 }
 

@@ -55,16 +55,19 @@ GLuint TextureImporter::LoadToMemory(char* buffer, int size, int* w, int* h)
 /*Take a screenshot*/
 void TextureImporter::TakeScreenshot(int frameBuffer)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+	//glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+	std::string filePath = "Screenshots/" + std::to_string(EngineExternal->GetRandomInt());
+	filePath += ".png";
 
 	ILuint imageID = ilGenImage();
 	ilBindImage(imageID);
 	ilutGLScreen();
 	ilEnable(IL_FILE_OVERWRITE);
-	ilSaveImage("Screenshots/Screenshot.png");
+	ilSaveImage(filePath.c_str());
 	ilDeleteImage(imageID);
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void TextureImporter::LoadCubeMap(std::vector<std::string>& faces, DE_Cubemap& cubeMap)

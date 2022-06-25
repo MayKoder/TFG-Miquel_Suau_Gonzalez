@@ -61,7 +61,7 @@ vec3 lightColor = vec3(1.0, 1.0, 1.0);
         
     vec3 result = (ambient + diffuse + specular) * color.xyz;
 
-	FragColor = vec4(result, 1.0);
+	FragColor = vec4(result * color	, 1.0);
 }
 #endif
 

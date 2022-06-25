@@ -35,7 +35,7 @@ void GO_Bridge::Draw(C_DirectionalLight* light)
 {
 	float3 points[8];
 	localAABB.GetCornerPoints(points);
-	ModuleRenderer3D::DrawBox(points);
+	ModuleRenderer3D::DrawBox(points, float3(1.f, 0.5f, 0.9f));
 
 	this->generalShader->Bind();
 	EngineExternal->moduleRenderer3D->activeRenderCamera->PushCameraShaderVars(this->generalShader->shaderProgramID);
@@ -52,6 +52,8 @@ void GO_Bridge::Draw(C_DirectionalLight* light)
 		float3x3 normalMatrix = objPrimitives[i].modelMatrix.Transposed().InverseTransposed().Float3x3Part();
 		this->generalShader->SetMatrix3("normalMatrix", normalMatrix);
 
+		this->generalShader->SetVector3("color", objPrimitives[i].solidColor);
+
 		this->generalShader->SetMatrix4("modelMatrix", objPrimitives[i].modelMatrix.Transposed());
 		objPrimitives[i].meshObject.RenderAsIndices(GL_TRIANGLES, objPrimitives[i].GetIndicesSize(), GL_UNSIGNED_INT);
 	}
@@ -62,7 +64,7 @@ void GO_Bridge::Draw(C_DirectionalLight* light)
 	{
 		//objPrimitives[i].DebugDrawVertices();
 
-		//TODO: Matrix math makes normals react to size, that should not happen...
+		////TODO: Matrix math makes normals react to size, that should not happen...
 		//objPrimitives[i].DebugDrawNormals();
 
 	}
@@ -117,6 +119,7 @@ void GO_Bridge::CreatBridge()
 
 	//this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(float3(0., 0., 0.), Quat::FromEulerXYZ(0., 0., 0.), float3::one) , 8, 10));
 	this->objPrimitives.push_back(PMG::CreateQuad(float4x4::FromTRS(float3::zero, Quat::identity, float3(50, 50, 50))));
+	//this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(float3::zero, Quat::identity, float3(1, 1, 1)), 10, 10));
 
 	//Base cubes
 	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA, Quat::identity, float3(cubeSize, 1.0, 3.0))));

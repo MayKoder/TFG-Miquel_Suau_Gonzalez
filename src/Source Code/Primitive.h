@@ -4,6 +4,7 @@
 #include"GL_Object.h"
 #include"MathGeoLib/include/Math/float4x4.h"
 #include"MathGeoLib/include/Math/float4.h"
+#include"MathGeoLib/include/Math/float3.h"
 
 class Primitive
 {
@@ -52,6 +53,7 @@ public:
 	std::vector<float> dataPacks;
 	std::vector<int> indices;
 	float4x4 modelMatrix;
+	float3 solidColor;
 
 private:
 	int dataPackSize;

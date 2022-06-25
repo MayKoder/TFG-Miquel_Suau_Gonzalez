@@ -145,13 +145,7 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 
 	if (App->moduleInput->GetKey(SDL_SCANCODE_F) == KEY_DOWN) 
 	{
-		float3 target(0.f, 0.f, 0.f);
-		//if (App->moduleEditor->GetSelectedGO() != nullptr) 
-		//{
-		//	float3 maTogl = App->moduleEditor->GetSelectedGO()->transform->globalTransform.TranslatePart();
-		//	target.Set(maTogl.x, maTogl.y, maTogl.z);
-		//}
-		FocusCamera(target, 10.f);
+		FocusCamera(dynamic_cast<GO_Bridge*>(App->moduleRenderer3D->renderQueue[0])->localAABB.CenterPoint(), 10.f);
 	}
 #endif // !STANDALONE
 

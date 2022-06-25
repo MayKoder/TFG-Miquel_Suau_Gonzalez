@@ -1,7 +1,7 @@
 #include "Primitive.h"
 #include"MathGeoLib/include/Math/float4.h"
 
-Primitive::Primitive() : dataPackSize(6), modelMatrix(float4x4::identity)
+Primitive::Primitive() : dataPackSize(6), modelMatrix(float4x4::identity), solidColor(float3::one)
 {
 }
 
