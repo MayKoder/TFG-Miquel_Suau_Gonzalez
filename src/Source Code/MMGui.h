@@ -22,4 +22,8 @@ namespace ImGui
     void TextURL(const char* name_, const char* URL_, uint8_t SameLineBefore_, uint8_t SameLineAfter_);
     //ImGuiID DockSpaceOverViewportCustom(ImGuiViewport* viewport, ImGuiDockNodeFlags dockspace_flags, ImVec2 position, ImVec2 size, const ImGuiWindowClass* window_class);
     ImVec2 GetButtonSize(const char* text, const ImVec2 size_arg = ImVec2(0.f, 0.f));
+
+
+    void AddMenuHeaderCustom(const char* text, int spacings);
+    void AddTitleCustom(const char* text, int offset);
 }

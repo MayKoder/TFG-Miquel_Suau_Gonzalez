@@ -15,7 +15,7 @@ public:
 	void PureGLDraw(ResourceShader& selectedShader);
 
 	void CreatBridge();
-	float4x4 CalculateRopeTransform(float3& pointA, float3& pointB);
+	float4x4 CalculateRopeTransform(float3& pointA, float3& pointB, float thickness);
 
 	AABB localAABB;
 private:
@@ -31,12 +31,15 @@ private:
 	float poleSeparation;
 
 	//Rope settings
-	float3 ropeOffset;
+	float2 ropeOffset;
+	float ropeThickess;
+	int ropeDivisions;
 
 	//Table settings
 	float3 tableCurveOffset;
 	float tableOffset;
 	float3 tableSize;
 	
+	float3 colorArray[4];
 
 };

@@ -6,6 +6,7 @@
 #include "MO_Scene.h"
 
 #include "CO_Camera.h"
+#include"CO_Transform.h"
 
 #include "Application.h"
 
@@ -167,10 +168,33 @@ bool M_GUI::Start()
 			//	selectedTool->DrawEditor();
 			//}
 			GameObject* light = App->moduleScene->root->children[1];
-			for (auto it = light->components.begin(); it < light->components.end(); ++it)
+			C_Transform* trasform = dynamic_cast<C_Transform*>(light->components[0]);
+
+
+			ImGui::Text("Position");
+			ImGui::GreySeparator();
+
+
+			int offset = ImGui::CalcTextSize("Pos: ").x + 16;
+			ImGui::Text("Pos: ");
+			ImGui::SameLine();
+			if (ImGui::DragFloat3("##lPos", &trasform->position[0], 0.1f))
+				trasform->updateTransform = true;
+
+
+			for (auto it = light->components.begin()+1; it < light->components.end(); ++it)
 			{
 				(*it)->OnEditor();
 			}
+
+			ImGui::AddMenuHeaderCustom("Skybox settings", 10);
+
+			offset = ImGui::CalcTextSize("Render skybox: ").x + 16;
+			ImGui::AddTitleCustom("Render debug: ", offset);
+			ImGui::Checkbox("##debugRender", &App->moduleRenderer3D->displayDebug);
+
+			ImGui::AddTitleCustom("Render skybox: ", offset);
+			ImGui::Checkbox("##renderSkybox", &App->moduleRenderer3D->renderSkybox);
 		}
 		ImGui::End();
 		//ImGui::PopStyleVar();

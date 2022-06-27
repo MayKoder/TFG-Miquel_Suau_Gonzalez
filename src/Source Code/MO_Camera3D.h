@@ -28,6 +28,8 @@ private:
 	void FocusCamera(float3 center, float offset);
 	void PanCamera(float);
 
+	void Zoom(float increment);
+
 public:
 	
 	//float3 X, Y, Z, Reference;

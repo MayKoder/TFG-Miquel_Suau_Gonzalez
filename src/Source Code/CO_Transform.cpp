@@ -52,21 +52,21 @@ bool C_Transform::OnEditor()
 	if (Component::OnEditor() == true)
 	{
 
-		int offset = ImGui::CalcTextSize("Local Position: ").x + 16;
-		ImGui::Text("Local Position: "); 
+		int offset = ImGui::CalcTextSize("Pos: ").x + 16;
+		ImGui::Text("Pos: "); 
 		ImGui::SameLine(); 
 		if (ImGui::DragFloat3("##lPos", &position[0], 0.1f))
 			updateTransform = true;
 
 
-		ImGui::Text("Rotation: ");
+		ImGui::Text("Rot: ");
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(offset);
 		if (ImGui::DragFloat3("##lRot", &eulerRotation[0], 0.1f))
 			updateTransform = true;
 
 
-		ImGui::Text("Scale: ");
+		ImGui::Text("Sca: ");
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(offset);
 		if (ImGui::DragFloat3("##lScale", &localScale[0], 0.1f))

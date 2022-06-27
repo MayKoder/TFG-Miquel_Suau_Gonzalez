@@ -70,6 +70,7 @@ private:
 
 public:
 	bool vsync, wireframe, cull, lightng, color_material, texture_2d;
+	bool displayDebug, renderSkybox;
 
 	GLuint checkersTexture;
 	GLubyte checkerImage[SQUARE_TEXTURE_W][SQUARE_TEXTURE_H][4];

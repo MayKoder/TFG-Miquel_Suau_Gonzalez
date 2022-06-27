@@ -29,7 +29,7 @@ bool ModuleCamera3D::Start()
 	LOG(  "Setting up the camera");
 	bool ret = true;
 
-	editorCamera.LookAt(float3(0.f, 0.f, 0.f));
+	editorCamera.LookAt(dynamic_cast<GO_Bridge*>(App->moduleRenderer3D->renderQueue[0])->localAABB.CenterPoint());
 
 	//LookAt(float3(0.f, 1.f, 0.f));
 
@@ -83,8 +83,8 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 	//if (App->moduleInput->GetKey(SDL_SCANCODE_R) == KEY_REPEAT) cameraMovement.y += speed;
 	//if (App->input->GetKey(SDL_SCANCODE_F) == KEY_REPEAT) newPos.y -= speed;
 
-	if (App->moduleInput->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) cameraMovement += editorCamera.camFrustrum.front * speed;
-	if (App->moduleInput->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) cameraMovement -= editorCamera.camFrustrum.front * speed;
+	if (App->moduleInput->GetKey(SDL_SCANCODE_W) == KEY_REPEAT) Zoom(speed);
+	if (App->moduleInput->GetKey(SDL_SCANCODE_S) == KEY_REPEAT) Zoom(-speed);
 
 
 	//if (App->moduleInput->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) cameraMovement -= editorCamera.camFrustrum.WorldRight() * speed;
@@ -92,17 +92,7 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 
 	if (App->moduleInput->GetMouseZ() != 0)
 	{
-		float minDistance = 1.0;
-
-		float3 centerPoint = dynamic_cast<GO_Bridge*>(App->moduleRenderer3D->renderQueue[0])->localAABB.CenterPoint();
-		float3 newPoint = editorCamera.camFrustrum.front * App->moduleInput->GetMouseZ() * (editorCamera.camFrustrum.pos - centerPoint).Normalized().LengthSq();
-
-		cameraMovement += editorCamera.camFrustrum.front * App->moduleInput->GetMouseZ() * (editorCamera.camFrustrum.pos - centerPoint).Normalized().LengthSq();
-		//if ((cameraMovement + newPoint).Distance(centerPoint) >= minDistance) {
-		//}
-		//else {
-
-		//}
+		Zoom(App->moduleInput->GetMouseZ());
 	}
 
 	// Mouse motion ----------------
@@ -150,8 +140,8 @@ void ModuleCamera3D::ProcessSceneKeyboard()
 #endif // !STANDALONE
 
 
-	if (App->moduleInput->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
-		PanCamera(dt);
+	//if (App->moduleInput->GetMouseButton(SDL_BUTTON_MIDDLE) == KEY_REPEAT)
+	//	PanCamera(dt);
 }
 
 ////Could be a good idea to use quaternions? Would it be faster?
@@ -175,6 +165,7 @@ void ModuleCamera3D::OrbitalRotation(float3 center, float dt)
 
 		Quat Y = Quat::identity;
 		Y.SetFromAxisAngle(float3(1, 0, 0), DeltaY * DEGTORAD);
+		//LOG("%f", Quat(0.0, 0.0, 0.707, 0.707).Dot(direction * Y));
 
 		direction = direction * Y;
 	}
@@ -197,6 +188,7 @@ void ModuleCamera3D::OrbitalRotation(float3 center, float dt)
 		editorCamera.camFrustrum.SetWorldMatrix(mat.Float3x4Part());
 
 		editorCamera.camFrustrum.pos = center + (editorCamera.camFrustrum.front * -distance);
+		CLAMP(editorCamera.camFrustrum.pos.y, 0.5, 300);
 		editorCamera.LookAt(center);
 	//}
 	//else 
@@ -261,4 +253,13 @@ void ModuleCamera3D::PanCamera(float dt)
 		float3 movVector((editorCamera.camFrustrum.WorldRight() * dx) + (-editorCamera.camFrustrum.up * dy));
 		cameraMovement += movVector * dt;
 	}
+}
+
+void ModuleCamera3D::Zoom(float increment)
+{
+	float3 centerPoint = dynamic_cast<GO_Bridge*>(App->moduleRenderer3D->renderQueue[0])->localAABB.CenterPoint();
+
+	float distance = (editorCamera.camFrustrum.pos - centerPoint).Length() - increment;
+	CLAMP(distance, 0.5, 20.0);
+	editorCamera.camFrustrum.pos = centerPoint + (-editorCamera.camFrustrum.front * distance);
 }

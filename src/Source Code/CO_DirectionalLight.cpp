@@ -6,6 +6,7 @@
 #include"CO_Transform.h"
 #include"CO_Camera.h"
 #include"ImGui/imgui.h"
+#include"MMGui.h"
 #include"MO_ResourceManager.h"
 #include"RE_Shader.h"
 
@@ -75,35 +76,34 @@ void C_DirectionalLight::Update()
 		spaceMatrixOpenGL = (orthoFrustum.ProjectionMatrix() * orthoFrustum.ViewMatrix()).Transposed();
 	//}
 
-//#ifndef STANDALONE
-	float3 points[8];
-	orthoFrustum.GetCornerPoints(points);
+	if (EngineExternal->moduleRenderer3D->displayDebug) {
+		float3 points[8];
+		orthoFrustum.GetCornerPoints(points);
 
-	ModuleRenderer3D::DrawBox(points, float3(0.0f, 1.f, 0.0f));
-//#endif // !STANDALONE
+		ModuleRenderer3D::DrawBox(points, float3(0.0f, 1.f, 0.0f));
+	}
+
 
 }
 
 #ifndef STANDALONE
 bool C_DirectionalLight::OnEditor()
 {
-	if (Component::OnEditor() == true)
+	ImGui::AddMenuHeaderCustom("Light Settings", 10);
+
+	ImGui::Image((ImTextureID)depthMap, ImVec2(150, 150), ImVec2(0, 1), ImVec2(1, 0));
+
+	if (ImGui::DragFloat2("Ortho size", orthoSize.ptr(), 1.0f)) 
 	{
-		ImGui::Image((ImTextureID)depthMap, ImVec2(150, 150), ImVec2(0, 1), ImVec2(1, 0));
-
-		if (ImGui::DragFloat2("Ortho size", orthoSize.ptr(), 1.0f)) 
-		{
-			orthoFrustum.orthographicWidth = SHADOW_WIDTH / orthoSize.x;
-			orthoFrustum.orthographicHeight = SHADOW_HEIGHT / orthoSize.y;
-		}
-
-		ImGui::DragFloat2("Bias range", biasRange.ptr(), 0.00001f, 0.0f, 1.0f, "%.5f");
-
-		ImGui::ColorPicker3("Color", lightColor.ptr());
-
-		return true;
+		orthoFrustum.orthographicWidth = SHADOW_WIDTH / orthoSize.x;
+		orthoFrustum.orthographicHeight = SHADOW_HEIGHT / orthoSize.y;
 	}
-	return false;
+
+	//ImGui::DragFloat2("Bias range", biasRange.ptr(), 0.00001f, 0.0f, 1.0f, "%.5f");
+
+	ImGui::ColorPicker3("Color", lightColor.ptr());
+
+	return true;
 }
 #endif // !STANDALONE
 

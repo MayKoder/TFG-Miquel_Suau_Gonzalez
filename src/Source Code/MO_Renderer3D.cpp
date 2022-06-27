@@ -36,7 +36,7 @@
 
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), str_CAPS(""),
-vsync(true), wireframe(false), activeRenderCamera(nullptr), directLight(nullptr)
+vsync(true), wireframe(false), activeRenderCamera(nullptr), directLight(nullptr), displayDebug(false), renderSkybox(true)
 {
 	GetCAPS(str_CAPS);
 	/*depth =*/ cull = lightng = color_material = texture_2d = true;
@@ -261,8 +261,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	//LOG("Time to render %d", SDL_GetTicks() - start);
 
-
-	skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
+	if (renderSkybox) {
+		skybox.DrawAsSkybox(&App->moduleCamera->editorCamera);
+	}
 	
 	//DebugLine(pickingDebug);
 	DrawDebugLines();

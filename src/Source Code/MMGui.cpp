@@ -118,3 +118,20 @@ ImVec2 ImGui::GetButtonSize(const char* text, const ImVec2 size_arg)
 
     return CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
 }
+
+void ImGui::AddMenuHeaderCustom(const char* text, int spacings)
+{
+    for (int i = 0; i < spacings; i++) {
+        ImGui::Spacing();
+    }
+
+    ImGui::Text(text);
+    ImGui::GreySeparator();
+}
+
+void ImGui::AddTitleCustom(const char* text, int offset)
+{
+    ImGui::Text(text);
+    ImGui::SameLine();
+    ImGui::SetCursorPosX(offset);
+}
