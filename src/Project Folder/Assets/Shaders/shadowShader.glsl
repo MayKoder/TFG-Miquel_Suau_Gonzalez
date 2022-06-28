@@ -48,6 +48,10 @@ uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec2 biasRange;
+uniform float intensity;
+
+uniform vec3 skyboxTint;
+uniform float tintIntensity;
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 lightDir, vec3 normal)
 {
@@ -91,17 +95,17 @@ void main()
     vec3 ambient = 0.15 * color;
     // diffuse
     vec3 lightDir = normalize(lightPos - fs_in.FragPos);
-    float diff = max(dot(lightDir, normal), 0.0);
+    float diff = max(dot(lightDir, normal), 0.0) * intensity;
     vec3 diffuse = diff * lightColor;
     // specular
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
     float spec = 0.0;
     vec3 halfwayDir = normalize(lightDir + viewDir);  
-    spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
+    spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0)* intensity;
     vec3 specular = spec * lightColor;    
     // calculate shadow
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace, lightDir, fs_in.Normal);       
-    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
+    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * (color + (skyboxTint * tintIntensity));    
     
     FragColor = vec4(lighting, 1.0);
 }

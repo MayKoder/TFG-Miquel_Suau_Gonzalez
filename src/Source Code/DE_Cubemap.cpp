@@ -6,7 +6,8 @@
 #include"Application.h"
 #include"MO_ResourceManager.h"
 
-DE_Cubemap::DE_Cubemap() : shaderRes(nullptr), textureID(0) /*vboId(0),*//* EBO(0), VBO(0), VAO(0)*/
+DE_Cubemap::DE_Cubemap() : shaderRes(nullptr), textureID(0) /*vboId(0),*//* EBO(0), VBO(0), VAO(0)*/, cubemapTintColor(float3::one),
+tintIntensity(0.0)
 {
 }
 
@@ -109,10 +110,11 @@ void DE_Cubemap::DrawAsSkybox(C_Camera* _camera)
 
 	GLint modelLoc = glGetUniformLocation(shaderRes->shaderProgramID, "view");
 	float4x4 test = _camera->ViewMatrixOpenGL().Float3x3Part();
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, test.ptr());
+	shaderRes->SetMatrix4("view", test);
 
-	modelLoc = glGetUniformLocation(shaderRes->shaderProgramID, "projection");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, _camera->ProjectionMatrixOpenGL().ptr());
+	shaderRes->SetMatrix4("projection", _camera->ProjectionMatrixOpenGL());
+
+	shaderRes->SetVector3("colorTint", this->cubemapTintColor);
 
 	//glEnableClientState(GL_VERTEX_ARRAY);
 

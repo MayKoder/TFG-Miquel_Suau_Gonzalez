@@ -221,7 +221,7 @@ update_status ModuleInput::PreUpdate(float dt)
 	}
 
 	if (keyboard[SDL_SCANCODE_ESCAPE] == KEY_UP)
-		SDL_SetRelativeMouseMode(SDL_FALSE);
+		quit = true;
 
 	if(quit == true)
 		return UPDATE_STOP;

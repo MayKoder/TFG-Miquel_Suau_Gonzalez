@@ -4,6 +4,7 @@
 #include "MO_Renderer3D.h"
 #include "MO_Input.h"
 #include "MO_Scene.h"
+#include "MO_Camera3D.h"
 
 #include "CO_Camera.h"
 #include"CO_Transform.h"
@@ -25,6 +26,7 @@
 #include"CreationTool.h"
 
 #include"GameObject.h"
+#include"IM_TextureImporter.h"
 
 M_GUI::M_GUI(Application* app, bool start_enabled) : Module(app, start_enabled), uiShader(nullptr), selectedTool(nullptr)
 {
@@ -173,9 +175,8 @@ bool M_GUI::Start()
 
 			ImGui::AddMenuHeaderCustom("Light settings", 0);
 
-			int offset = ImGui::CalcTextSize("Pos: ").x + 16;
-			ImGui::Text("Pos: ");
-			ImGui::SameLine();
+			int offset = ImGui::CalcTextSize("Sky tint: ").x + 15;
+			ImGui::AddTitleCustom("Position: ", offset);
 			if (ImGui::DragFloat3("##lPos", &trasform->position[0], 0.1f))
 				trasform->updateTransform = true;
 
@@ -185,16 +186,32 @@ bool M_GUI::Start()
 				(*it)->OnEditor();
 			}
 
-			offset = ImGui::CalcTextSize("Render skybox: ").x + 16;
 			ImGui::AddMenuHeaderCustom("Skybox settings", 10);
+
+			ImGui::AddTitleCustom("Enable: ", offset);
+			ImGui::Checkbox("##renderSkybox", &App->moduleRenderer3D->renderSkybox);
+
+			ImGui::AddTitleCustom("Sky tint: ", offset);
+			ImGui::ColorEdit3("##skyTint", App->moduleRenderer3D->skybox.cubemapTintColor.ptr());
+
+			ImGui::AddTitleCustom("Tint mult: ", offset);
+			ImGui::DragFloat("##tintMultiplier", &App->moduleRenderer3D->skybox.tintIntensity, .01, 0.0, 1.0);
 			
 			ImGui::AddMenuHeaderCustom("Debug toggles", 10);
 			
-			ImGui::AddTitleCustom("Render debug: ", offset);
-			ImGui::Checkbox("##debugRender", &App->moduleRenderer3D->displayDebug);
+			ImGui::AddTitleCustom("Draw vert: ", offset);
+			ImGui::Checkbox("##debugRenderLines", &App->moduleRenderer3D->displayDebugVertices);
 
-			ImGui::AddTitleCustom("Render skybox: ", offset);
-			ImGui::Checkbox("##renderSkybox", &App->moduleRenderer3D->renderSkybox);
+			ImGui::AddTitleCustom("Draw box: ", offset);
+			ImGui::Checkbox("##debugRenderBoxes", &App->moduleRenderer3D->displayDebugBoxes);
+
+			for (int i = 0; i < 5; i++) {
+				ImGui::Spacing();
+			}
+			if (ImGui::MiddleButton("Take screenshot", ImGui::GetWindowSize(), 0.5f)) {
+				TextureImporter::TakeScreenshot(App->moduleCamera->editorCamera.msaaFBO.GetFrameBuffer());
+			}
+
 		}
 		ImGui::End();
 		//ImGui::PopStyleVar();

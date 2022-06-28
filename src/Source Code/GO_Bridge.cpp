@@ -11,11 +11,13 @@
 #include"BezierCurve.h"
 #include"CO_DirectionalLight.h"
 #include"MMGui.h"
+#include"MO_Camera3D.h"
 
 GO_Bridge::GO_Bridge(const char* name, GameObject* parent, int _uid) : GameObject(name, parent, _uid),
 basePositionA(float3(abs(sinf(counter)) * 10.0, 0.5, 0.0)), basePositionB(float3(-5.0, 0.5, 0.0)),
 ropeOffset(float2(-10.5, 0.)), tableOffset(0.05), poleSeparation(1.), tableSize(float3(0.5, 0.1, 2.0)),
-tableCurveOffset(float3::zero), ropeThickess(0.05), ropeDivisions(20)
+tableCurveOffset(float3::zero), ropeThickess(0.05), ropeDivisions(20), plankType(PRIM_TYPE::CUBE),
+poleSubDivisions(4)
 {
 	//this->objPrimitives.push_back(PMG::CreateCylinder(40, 20));
 	counter = 0.0f;
@@ -24,6 +26,8 @@ tableCurveOffset(float3::zero), ropeThickess(0.05), ropeDivisions(20)
 	colorArray[1] = float3(0.8575, 0.4728, 0.2026);
 	colorArray[2] = float3(0.8, 0.7, 0.2);
 	colorArray[3] = float3(0.76, 0.54, 0.34);
+
+	plankTypeItem = typeDisplay[0];
 
 	CreatBridge();
 
@@ -41,7 +45,7 @@ GO_Bridge::~GO_Bridge()
 
 void GO_Bridge::Draw(C_DirectionalLight* light)
 {
-	if (EngineExternal->moduleRenderer3D->displayDebug) {
+	if (EngineExternal->moduleRenderer3D->displayDebugBoxes) {
 		float3 points[8];
 		localAABB.GetCornerPoints(points);
 		ModuleRenderer3D::DrawBox(points, float3(1.f, 0.5f, 0.9f));
@@ -70,7 +74,7 @@ void GO_Bridge::Draw(C_DirectionalLight* light)
 
 	this->generalShader->Unbind();
 
-	if (EngineExternal->moduleRenderer3D->displayDebug) {
+	if (EngineExternal->moduleRenderer3D->displayDebugVertices) {
 
 		for (size_t i = 0; i < objPrimitives.size(); i++)
 		{
@@ -88,7 +92,9 @@ void GO_Bridge::DrawOptionsMenu()
 
 	int offset = ImGui::CalcTextSize("Position: ").x + 16;
 	ImGui::AddTitleCustom("Position: ", offset);
-	if (ImGui::SliderFloat3("##basea", basePositionA.ptr(), 0.0, 5.0)) {
+	if (ImGui::SliderFloat3("##basea", basePositionA.ptr(), -3.0, 4.0)) {
+		CLAMP(basePositionA.x, 0.0, 4.0);
+		CLAMP(basePositionA.y, 0.0, 4.0);
 		CreatBridge();
 	}
 
@@ -101,6 +107,10 @@ void GO_Bridge::DrawOptionsMenu()
 	ImGui::AddTitleCustom("Separation: ", offset);
 	if (ImGui::SliderFloat("##poleseparation", &poleSeparation, 0.1, 1.5)) {
 		tableSize.z = poleSeparation * 2.0;
+		CreatBridge();
+	}
+	ImGui::AddTitleCustom("Divisions: ", offset);
+	if (ImGui::SliderInt("##poledivisions", &poleSubDivisions, 3, 40)) {
 		CreatBridge();
 	}
 	ImGui::AddTitleCustom("Color: ", offset);
@@ -132,6 +142,25 @@ void GO_Bridge::DrawOptionsMenu()
 
 	ImGui::AddMenuHeaderCustom("Planks settings", 10);
 
+	ImGui::AddTitleCustom("Primitive: ", offset);
+
+	if (ImGui::BeginCombo("##plankPrimitive", plankTypeItem)) // The second parameter is the label previewed before opening the combo.
+	{
+		for (int n = 0; n < 2; n++)
+		{
+			bool is_selected = (plankTypeItem == typeDisplay[n]);
+			if (ImGui::Selectable(typeDisplay[n], is_selected))
+			{
+				plankTypeItem = typeDisplay[n];
+				this->plankType = static_cast<PRIM_TYPE>(n);
+				CreatBridge();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
 	ImGui::AddTitleCustom("Curve: ", offset);
 	if (ImGui::SliderFloat3("##tablecurve", this->tableCurveOffset.ptr(), -5., 5.)) {
 		CreatBridge();
@@ -142,6 +171,9 @@ void GO_Bridge::DrawOptionsMenu()
 	}
 	ImGui::AddTitleCustom("Plank size: ", offset);
 	if (ImGui::SliderFloat3("##tablesize", this->tableSize.ptr(), 0., 5.)) {
+		//if (this->plankType == PRIM_TYPE::CYLINDER) {
+		//	this->tableSize
+		//}
 		CreatBridge();
 	}
 	ImGui::AddTitleCustom("Color: ", offset);
@@ -165,6 +197,8 @@ void GO_Bridge::PureGLDraw(ResourceShader& selectedShader)
 
 void GO_Bridge::CreatBridge()
 {
+	EngineExternal->moduleCamera->editorCamera.LookAt(this->localAABB.CenterPoint());
+
 	this->objPrimitives.clear();
 	float cubeSize = 1.0;
 
@@ -175,20 +209,23 @@ void GO_Bridge::CreatBridge()
 	//Base cubes
 	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA, Quat::identity, float3(cubeSize, 1.0, 3.0))));
 	this->objPrimitives.back().solidColor = colorArray[0];
+
 	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB, Quat::identity, float3(cubeSize, 1.0, 3.0))));
+	this->objPrimitives.back().solidColor = colorArray[0];
+	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB - float3(1.3, 0.285, 0), Quat::FromEulerXYZ(0, 0, PI/10.0), float3(cubeSize+1, 1.0, 3.0))));
 	this->objPrimitives.back().solidColor = colorArray[0];
 
 
 	//Poles
 	float3 poleOffset = float3(0.3, 1.0, poleSeparation);
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB + poleOffset.Mul(float3(1.0, 1.0, -1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(basePositionB + poleOffset.Mul(float3(1.0, 1.0, -1.0)), Quat::identity, float3(0.1, 0.5, 0.1)), 1, poleSubDivisions));
 	this->objPrimitives.back().solidColor = colorArray[1];
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionB + poleOffset, Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(basePositionB + poleOffset, Quat::identity, float3(0.1, .5, 0.1)), 1, poleSubDivisions));
 	this->objPrimitives.back().solidColor = colorArray[1];
 
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA + poleOffset.Mul(float3(-1.0, 1.0, -1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(basePositionA + poleOffset.Mul(float3(-1.0, 1.0, -1.0)), Quat::identity, float3(0.1, .5, 0.1)), 1, poleSubDivisions));
 	this->objPrimitives.back().solidColor = colorArray[1];
-	this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(basePositionA + poleOffset.Mul(float3(-1.0, 1.0, 1.0)), Quat::identity, float3(0.15, 1.0, 0.15))));
+	this->objPrimitives.push_back(PMG::CreateCylinder(float4x4::FromTRS(basePositionA + poleOffset.Mul(float3(-1.0, 1.0, 1.0)), Quat::identity, float3(0.1, .5, 0.1)), 1, poleSubDivisions));
 	this->objPrimitives.back().solidColor = colorArray[1];
 
 	//Ropes
@@ -223,8 +260,27 @@ void GO_Bridge::CreatBridge()
 		
 		float3 direction = (tablesCurve.GetValue(i + test + (1.0 / segmentSections)) - tablesCurve.GetValue(i + test)).Normalized();
 
-		Quat lookAtTest = Quat::LookAt(float3(1, 0, 0), direction, float3(0, 1, 0), float3(0, 1, 0));
-		this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cPoint, lookAtTest, this->tableSize)));
+		Primitive ret;
+		Quat lookAtTest = Quat::identity;
+		switch (plankType)
+		{
+		case GO_Bridge::PRIM_TYPE::CUBE:
+			lookAtTest = Quat::LookAt(float3(1, 0, 0), direction, float3(0, 1, 0), float3(0, 1, 0));
+			ret = PMG::CreateCube(float4x4::FromTRS(cPoint, lookAtTest, this->tableSize));
+			break;
+
+		case GO_Bridge::PRIM_TYPE::CYLINDER:
+			//lookAtTest = Quat::LookAt(float3(1, 0, 0), direction, float3(1, 0, 0), float3(1, 0, 0));
+			//ret = PMG::CreateCylinder(float4x4::FromTRS(cPoint, lookAtTest, this->tableSize), 1, 10);
+			break;
+
+		default:
+			break;
+		}
+
+
+
+		this->objPrimitives.push_back(ret);
 		this->objPrimitives.back().solidColor = colorArray[3];
 	}
 

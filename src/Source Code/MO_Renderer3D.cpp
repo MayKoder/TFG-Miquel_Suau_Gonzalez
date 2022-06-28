@@ -36,7 +36,8 @@
 
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled), str_CAPS(""),
-vsync(true), wireframe(false), activeRenderCamera(nullptr), directLight(nullptr), displayDebug(false), renderSkybox(true)
+vsync(true), wireframe(false), activeRenderCamera(nullptr), directLight(nullptr), displayDebugVertices(false), 
+renderSkybox(true), displayDebugBoxes(false)
 {
 	GetCAPS(str_CAPS);
 	/*depth =*/ cull = lightng = color_material = texture_2d = true;
@@ -223,25 +224,27 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	App->moduleCamera->editorCamera.StartDraw();
 	//
 	
-	//gridInstance.RenderGridTemporal();
-	glBegin(GL_LINES);
+	if (displayDebugVertices) 
+	{
+		glBegin(GL_LINES);
 
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(0.0, 0.0, 0.0);
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(1.0, 0.0, 0.0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(0.0, 0.0, 0.0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(1.0, 0.0, 0.0);
 
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(0.0, 0.0, 0.0);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(0.0, 1.0, 0.0);
+		glColor3f(0.0, 1.0, 0.0);
+		glVertex3f(0.0, 0.0, 0.0);
+		glColor3f(0.0, 1.0, 0.0);
+		glVertex3f(0.0, 1.0, 0.0);
 
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(0.0, 0.0, 0.0);
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(0.0, 0.0, 1.0);
+		glColor3f(0.0, 0.0, 1.0);
+		glVertex3f(0.0, 0.0, 0.0);
+		glColor3f(0.0, 0.0, 1.0);
+		glVertex3f(0.0, 0.0, 1.0);
 
-	glEnd();
+		glEnd();
+	}
 
 	//Uint32 start = SDL_GetTicks();
 	//TODO: This should not be here

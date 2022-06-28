@@ -90,7 +90,7 @@ bool ModuleWindow::Init()
 	}
 
 	//Title Init
-	const std::string title(TITLE "0.1 by MayKoder");
+	const std::string title(TITLE "1.0");
 	SetTitle(title.c_str());
 
 	return ret;

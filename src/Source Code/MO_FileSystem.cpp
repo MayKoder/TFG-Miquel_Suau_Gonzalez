@@ -154,24 +154,6 @@ std::string M_FileSystem::OpenFileSelectDialog()
 
 std::string M_FileSystem::OpenSaveAsDialog()
 {
-	char filename[MAX_PATH];
-	filename[0] = '\0';
-
-	OPENFILENAMEA ofn;
-	ZeroMemory(&filename, sizeof(filename));
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(ofn);
-	ofn.hwndOwner = NULL;
-	ofn.lpstrFilter = "Diamond Engine Scene (.des)\0"; //Text Files\0*.txt\0
-	ofn.lpstrDefExt = "des";
-	ofn.lpstrFile = filename;
-	ofn.nMaxFile = MAX_PATH;
-	ofn.lpstrTitle = "Save file as";
-	ofn.Flags = OFN_DONTADDTORECENT | OFN_NOCHANGEDIR;
-
-	if (GetSaveFileNameA(&ofn))
-		return std::string(filename);
-
 	return std::string("\0");
 }
 

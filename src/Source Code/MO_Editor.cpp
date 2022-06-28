@@ -222,18 +222,6 @@ void M_Editor::DrawMenuBar()
 			{
 				displayWindow = !displayWindow;
 			}
-			if (ImGui::MenuItem("Documentation"))
-			{
-				ShellExecute(0, 0, "https://github.com/MayKoder/Diamond-Engine", 0, 0, SW_SHOW);
-			}
-			if (ImGui::MenuItem("Download latest"))
-			{
-				ShellExecute(0, 0, "https://github.com/MayKoder/Diamond-Engine/releases", 0, 0, SW_SHOW);
-			}		
-			if (ImGui::MenuItem("Report a bug"))
-			{
-				ShellExecute(0, 0, "https://github.com/MayKoder/Diamond-Engine/issues", 0, 0, SW_SHOW);
-			}
 			if (ImGui::MenuItem("MayKoder Github"))
 			{
 				ShellExecute(0, 0, "https://github.com/MayKoder", 0, 0, SW_SHOW);

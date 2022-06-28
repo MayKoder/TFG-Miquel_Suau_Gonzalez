@@ -41,4 +41,6 @@ private:
 	float3 lightColor;
 
 	float2 biasRange;
+
+	float lightIntensity;
 };

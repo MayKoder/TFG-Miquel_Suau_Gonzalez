@@ -15,7 +15,7 @@
 
 const unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
 C_DirectionalLight::C_DirectionalLight(GameObject* _gm) : Component(_gm), orthoSize(60.0f, 60.0f), lightColor(float3::one),
-biasRange(float2(0.000f, 0.000f))
+biasRange(float2(0.000f, 0.000f)), lightIntensity(0.50f)
 {
 	name = "Directional Light";
 
@@ -76,7 +76,7 @@ void C_DirectionalLight::Update()
 		spaceMatrixOpenGL = (orthoFrustum.ProjectionMatrix() * orthoFrustum.ViewMatrix()).Transposed();
 	//}
 
-	if (EngineExternal->moduleRenderer3D->displayDebug) {
+	if (EngineExternal->moduleRenderer3D->displayDebugBoxes) {
 		float3 points[8];
 		orthoFrustum.GetCornerPoints(points);
 
@@ -91,17 +91,24 @@ bool C_DirectionalLight::OnEditor()
 {
 	ImGui::AddMenuHeaderCustom("Light Settings", 10);
 
-	ImGui::Image((ImTextureID)depthMap, ImVec2(150, 150), ImVec2(0, 1), ImVec2(1, 0));
 
-	if (ImGui::DragFloat2("Ortho size", orthoSize.ptr(), 1.0f)) 
+	ImGui::AddTitleCustom("Zoom: ", ImGui::CalcTextSize("Intensity: ").x + 16);
+	if (ImGui::DragFloat("##zoom", orthoSize.ptr(), 1.0f)) 
 	{
 		orthoFrustum.orthographicWidth = SHADOW_WIDTH / orthoSize.x;
-		orthoFrustum.orthographicHeight = SHADOW_HEIGHT / orthoSize.y;
+		orthoFrustum.orthographicHeight = SHADOW_HEIGHT / orthoSize.x;
 	}
+
+	ImGui::SetCursorPosX(116);
+	ImGui::Image((ImTextureID)depthMap, ImVec2(150, 150), ImVec2(0, 1), ImVec2(1, 0));
 
 	//ImGui::DragFloat2("Bias range", biasRange.ptr(), 0.00001f, 0.0f, 1.0f, "%.5f");
 
-	ImGui::ColorPicker3("Color", lightColor.ptr());
+	ImGui::AddTitleCustom("Intensity: ", ImGui::CalcTextSize("Intensity: ").x + 16);
+	ImGui::DragFloat("##lightIntensity", &lightIntensity, 0.01, 0.0, 1.0);
+
+	ImGui::AddTitleCustom("Color: ", ImGui::CalcTextSize("Intensity: ").x + 16);
+	ImGui::ColorEdit3("##lightColor", lightColor.ptr());
 
 	return true;
 }
@@ -159,8 +166,12 @@ void C_DirectionalLight::PushLightUniforms(ResourceShader* shader)
 	shader->SetVector3("lightPos", gameObject->transform->position);
 	shader->SetVector3("viewPos", EngineExternal->moduleRenderer3D->activeRenderCamera->GetPosition());
 	shader->SetVector3("lightColor", lightColor);
-	shader->SetVector3("altColor", float3(1.0, 1.0, 1.0));
+	shader->SetVector3("altColor", lightColor);
 	shader->SetVector2("biasRange", biasRange);
+	shader->SetFloat("intensity", lightIntensity);
+
+	shader->SetVector3("skyboxTint", EngineExternal->moduleRenderer3D->skybox.cubemapTintColor);
+	shader->SetFloat("tintIntensity", EngineExternal->moduleRenderer3D->skybox.tintIntensity);
 
 	//glUniform1i(glGetUniformLocation(material->shader->shaderProgramID, shadowMap), used_textures);
 

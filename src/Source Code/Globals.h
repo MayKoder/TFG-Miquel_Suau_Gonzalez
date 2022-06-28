@@ -90,4 +90,4 @@ typedef unsigned __int64 uint64;
 #define MIN_HEIGHT 270
 
 #define SCREEN_SIZE 1
-#define TITLE "Unnamed Project v"
+#define TITLE "Miquel Suau, TFG, Bridge prototype v"

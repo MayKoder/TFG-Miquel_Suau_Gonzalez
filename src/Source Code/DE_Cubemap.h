@@ -21,6 +21,8 @@ public:
 
     ResourceShader* shaderRes;
     unsigned int textureID;
+    float3 cubemapTintColor;
+    float tintIntensity;
 
     //unsigned int vboId;
 
