@@ -21,8 +21,10 @@ tableCurveOffset(float3::zero), ropeThickess(0.05), ropeDivisions(20)
 	counter = 0.0f;
 	CreatBridge();
 
-	this->colorArray[0] = float3(0.5927, 0.5834, 0.5554);
-	this->colorArray[1] = float3(0.8575, 0.4728, 0.2026);;
+	colorArray[0] = float3(0.5927, 0.5834, 0.5554);
+	colorArray[1] = float3(0.8575, 0.4728, 0.2026);
+	colorArray[2] = float3(0.8, 0.7, 0.2);
+	colorArray[3] = float3(0.76, 0.54, 0.34);
 
 	this->generalShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource("Assets/Shaders/shadowShader.glsl", Resource::Type::SHADER));
 
@@ -99,6 +101,10 @@ void GO_Bridge::DrawOptionsMenu()
 		tableSize.z = poleSeparation * 2.0;
 		CreatBridge();
 	}
+	ImGui::AddTitleCustom("Color: ", offset);
+	if (ImGui::ColorEdit3("##poleColor", &colorArray[1].x)) {
+		CreatBridge();
+	}
 
 	ImGui::AddMenuHeaderCustom("Rope settings", 10);
 
@@ -118,7 +124,7 @@ void GO_Bridge::DrawOptionsMenu()
 	}
 
 	ImGui::AddTitleCustom("Color: ", offset);
-	if (ImGui::ColorEdit3("##ropeColor", &colorArray[1].x)) {
+	if (ImGui::ColorEdit3("##ropeColor", &colorArray[2].x)) {
 		CreatBridge();
 	}
 
@@ -136,7 +142,10 @@ void GO_Bridge::DrawOptionsMenu()
 	if (ImGui::SliderFloat3("##tablesize", this->tableSize.ptr(), 0., 5.)) {
 		CreatBridge();
 	}
-
+	ImGui::AddTitleCustom("Color: ", offset);
+	if (ImGui::ColorEdit3("##plankColor", &colorArray[3].x)) {
+		CreatBridge();
+	}
 
 }
 
@@ -184,12 +193,12 @@ void GO_Bridge::CreatBridge()
 	float3 poleAPosition = (basePositionA + poleOffset.Mul(float3(-1.0, 1.0, -1.0)));
 	float3 poleBPosition = (basePositionB + poleOffset.Mul(float3(1.0, 1.0, -1.0)));
 	this->objPrimitives.push_back(PMG::CreateCylinder(CalculateRopeTransform(poleAPosition, poleBPosition, ropeThickess), 30, ropeDivisions, float3(ropeOffset.x, 0.0, ropeOffset.y)));
-	this->objPrimitives.back().solidColor = float3(0.8, 0.7, 0.2);
+	this->objPrimitives.back().solidColor = colorArray[2];
 
 	poleAPosition = (basePositionA + poleOffset.Mul(float3(-1.0, 1.0, 1.0)));
 	poleBPosition = (basePositionB + poleOffset.Mul(float3(1.0, 1.0, 1.0)));
 	this->objPrimitives.push_back(PMG::CreateCylinder(CalculateRopeTransform(poleAPosition, poleBPosition, ropeThickess), 30, ropeDivisions, float3(ropeOffset.x, 0.0, ropeOffset.y)));
-	this->objPrimitives.back().solidColor = float3(0.8, 0.7, 0.2);
+	this->objPrimitives.back().solidColor = colorArray[2];
 
 
 	//Tables
@@ -214,7 +223,7 @@ void GO_Bridge::CreatBridge()
 
 		Quat lookAtTest = Quat::LookAt(float3(1, 0, 0), direction, float3(0, 1, 0), float3(0, 1, 0));
 		this->objPrimitives.push_back(PMG::CreateCube(float4x4::FromTRS(cPoint, lookAtTest, this->tableSize)));
-		this->objPrimitives.back().solidColor = float3(0.76, 0.54, 0.34);
+		this->objPrimitives.back().solidColor = colorArray[3];
 	}
 
 	//counter += EngineExternal->GetDT();
