@@ -171,9 +171,7 @@ bool M_GUI::Start()
 			C_Transform* trasform = dynamic_cast<C_Transform*>(light->components[0]);
 
 
-			ImGui::Text("Position");
-			ImGui::GreySeparator();
-
+			ImGui::AddMenuHeaderCustom("Light settings", 0);
 
 			int offset = ImGui::CalcTextSize("Pos: ").x + 16;
 			ImGui::Text("Pos: ");
@@ -187,9 +185,11 @@ bool M_GUI::Start()
 				(*it)->OnEditor();
 			}
 
-			ImGui::AddMenuHeaderCustom("Skybox settings", 10);
-
 			offset = ImGui::CalcTextSize("Render skybox: ").x + 16;
+			ImGui::AddMenuHeaderCustom("Skybox settings", 10);
+			
+			ImGui::AddMenuHeaderCustom("Debug toggles", 10);
+			
 			ImGui::AddTitleCustom("Render debug: ", offset);
 			ImGui::Checkbox("##debugRender", &App->moduleRenderer3D->displayDebug);
 
