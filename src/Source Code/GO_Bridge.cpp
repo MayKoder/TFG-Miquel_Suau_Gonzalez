@@ -19,12 +19,14 @@ tableCurveOffset(float3::zero), ropeThickess(0.05), ropeDivisions(20)
 {
 	//this->objPrimitives.push_back(PMG::CreateCylinder(40, 20));
 	counter = 0.0f;
-	CreatBridge();
-
+	
 	colorArray[0] = float3(0.5927, 0.5834, 0.5554);
 	colorArray[1] = float3(0.8575, 0.4728, 0.2026);
 	colorArray[2] = float3(0.8, 0.7, 0.2);
 	colorArray[3] = float3(0.76, 0.54, 0.34);
+
+	CreatBridge();
+
 
 	this->generalShader = dynamic_cast<ResourceShader*>(EngineExternal->moduleResources->RequestResource("Assets/Shaders/shadowShader.glsl", Resource::Type::SHADER));
 
