@@ -510,6 +510,7 @@
     <ClInclude Include="Source Code\BezierCurve.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Code\Main.cpp">
@@ -828,5 +829,11 @@
     <Natvis Include="Source Code\External Libraries\ImGui\misc\debuggers\imgui.natvis">
       <Filter>Externals\ImGui</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Bridge_Prototype_MSG.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\docs\phoenix.ico" />
   </ItemGroup>
 </Project>

@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Source Code\alhelpers.h" />
     <ClInclude Include="Source Code\Application.h" />
     <ClInclude Include="Source Code\AssetDir.h" />
@@ -421,6 +422,12 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Source Code\External Libraries\ImGui\misc\debuggers\imgui.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Bridge_Prototype_MSG.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\docs\phoenix.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
