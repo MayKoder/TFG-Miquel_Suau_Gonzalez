@@ -12,7 +12,7 @@ When running this project, you will find a **custom rendering engine** made with
 * **SPACE:** Take a screenshot
 * **Left mouse:** Interact with menus and input fields.
 
-![Exe capture](https://github.com/MayKoder/TFG-Miquel_Suau_Gonzalez/blob/main/docs/428553355.png)
+![Exe capture](https://github.com/MayKoder/TFG-Miquel_Suau_Gonzalez/blob/main/docs/419824173.png)
 
 To execute the project, just download the last release and double-click the "PDM-TFG.exe" file.
 
