@@ -89,7 +89,7 @@ void C_DirectionalLight::Update()
 #ifndef STANDALONE
 bool C_DirectionalLight::OnEditor()
 {
-	ImGui::AddMenuHeaderCustom("Light Settings", 10);
+	ImGui::AddMenuHeaderCustom("Advance light settings", 10);
 
 
 	ImGui::AddTitleCustom("Zoom: ", ImGui::CalcTextSize("Intensity: ").x + 16);
